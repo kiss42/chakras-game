@@ -1,6 +1,7 @@
 // Chakras game cards. Edit freely. A card can be plain text, or an object:
 //   {"text": "...", "seconds": 60}                       adds a timer (practices)
 //   {"text": "...", "deeper": "...", "theme": "..."}     adds a "Go deeper" follow-up and a small theme label
+// A chakra can also have an "intimacy" deck: adults-only questions behind an 18+ check (Sacral has one).
 window.CHAKRAS = [
   {
     "id": "root",
@@ -253,6 +254,98 @@ window.CHAKRAS = [
         "theme": "feelings",
         "text": "How do your emotions shape your relationships?",
         "deeper": "Which feeling do you most often hide from the people you love?"
+      }
+    ],
+    "intimacy": [
+      {
+        "theme": "desire",
+        "text": "What does desire feel like in your body?",
+        "deeper": "Where do you feel it first, and do you let yourself stay with it?"
+      },
+      {
+        "theme": "desire",
+        "text": "What turns you on that has nothing to do with another person?",
+        "deeper": "When did you last give that to yourself?"
+      },
+      {
+        "theme": "desire",
+        "text": "What do you secretly want in your sex life that you've never said out loud?",
+        "deeper": "What do you imagine would happen if you said it?"
+      },
+      {
+        "theme": "desire",
+        "text": "Do you know what you like, or what you think you're supposed to like?",
+        "deeper": "How could you find out, gently and on your own terms?"
+      },
+      {
+        "theme": "desire",
+        "text": "When do you feel most sexy?",
+        "deeper": "Is that a feeling you wait for, or one you can invite in?"
+      },
+      {
+        "theme": "desire",
+        "text": "What would pleasure without performance look like for you?",
+        "deeper": "Who have you been performing for?"
+      },
+      {
+        "theme": "shame & healing",
+        "text": "What did you learn about sex growing up?",
+        "deeper": "Which of those messages still live in your body?"
+      },
+      {
+        "theme": "shame & healing",
+        "text": "Is there shame you carry about your body or your desires?",
+        "deeper": "Whose voice is that shame, really?"
+      },
+      {
+        "theme": "shame & healing",
+        "text": "Has anyone ever made you feel small about your sexuality?",
+        "deeper": "What would you say to them now, from your full self?"
+      },
+      {
+        "theme": "shame & healing",
+        "text": "Is there an intimate experience you're still carrying?",
+        "deeper": "What would help you set it down? You don't have to do that alone."
+      },
+      {
+        "theme": "shame & healing",
+        "text": "Do you feel safe being fully seen, in body and in feeling?",
+        "deeper": "What would make it feel safer?"
+      },
+      {
+        "theme": "shame & healing",
+        "text": "How has your relationship with your sexuality changed over the years?",
+        "deeper": "What do you want the next chapter to feel like?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "What does a true yes feel like in your body?",
+        "deeper": "And what does a quiet no feel like, before you say it?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "Do you ask for what you want in bed?",
+        "deeper": "What stops you, and what would one small ask sound like?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "Have you ever said yes to intimacy when you meant maybe, or no?",
+        "deeper": "What would you need to feel free to say what you really meant?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "What makes you feel emotionally safe enough to be physically close?",
+        "deeper": "Do the people you're intimate with know that about you?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "What's the difference, for you, between sex and intimacy?",
+        "deeper": "Which one are you craving more right now?"
+      },
+      {
+        "theme": "intimacy & consent",
+        "text": "How do you want to feel after being intimate with someone?",
+        "deeper": "What helps you get there, and what gets in the way?"
       }
     ],
     "practice": [

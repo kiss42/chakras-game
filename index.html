@@ -170,6 +170,14 @@
     background: color-mix(in srgb, var(--glow) 22%, transparent); border: 1px solid color-mix(in srgb, var(--glow) 55%, transparent); }
   .choice b { display: block; font-family: "Cinzel", serif; font-size: 18px; letter-spacing: .1em; text-transform: uppercase; }
   .choice span { color: var(--fog); font-size: 14px; font-weight: 500; }
+  .choice b small { font-family: "Space Mono", monospace; font-size: 10px; letter-spacing: .08em; padding: 2px 7px; margin-left: 6px; border-radius: 999px;
+    vertical-align: middle; color: var(--rose); border: 1px solid color-mix(in srgb, var(--rose) 60%, transparent); }
+  .choice button[hidden] { display: none; }
+  dialog.ask { max-width: 340px; width: calc(100% - 40px); padding: 24px 22px 20px; border-radius: 24px; color: var(--chalk); background: var(--plum);
+    border: 1px solid color-mix(in srgb, var(--rose) 50%, transparent); box-shadow: 0 0 40px -6px color-mix(in srgb, var(--rose) 60%, transparent); text-align: center; }
+  dialog.ask::backdrop { background: rgba(5,3,8,.75); backdrop-filter: blur(4px); }
+  dialog.ask p { color: var(--fog); font-weight: 500; margin: 10px 0 18px; }
+  dialog.ask .row { gap: 10px; }
   .choice .go { margin-left: auto; color: var(--rose); font-size: 18px; }
 
   /* the card */
@@ -392,6 +400,7 @@
     <div class="choice">
       <button id="pick-reflect"><span class="ico">☾</span><span><b>Reflect</b><span>A question to answer from the heart.</span></span><span class="go">↗</span></button>
       <button id="pick-practice"><span class="ico">✦</span><span><b>Practice</b><span>Breath, movement, kind words, a little ritual.</span></span><span class="go">↗</span></button>
+      <button id="pick-intimacy" hidden><span class="ico">♡</span><span><b>Intimacy<small>18+</small></b><span>Sex, desire and closeness, for grown-ups.</span></span><span class="go">↗</span></button>
     </div>
     <div class="grow"></div>
   </section>
@@ -452,6 +461,14 @@
   <footer>chakras come from the yoga + tantra traditions of india.<br>a reflection game, not medical advice.</footer>
 </main>
 </div>
+
+<dialog class="ask" id="adult">
+  <form method="dialog">
+    <h3>Intimacy · 18+</h3>
+    <p>These questions explore sex, desire and closeness. They're for adults only, and you can skip any card.</p>
+    <div class="row"><button class="btn ghost" value="no">Not now</button><button class="btn" value="yes">I'm 18+</button></div>
+  </form>
+</dialog>
 
 <div class="awaken" id="aw" hidden aria-live="polite">
   <div class="aw-rays"></div>
@@ -675,6 +692,7 @@ function startIntro() {
 function startPick() {
   const c = ch(); setGlow(c.color); drawDock(); crumb(c.name.toLowerCase(), "choose");
   $("p-buddy").innerHTML = buddy(c, moodNow(), "small");
+  $("pick-intimacy").hidden = !c.intimacy;
   S.card = null; save(); show("s-pick");
 }
 
@@ -695,7 +713,7 @@ function renderCard() {
   stopTimer();
   const c = ch(), k = S.card; setGlow(c.color); drawDock();
   crumb(c.name.toLowerCase(), k.type);
-  $("c-meta").textContent = `${c.name} · ${k.type}${k.theme ? " · " + k.theme : ""}`;
+  $("c-meta").textContent = `${c.name} · ${k.type === "intimacy" ? "intimacy 18+" : k.type}${k.theme ? " · " + k.theme : ""}`;
   $("c-deep-btn").hidden = !k.deeper; $("c-deep").hidden = true; $("c-deep-t").textContent = k.deeper || "";
   $("c-buddy").innerHTML = buddy(c, moodNow());
   $("c-text").textContent = k.text;
@@ -862,6 +880,12 @@ $("t-skip").onclick = startIntro;
 $("ready").onclick = startPick;
 $("pick-reflect").onclick = () => draw("reflect");
 $("pick-practice").onclick = () => draw("practice");
+$("pick-intimacy").onclick = () => {
+  if (store.get("cj.adult")) return draw("intimacy");
+  const d = $("adult");
+  d.onclose = () => { if (d.returnValue === "yes") { store.set("cj.adult", true); draw("intimacy"); } };
+  d.returnValue = ""; d.showModal();
+};
 $("swap").onclick = () => draw(S.card.type, S.card.i);
 $("done").onclick = () => finishCard(true);
 $("skip").onclick = () => finishCard(false);
