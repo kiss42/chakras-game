@@ -16,8 +16,12 @@ Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it fee
 
 ## Edit the cards
 
-All cards live in `cards.js`. A practice can be plain text or `{ "text": "...", "seconds": 60 }`
-to add a timer.
+All cards live in `cards.js`. A card can be plain text, or an object:
+
+- `{ "text": "...", "seconds": 60 }` adds a timer (good for practices)
+- `{ "text": "...", "deeper": "...", "theme": "..." }` adds a "Go deeper" follow-up question and a small theme label
+
+Each chakra also has a `bija` (seed sound) and an `affirmation`, shown when it awakens.
 
 ## Run locally
 

@@ -1,4 +1,6 @@
-// Chakras game cards. Edit freely: a practice can be {"text": "...", "seconds": 60} to add a timer.
+// Chakras game cards. Edit freely. A card can be plain text, or an object:
+//   {"text": "...", "seconds": 60}                       adds a timer (practices)
+//   {"text": "...", "deeper": "...", "theme": "..."}     adds a "Go deeper" follow-up and a small theme label
 window.CHAKRAS = [
   {
     "id": "root",
@@ -10,12 +12,126 @@ window.CHAKRAS = [
     "theme": "Safety, grounding, feeling at home in yourself",
     "intro": "Sit comfortably with your feet flat on the floor. Take three slow breaths and feel the ground holding you.",
     "reflect": [
-      "Where in your life do you feel most safe right now?",
-      "What does \"home\" feel like to you, and when did you last feel it?",
-      "What's one worry you've been carrying that you're ready to set down, even just for tonight?",
-      "Who or what makes you feel taken care of?",
-      "What helps you feel steady when life gets loud?",
-      "What's one thing about yourself you never doubt?"
+      {
+        "theme": "boundaries",
+        "text": "Do you trust your own judgment?",
+        "deeper": "Think of the last time you ignored it. What were you afraid would happen if you listened?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "What makes you feel safe?",
+        "deeper": "How much of that could you give yourself, without waiting for anyone else?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "When have you been pressured into something you didn't want to do?",
+        "deeper": "What did you need to hear in that moment, and who could have said it?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "What are you never willing to compromise on?",
+        "deeper": "Have you ever compromised on it anyway? What did it cost you?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "What happens inside you when someone crosses one of your boundaries?",
+        "deeper": "Where do you feel it in your body first?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "Who in your life respects your \"no\" without needing a reason?",
+        "deeper": "How does your body feel around them, compared with everyone else?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "What triggers you faster than anything else?",
+        "deeper": "What older hurt might that moment be touching?"
+      },
+      {
+        "theme": "boundaries",
+        "text": "What calms you down when you're angry?",
+        "deeper": "What is the anger trying to protect?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What is your earliest memory of feeling truly safe?",
+        "deeper": "What was there in that moment that's missing from your life now?"
+      },
+      {
+        "theme": "childhood",
+        "text": "When did you first feel unsafe as a child?",
+        "deeper": "What did little you decide about the world that day? Is it still true?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What was your biggest fear as a child?",
+        "deeper": "Does some grown-up version of it still follow you?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What was the happiest moment of your childhood?",
+        "deeper": "What feeling from that day are you still chasing?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What is the most important lesson you learned as a child?",
+        "deeper": "Who taught it to you, and do you still agree with them?"
+      },
+      {
+        "theme": "childhood",
+        "text": "If you could change one thing about your childhood, what would it be?",
+        "deeper": "How could you give yourself a little of that now?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What do you miss most about being a child?",
+        "deeper": "What would it take to let a bit of it back in?"
+      },
+      {
+        "theme": "childhood",
+        "text": "What would you tell your childhood self tonight?",
+        "deeper": "Say it out loud. Notice what happens when you hear it."
+      },
+      {
+        "theme": "safety & money",
+        "text": "Where in your life do you feel safest right now?",
+        "deeper": "What, exactly, makes it feel that way?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "Where do you feel most insecure right now?",
+        "deeper": "What is one small step that would make it feel even a little safer?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "What did you learn about money from the adults who raised you?",
+        "deeper": "Which of those lessons are you still living by without ever choosing them?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "What is your earliest memory of money?",
+        "deeper": "What feeling came with it?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "What are your biggest fears about money?",
+        "deeper": "If the worst happened, who and what would still be there for you?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "What does \"enough\" mean to you?",
+        "deeper": "How would you know if you already had it?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "How does money affect the way you see your own worth?",
+        "deeper": "Who would you be if your worth had nothing to do with your bank account?"
+      },
+      {
+        "theme": "safety & money",
+        "text": "What would you do if money were never a worry again?",
+        "deeper": "Which small piece of that could you start this month?"
+      }
     ],
     "practice": [
       {

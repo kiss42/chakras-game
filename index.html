@@ -181,6 +181,13 @@
   .card .sitter { position: absolute; top: -58px; right: 18px; }
   .card .sitter .buddy { width: 68px; height: 68px; margin: 0; }
   .card .text { font-size: 22px; line-height: 1.4; font-weight: 700; }
+  .deep-btn { margin-top: 18px; padding: 8px 16px; border-radius: 999px; font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--rose); background: color-mix(in srgb, var(--rose) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rose) 45%, transparent); }
+  .deep-btn[hidden], .deeper[hidden] { display: none; }
+  .deeper { margin-top: 18px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--rose) 45%, transparent); animation: unfold .8s ease; }
+  .deeper p:last-child { margin: 6px 0 0; font-size: 18px; line-height: 1.45; font-weight: 600; font-style: italic; color: #f3dcff;
+    text-shadow: 0 0 14px color-mix(in srgb, var(--glow) 45%, transparent); }
+  @keyframes unfold { from { opacity: 0; transform: translateY(-6px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
   .timer { margin-top: 20px; display: flex; align-items: center; gap: 12px; }
   .timer[hidden] { display: none; }
   .timer .t { font-family: "Space Mono", monospace; font-variant-numeric: tabular-nums; font-size: 20px; font-weight: 700; min-width: 58px; }
@@ -396,6 +403,8 @@
       <div class="sitter" id="c-buddy"></div>
       <p class="label" id="c-meta" style="margin-bottom:12px"></p>
       <div class="text" id="c-text"></div>
+      <button class="deep-btn" id="c-deep-btn" hidden>Go deeper ✦</button>
+      <div class="deeper" id="c-deep" hidden><p class="label">go deeper</p><p id="c-deep-t"></p></div>
       <div class="timer" id="c-timer" hidden>
         <div class="t" id="c-t"></div>
         <div class="bar"><div id="c-bar"></div></div>
@@ -686,13 +695,18 @@ function renderCard() {
   stopTimer();
   const c = ch(), k = S.card; setGlow(c.color); drawDock();
   crumb(c.name.toLowerCase(), k.type);
-  $("c-meta").textContent = `${c.name} · ${k.type}`;
+  $("c-meta").textContent = `${c.name} · ${k.type}${k.theme ? " · " + k.theme : ""}`;
+  $("c-deep-btn").hidden = !k.deeper; $("c-deep").hidden = true; $("c-deep-t").textContent = k.deeper || "";
   $("c-buddy").innerHTML = buddy(c, moodNow());
   $("c-text").textContent = k.text;
   $("c-timer").hidden = !k.seconds;
   if (k.seconds) { $("c-t").textContent = fmt(k.seconds); $("c-bar").style.width = "0"; $("c-start").textContent = "Start"; }
   show("s-card");
 }
+$("c-deep-btn").onclick = () => {
+  $("c-deep-btn").hidden = true; $("c-deep").hidden = false;
+  chime(S.step, 2.2, .08); navigator.vibrate?.(12);
+};
 const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 $("c-start").onclick = () => {
   const total = S.card.seconds; let left = total;
