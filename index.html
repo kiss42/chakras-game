@@ -3,66 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d0b10">
+<meta name="theme-color" content="#0b0810">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>Chakras</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Grandstander:wght@600;800&family=Quicksand:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Pinyon+Script&family=Quicksand:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0d0b10;        /* the black */
-    --soot: #18151d;       /* raised surfaces */
-    --line: #2d2735;       /* quiet borders */
-    --chalk: #f7f1ff;      /* text + sticker outlines */
-    --fog: #a49bb5;        /* secondary text */
-    --blush: #ff8fc0;      /* cheeks, little hearts */
-    --glow: #b69cff;       /* current chakra color, set by JS */
+    --ink: #0b0810;       /* the black */
+    --plum: #1b1222;      /* panels */
+    --plum-2: #2a1b33;    /* raised rows */
+    --chalk: #fff2fb;     /* text, outlines */
+    --fog: #b9a8c6;       /* secondary text */
+    --rose: #ff9ed1;      /* main pink */
+    --lilac: #c9a7ff;     /* second pink */
+    --gold: #ffd98a;      /* sparkles */
+    --glow: #ff9ed1;      /* current chakra color, set by JS */
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; }
-  body {
-    background: var(--ink);
-    color: var(--chalk);
-    font-family: "Quicksand", system-ui, sans-serif;
-    font-weight: 600;
-    overflow-x: hidden;
-  }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: var(--ink); color: var(--chalk); font-family: "Quicksand", system-ui, sans-serif; font-weight: 600; overflow-x: hidden; }
 
-  /* night sky */
   .sky { position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(110% 55% at 50% 115%, color-mix(in srgb, var(--glow) 22%, transparent), transparent 65%), var(--ink);
+    background:
+      radial-gradient(90% 50% at 50% 110%, color-mix(in srgb, var(--glow) 26%, transparent), transparent 70%),
+      radial-gradient(70% 40% at 0% 0%, #2b1436, transparent 70%),
+      radial-gradient(60% 40% at 100% 10%, #1e1438, transparent 70%), var(--ink);
     transition: background 1.2s ease; }
-  .moon { position: fixed; top: max(22px, env(safe-area-inset-top)); right: 22px; width: 36px; z-index: 0; pointer-events: none;
-    animation: rock 6s ease-in-out infinite; transform-origin: 70% 30%; }
-  @keyframes rock { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
   canvas#stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-  main { position: relative; z-index: 1; min-height: 100dvh; max-width: 460px; margin: 0 auto;
-    padding: max(28px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
-    display: flex; flex-direction: column; }
-  .screen { display: none; flex: 1; flex-direction: column; animation: pop .55s cubic-bezier(.3,1.5,.5,1); }
-  .screen.on { display: flex; }
-  @keyframes pop { from { opacity: 0; transform: translateY(16px) scale(.98); } to { opacity: 1; transform: none; } }
+  /* ---------- the ornate frame ---------- */
+  .frame { position: relative; z-index: 1; max-width: 470px; margin: max(34px, calc(env(safe-area-inset-top) + 26px)) auto 18px;
+    width: calc(100% - 22px); min-height: calc(100dvh - 60px); border-radius: 30px; display: flex;
+    background: linear-gradient(180deg, rgba(27,18,34,.55), rgba(11,8,16,.35));
+    box-shadow: 0 0 0 1.5px var(--rose), 0 0 0 5px var(--ink), 0 0 0 6.5px color-mix(in srgb, var(--lilac) 55%, transparent),
+      0 0 34px 4px color-mix(in srgb, var(--rose) 30%, transparent), inset 0 0 40px color-mix(in srgb, var(--rose) 8%, transparent); }
+  .crest { position: absolute; top: -30px; left: 50%; width: 112px; transform: translateX(-50%); z-index: 3; pointer-events: none;
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--rose) 70%, transparent)); animation: hover 5s ease-in-out infinite; }
+  @keyframes hover { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -4px); } }
+  .corner { position: absolute; width: 26px; height: 26px; z-index: 3; pointer-events: none; animation: twinkle 3s ease-in-out infinite; }
+  .corner.tl { top: -12px; left: -12px; } .corner.tr { top: -12px; right: -12px; animation-delay: .8s; }
+  .corner.bl { bottom: -12px; left: -12px; animation-delay: 1.6s; } .corner.br { bottom: -12px; right: -12px; animation-delay: 2.4s; }
 
-  h1, h2 { font-family: "Grandstander", "Quicksand", sans-serif; font-weight: 800; margin: 0; letter-spacing: -.01em; }
-  h1 { font-size: clamp(56px, 17vw, 76px); line-height: .95; transform: rotate(-4deg); margin: 6px 0 12px;
-    text-shadow: 3px 4px 0 var(--glow); }
-  h1 span { display: inline-block; animation: wave 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * .13s); }
-  @keyframes wave { 0%,60%,100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-10px) rotate(-6deg); } }
-  h2 { font-size: 34px; line-height: 1.05; }
-  .tag { font-family: "Space Mono", monospace; text-transform: lowercase; font-size: 12px; letter-spacing: .08em; color: var(--fog); }
-  .tag::before { content: "✦ "; color: var(--glow); }
+  main { flex: 1; display: flex; flex-direction: column; padding: 34px 16px 18px; min-width: 0; }
+
+  /* header */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--rose) 22%, transparent); margin-bottom: 14px; }
+  .brand { font-family: "Cinzel", serif; font-weight: 600; letter-spacing: .28em; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+  .brand svg { width: 16px; }
+  .crumb { font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--fog); }
+  body.home .top { display: none; }
+
+  .screen { display: none; flex: 1; flex-direction: column; animation: fade .6s ease; }
+  .screen.on { display: flex; }
+  @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  h1, h2, h3 { font-family: "Cinzel", serif; font-weight: 600; margin: 0; text-transform: uppercase; }
+  h1 { font-size: clamp(36px, 11vw, 46px); letter-spacing: .2em; margin-right: -.2em; line-height: 1.1;
+    text-shadow: 0 0 22px color-mix(in srgb, var(--rose) 60%, transparent); }
+  h2 { font-size: 24px; letter-spacing: .1em; line-height: 1.25; }
+  h3 { font-size: 17px; letter-spacing: .12em; }
+  .script { font-family: "Pinyon Script", cursive; font-weight: 400; color: var(--rose); }
+  .label { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--fog);
+    display: flex; align-items: center; gap: 6px; margin: 0; }
+  .label::after { content: "✦"; color: var(--gold); font-size: 10px; }
   p { line-height: 1.55; }
   .muted { color: var(--fog); font-weight: 500; }
   .center { text-align: center; align-items: center; }
-  .grow { flex: 1; }
+  .grow { flex: 1; min-height: 10px; }
 
-  /* the chakra buddies */
-  .buddy { width: 168px; height: 168px; margin: 10px auto; display: block; overflow: visible; cursor: pointer;
-    animation: bob 4.5s ease-in-out infinite; filter: drop-shadow(0 0 28px color-mix(in srgb, var(--glow) 45%, transparent)); }
-  .buddy.small { width: 100px; height: 100px; }
+  /* ---------- the scene window: dreamy sky with clouds ---------- */
+  .scene { position: relative; width: 100%; border-radius: 24px; overflow: hidden; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 22px 12px 34px; min-height: 250px;
+    background: radial-gradient(80% 60% at 50% 85%, rgba(255,140,200,.28), transparent 70%),
+      linear-gradient(180deg, rgba(30,16,52,.7) 0%, rgba(70,30,92,.65) 55%, rgba(130,50,110,.6) 100%);
+    border: 1px solid color-mix(in srgb, var(--rose) 35%, transparent);
+    box-shadow: inset 0 0 30px rgba(0,0,0,.45), 0 0 24px -6px color-mix(in srgb, var(--glow) 45%, transparent); }
+  .scene > *:not(.clouds) { position: relative; z-index: 2; }
+  .scene .caption { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-family: "Pinyon Script", cursive;
+    font-size: 18px; color: var(--chalk); opacity: .8; z-index: 3; }
+  .clouds { position: absolute; left: 0; bottom: -10px; width: 200%; height: 120px; z-index: 1; pointer-events: none; animation: drift-x 70s linear infinite; }
+  .clouds.back { bottom: 26px; opacity: .9; animation-duration: 110s; animation-direction: reverse; }
+  @keyframes drift-x { to { transform: translateX(-50%); } }
+  .pill { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .08em; padding: 4px 12px; border-radius: 999px; text-transform: lowercase;
+    background: color-mix(in srgb, var(--glow) 30%, rgba(11,8,16,.6)); border: 1px solid color-mix(in srgb, var(--glow) 70%, transparent); }
+
+  /* ---------- buddies: glossy little chakra planets ---------- */
+  .buddy { width: 156px; height: 156px; margin: 8px auto; display: block; overflow: visible; cursor: pointer;
+    animation: bob 4.5s ease-in-out infinite; filter: drop-shadow(0 0 26px color-mix(in srgb, var(--glow) 55%, transparent)); }
+  .buddy.small { width: 96px; height: 96px; }
   .buddy .eyes, .buddy .eye3 { transform-box: fill-box; transform-origin: center; animation: blink 5s infinite; }
   .buddy .eye3 { animation-delay: 1.3s; }
   .buddy .zz text, .buddy .notes text { font-family: "Space Mono", monospace; font-weight: 700; fill: var(--chalk); }
@@ -75,153 +107,237 @@
   .buddy .sway { transform-origin: 60px 22px; animation: boing 3s ease-in-out infinite; }
   .buddy .feet ellipse { transform-box: fill-box; transform-origin: center top; animation: tap 1.2s ease-in-out infinite; }
   .buddy .feet ellipse + ellipse { animation-delay: .6s; }
-  .buddy.sleepy { animation-duration: 7s; filter: drop-shadow(0 0 14px color-mix(in srgb, var(--glow) 22%, transparent)); }
+  .buddy.sleepy { animation-duration: 7s; filter: drop-shadow(0 0 14px color-mix(in srgb, var(--glow) 25%, transparent)); }
   .buddy.sleepy .feet ellipse, .buddy.sleepy .rays, .buddy.sleepy .boing { animation-play-state: paused; }
   .buddy.wake { animation: wake .9s cubic-bezier(.3,1.8,.5,1), bob 4.5s ease-in-out .9s infinite; }
   .buddy.boop { animation: boop .5s cubic-bezier(.3,1.8,.5,1); }
   @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
   @keyframes blink { 0%,92%,100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
   @keyframes drift { 0%,100% { opacity: 0; transform: translate(0,0); } 40% { opacity: 1; } 80% { opacity: 0; transform: translate(6px,-12px); } }
-  @keyframes twinkle { 0%,100% { transform: scale(.6) rotate(0); opacity: .5; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
+  @keyframes twinkle { 0%,100% { transform: scale(.6) rotate(0); opacity: .55; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes boing { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } }
   @keyframes tap { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
   @keyframes wake { 0% { transform: scale(.7) rotate(-10deg); } 60% { transform: scale(1.12) rotate(6deg); } 100% { transform: scale(1); } }
   @keyframes boop { 0% { transform: scale(1); } 30% { transform: scale(1.18, .82); } 60% { transform: scale(.9, 1.12); } 100% { transform: scale(1); } }
 
-  /* welcome lineup: a sleepy rainbow */
-  .lineup { display: flex; justify-content: center; align-items: flex-end; gap: 4px; margin: 0 0 18px; height: 110px; }
-  .lineup .buddy { width: 46px; height: 46px; margin: 0; flex: none; }
-  .lineup .buddy:nth-child(1), .lineup .buddy:nth-child(7) { margin-bottom: 0; }
+  /* welcome lineup */
+  .lineup { display: flex; justify-content: center; align-items: flex-end; gap: 3px; height: 118px; margin-top: 6px; }
+  .lineup .buddy { width: 44px; height: 44px; margin: 0; flex: none; }
   .lineup .buddy:nth-child(2), .lineup .buddy:nth-child(6) { margin-bottom: 26px; }
   .lineup .buddy:nth-child(3), .lineup .buddy:nth-child(5) { margin-bottom: 44px; }
   .lineup .buddy:nth-child(4) { margin-bottom: 52px; }
   .lineup .buddy:nth-child(even) { animation-delay: -2s; }
   .lineup .buddy:nth-child(3n) { animation-delay: -3.5s; }
 
-  /* speech bubble */
-  .bubble { position: relative; display: inline-block; background: var(--chalk); color: var(--ink); font-family: "Grandstander", sans-serif;
-    font-weight: 800; font-size: 16px; padding: 9px 16px; border-radius: 18px; transform: rotate(-3deg); margin-bottom: -4px;
-    box-shadow: 3px 3px 0 var(--glow); animation: say .5s cubic-bezier(.3,1.8,.5,1) .5s both; }
-  .bubble::after { content: ""; position: absolute; left: 50%; bottom: -9px; border: 10px solid transparent; border-top-color: var(--chalk); border-bottom: 0; transform: translateX(-30%); }
-  .bubble:empty { display: none; }
-  @keyframes say { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: rotate(-3deg); } }
+  /* rocket */
+  .rocket { width: 46px; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--rose) 60%, transparent)); }
+  .rocket .flame { transform-origin: 30px 86px; animation: flicker .18s ease-in-out infinite alternate; }
+  @keyframes flicker { from { transform: scaleY(.8); } to { transform: scaleY(1.15); } }
+  .parked { position: absolute !important; left: 14px; top: 18px; transform: rotate(-18deg); animation: float 4s ease-in-out infinite; }
+  @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
 
-  /* particles */
-  .fx { position: fixed; z-index: 9; pointer-events: none; font-family: "Grandstander", sans-serif; font-weight: 800; line-height: 1; }
+  /* ---------- panels ---------- */
+  .panel { margin-top: 14px; padding: 18px 18px 16px; border-radius: 22px; text-align: left; background: rgba(27,18,34,.82);
+    border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent); }
+  .ph { display: flex; gap: 12px; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, var(--rose) 18%, transparent); }
+  .gem { width: 30px; height: 30px; border-radius: 50%; flex: none;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, var(--glow) 40%, color-mix(in srgb, var(--glow) 55%, #000) 100%);
+    box-shadow: 0 0 14px var(--glow); }
+  .ph p { margin: 2px 0 0; font-family: "Space Mono", monospace; font-size: 11px; color: var(--fog); letter-spacing: .06em; }
+  .sec + h4, .sec + p { margin-top: 4px; }
+  .panel h4 { font-family: "Cinzel", serif; font-weight: 600; font-size: 17px; margin: 0 0 10px; letter-spacing: .02em; }
+  .panel > p:not(.label) { margin: 0 0 4px; font-weight: 500; color: #e6d6ee; font-size: 15px; }
+  .panel .label { margin-top: 10px; }
+  .panel .label:first-of-type { margin-top: 0; }
 
-  /* chain of 7 */
-  .chain { display: flex; justify-content: center; gap: 9px; margin: 2px 0 6px; }
-  .chain i { width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--c); opacity: .4; transition: all .5s; }
-  .chain i.now { opacity: 1; transform: scale(1.25); }
-  .chain i.open { background: var(--c); opacity: 1; box-shadow: 0 0 10px var(--c); }
-
-  /* sticker buttons */
+  /* buttons */
   button { font: inherit; cursor: pointer; border: 0; color: inherit; }
-  button:focus-visible, .buddy:focus-visible { outline: 3px dashed var(--glow); outline-offset: 4px; }
-  .btn { width: 100%; padding: 15px; border-radius: 999px; font-family: "Grandstander", sans-serif; font-size: 19px; font-weight: 800;
-    color: var(--ink); background: var(--chalk); border: 2.5px solid var(--chalk);
-    box-shadow: 4px 5px 0 var(--glow); transition: transform .12s, box-shadow .12s; }
-  .btn:hover { animation: jiggle .4s ease-in-out; }
-  .btn:active { transform: translate(3px, 4px); box-shadow: 1px 1px 0 var(--glow); }
-  .btn.ghost { background: var(--ink); color: var(--chalk); font-size: 16px; box-shadow: 3px 4px 0 var(--line); }
-  .btn.ghost:active { box-shadow: 0 0 0 var(--line); }
-  @keyframes jiggle { 25% { transform: rotate(-2deg); } 75% { transform: rotate(2deg); } }
-  .row { display: flex; gap: 12px; }
+  button:focus-visible, .buddy:focus-visible { outline: 2px dashed var(--rose); outline-offset: 4px; }
+  .btn { position: relative; width: 100%; padding: 15px; border-radius: 999px; font-family: "Cinzel", serif; font-weight: 700; font-size: 15px;
+    letter-spacing: .14em; text-transform: uppercase; color: #2a0f2b; overflow: hidden;
+    background: linear-gradient(180deg, #ffd3ec 0%, var(--rose) 55%, #e48fd8 100%);
+    box-shadow: 0 0 0 1.5px #ffe3f3 inset, 0 8px 26px -6px color-mix(in srgb, var(--rose) 80%, transparent); transition: transform .15s; }
+  .btn::after { content: ""; position: absolute; left: 12%; right: 12%; top: 3px; height: 40%; border-radius: 999px; background: linear-gradient(#fff9, #fff0); }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: rgba(42,27,51,.8); color: var(--chalk); font-size: 12.5px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--rose) 45%, transparent) inset; }
+  .btn.ghost::after { display: none; }
+  .row { display: flex; gap: 10px; }
   .row > * { flex: 1; }
-  .link { background: none; color: var(--fog); font-size: 14px; padding: 12px; text-decoration: underline wavy; text-underline-offset: 5px; text-decoration-color: var(--glow); }
+  .link { background: none; color: var(--fog); font-size: 14px; padding: 12px; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--rose); }
 
-  .choice { display: grid; gap: 16px; margin-top: 24px; }
-  .choice button { text-align: left; padding: 20px 22px; border-radius: 24px; background: var(--soot);
-    border: 2.5px solid var(--chalk); box-shadow: 5px 6px 0 var(--glow); transition: transform .12s, box-shadow .12s; }
-  .choice button:nth-child(1) { transform: rotate(-1.2deg); }
-  .choice button:nth-child(2) { transform: rotate(1deg); }
-  .choice button:active { transform: translate(3px,4px); box-shadow: 1px 1px 0 var(--glow); }
-  .choice b { display: flex; align-items: center; gap: 10px; font-family: "Grandstander", sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-  .choice b em { font-style: normal; font-size: 22px; display: inline-block; animation: twinkle 2.4s ease-in-out infinite; }
-  .choice span { color: var(--fog); font-size: 15px; font-weight: 500; }
+  /* choice rows */
+  .choice { display: grid; gap: 12px; margin-top: 16px; }
+  .choice button { display: flex; align-items: center; gap: 14px; text-align: left; padding: 16px 18px; border-radius: 20px; background: rgba(42,27,51,.85);
+    border: 1px solid color-mix(in srgb, var(--rose) 35%, transparent); transition: border-color .2s, transform .15s; }
+  .choice button:hover { border-color: var(--rose); }
+  .choice button:active { transform: scale(.98); }
+  .choice .ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; font-size: 22px; flex: none; color: var(--gold);
+    background: color-mix(in srgb, var(--glow) 22%, transparent); border: 1px solid color-mix(in srgb, var(--glow) 55%, transparent); }
+  .choice b { display: block; font-family: "Cinzel", serif; font-size: 18px; letter-spacing: .1em; text-transform: uppercase; }
+  .choice span { color: var(--fog); font-size: 14px; font-weight: 500; }
+  .choice .go { margin-left: auto; color: var(--rose); font-size: 18px; }
 
-  .card { position: relative; margin: 58px 4px 22px; padding: 34px 24px 26px; border-radius: 28px; background: var(--soot);
-    border: 2.5px solid var(--chalk); box-shadow: 7px 8px 0 var(--glow); transform: rotate(-1deg); }
-  .card::before { content: ""; position: absolute; top: -13px; left: 18%; width: 70px; height: 24px; transform: rotate(-4deg);
-    background: color-mix(in srgb, var(--glow) 55%, transparent); border-radius: 3px; } /* washi tape */
-  .card .sitter { position: absolute; top: -60px; right: 16px; }
-  .card .sitter .buddy { width: 70px; height: 70px; margin: 0; }
-  .card .text { font-size: 24px; line-height: 1.35; font-weight: 700; }
-  .timer { margin-top: 22px; display: flex; align-items: center; gap: 14px; }
+  /* the card */
+  .card { position: relative; margin: 52px 2px 18px; padding: 30px 22px 22px; border-radius: 24px; background: rgba(27,18,34,.9);
+    border: 1px solid color-mix(in srgb, var(--glow) 60%, transparent); box-shadow: 0 0 34px -8px color-mix(in srgb, var(--glow) 70%, transparent); }
+  .card::before, .card::after { content: ""; position: absolute; width: 22px; height: 22px; border: 2px solid var(--rose); }
+  .card::before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; border-radius: 8px 0 0 0; }
+  .card::after { bottom: 10px; right: 10px; border-left: 0; border-top: 0; border-radius: 0 0 8px 0; }
+  .card .sitter { position: absolute; top: -58px; right: 18px; }
+  .card .sitter .buddy { width: 68px; height: 68px; margin: 0; }
+  .card .text { font-size: 22px; line-height: 1.4; font-weight: 700; }
+  .timer { margin-top: 20px; display: flex; align-items: center; gap: 12px; }
   .timer[hidden] { display: none; }
-  .timer .t { font-family: "Space Mono", monospace; font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 700; min-width: 62px; }
-  .timer button { padding: 9px 18px; border-radius: 999px; background: var(--chalk); color: var(--ink); font-weight: 700; box-shadow: 2px 3px 0 var(--glow); }
-  .bar { position: relative; height: 12px; border-radius: 12px; border: 2px solid var(--chalk); overflow: hidden; flex: 1; }
-  .bar > div { height: 100%; width: 0; transition: width 1s linear;
-    background: repeating-linear-gradient(-45deg, var(--glow) 0 6px, color-mix(in srgb, var(--glow) 60%, #fff) 6px 12px); }
+  .timer .t { font-family: "Space Mono", monospace; font-variant-numeric: tabular-nums; font-size: 20px; font-weight: 700; min-width: 58px; }
+  .timer button { padding: 9px 16px; border-radius: 999px; font-weight: 700; color: #2a0f2b; background: linear-gradient(180deg, #ffd3ec, var(--rose)); }
+  .bar { height: 10px; border-radius: 10px; background: rgba(255,255,255,.08); border: 1px solid color-mix(in srgb, var(--rose) 50%, transparent); overflow: hidden; flex: 1; }
+  .bar > div { height: 100%; width: 0; transition: width 1s linear; background: linear-gradient(90deg, var(--lilac), var(--rose)); box-shadow: 0 0 10px var(--rose); }
 
-  .ending { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin: 22px 0 8px; }
-  .ending div { text-align: center; font-family: "Space Mono", monospace; font-size: 9.5px; color: var(--fog); text-transform: lowercase; }
+  /* speech bubble */
+  .bubble { position: relative; display: inline-block; background: #fff0fa; color: #2a0f2b; font-weight: 700; font-size: 15px;
+    padding: 8px 16px; border-radius: 18px; margin-bottom: -2px; box-shadow: 0 0 18px color-mix(in srgb, var(--rose) 60%, transparent);
+    animation: say .5s cubic-bezier(.3,1.8,.5,1) .5s both; }
+  .bubble::after { content: ""; position: absolute; left: 50%; bottom: -8px; border: 9px solid transparent; border-top-color: #fff0fa; border-bottom: 0; transform: translateX(-50%); }
+  .bubble:empty { display: none; }
+  @keyframes say { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+
+  /* travel screen */
+  .travel .scene { min-height: 330px; }
+  .travel .flyer { position: absolute !important; left: 50%; top: 50%; animation: fly 2.4s cubic-bezier(.45,.05,.3,1) forwards; }
+  @keyframes fly { 0% { transform: translate(-260px, 120px) rotate(55deg) scale(.8); }
+    55% { transform: translate(-40px, -10px) rotate(35deg) scale(1); }
+    100% { transform: translate(60px, -30px) rotate(70deg) scale(.4); opacity: .0; } }
+  .travel .dest { animation: approach 2.4s ease-out forwards; }
+  @keyframes approach { from { transform: scale(.25); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .landing { font-size: 40px; margin: 18px 0 0; line-height: 1; }
+  .count { font-family: "Cinzel", serif; font-size: 54px; color: var(--chalk); text-shadow: 0 0 20px var(--rose); line-height: 1.1; }
+  .count.tick { animation: tickpop .5s ease; }
+  @keyframes tickpop { from { transform: scale(1.5); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  /* dock: the seven worlds */
+  .dock-wrap { margin-top: 16px; padding: 10px 10px 8px; border-radius: 20px; background: rgba(27,18,34,.8); border: 1px solid color-mix(in srgb, var(--rose) 22%, transparent); }
+  .dock-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 4px 8px; }
+  .dock-head .script { font-size: 17px; color: var(--fog); }
+  .dock { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .dock div { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 7px 0 5px; border-radius: 12px;
+    font-family: "Space Mono", monospace; font-size: 8.5px; color: var(--fog); text-transform: lowercase; border: 1px solid transparent; }
+  .dock i { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--c); opacity: .5; }
+  .dock .open i { opacity: 1; background: radial-gradient(circle at 35% 30%, #fff, var(--c) 45%, color-mix(in srgb, var(--c) 55%, #000)); box-shadow: 0 0 10px var(--c); }
+  .dock .now { border-color: color-mix(in srgb, var(--c) 70%, transparent); background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--chalk); }
+  .dock .now i { opacity: 1; }
+  body.home .dock-wrap, body.end .dock-wrap { display: none; }
+
+  .ending { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; width: 100%; }
+  .ending div { text-align: center; font-family: "Space Mono", monospace; font-size: 9px; color: var(--fog); text-transform: lowercase; }
   .ending .buddy { width: 100%; height: auto; margin: 0 0 6px; animation: none; filter: none; }
   .ending .open .buddy { animation: bob 3.5s ease-in-out infinite; }
   .ending .open:nth-child(even) .buddy { animation-delay: -1.7s; }
   .ending .open { color: var(--chalk); }
 
-  footer { text-align: center; font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--fog); opacity: .65; margin-top: 18px; line-height: 1.5; }
+  .fx { position: fixed; z-index: 9; pointer-events: none; font-weight: 700; line-height: 1; }
+  footer { text-align: center; font-family: "Space Mono", monospace; font-size: 10px; color: var(--fog); opacity: .6; margin-top: 16px; line-height: 1.5; }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
-<body>
+<body class="home">
 <div class="sky" id="sky"></div>
 <canvas id="stars"></canvas>
-<svg class="moon" viewBox="0 0 40 40" aria-hidden="true"><path d="M27 4a16 16 0 1 0 9 26A13 13 0 0 1 27 4z" fill="#f7f1ff"/><path d="M14 21q2 2 4 0M22 24q2 2 4 0" stroke="#0d0b10" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="13" cy="26" rx="2.4" ry="1.4" fill="#ff8fc0"/><path d="M18 29q2.5 1.6 5 0" stroke="#0d0b10" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+
+<div class="frame">
+  <!-- winged heart crest -->
+  <svg class="crest" viewBox="0 0 120 60" aria-hidden="true">
+    <defs>
+      <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2fb"/><stop offset="1" stop-color="#c9a7ff"/></linearGradient>
+      <radialGradient id="heartgem" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="#ff9ed1"/><stop offset="1" stop-color="#b03d8c"/></radialGradient>
+    </defs>
+    <g fill="url(#wing)" stroke="#0b0810" stroke-width="1.2">
+      <path d="M44 30C34 18 18 14 4 18c8 3 12 6 14 9-6 0-10 2-12 5 7 0 12 1 15 3-4 1-6 3-7 6 9-2 18-2 30-6z"/>
+      <path d="M76 30c10-12 26-16 40-12-8 3-12 6-14 9 6 0 10 2 12 5-7 0-12 1-15 3 4 1 6 3 7 6-9-2-18-2-30-6z"/>
+    </g>
+    <path d="M60 50C44 40 40 30 46 23c4-5 11-4 14 2 3-6 10-7 14-2 6 7 2 17-14 27z" fill="url(#heartgem)" stroke="#fff2fb" stroke-width="2"/>
+    <path d="M51 28q2-4 6-4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".9"/>
+    <path d="M60 4l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ffd98a"/>
+  </svg>
+  <svg class="corner tl" viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ffd98a"/></svg>
+  <svg class="corner tr" viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ffd98a"/></svg>
+  <svg class="corner bl" viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ffd98a"/></svg>
+  <svg class="corner br" viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ffd98a"/></svg>
+
 <main>
+  <header class="top">
+    <div class="brand"><svg viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ff9ed1"/></svg>CHAKRAS</div>
+    <div class="crumb" id="crumb"></div>
+  </header>
 
   <!-- welcome -->
   <section class="screen on center" id="s-welcome">
+    <div class="scene" style="min-height:300px">
+      <div class="parked" id="w-rocket"></div>
+      <div class="lineup" id="w-line"></div>
+      <span class="caption">tap a little world to wake it</span>
+    </div>
     <div class="grow"></div>
-    <div class="lineup" id="w-line"></div>
-    <p class="tag">a tiny night ritual</p>
-    <h1 id="title">Chakras</h1>
-    <p class="muted" style="max-width:310px">Seven sleepy chakras, root to crown. Finish a card to wake each one up. (Psst: you can boop them.)</p>
+    <p class="label" style="justify-content:center;margin-top:18px">seven little worlds</p>
+    <h1>Chakras</h1>
+    <p class="script" style="font-size:30px;margin:6px 0 4px">a journey from root to crown</p>
+    <p class="muted" style="max-width:310px;margin-top:4px">Fly to each chakra, finish one card, and watch its sleepy little world wake up.</p>
     <div class="grow"></div>
-    <button class="btn" id="begin" style="margin-top:24px">Start the journey</button>
+    <button class="btn" id="begin" style="margin-top:18px">Start the journey</button>
     <button class="link" id="resume" hidden>Continue where you left off</button>
   </section>
 
+  <!-- travel -->
+  <section class="screen center travel" id="s-travel">
+    <div class="scene">
+      <div class="dest" id="t-dest"></div>
+      <div class="flyer" id="t-rocket"></div>
+    </div>
+    <p class="script landing">Landing in</p>
+    <div class="count" id="t-count">3</div>
+    <p class="muted" id="t-where" style="margin:4px 0 0"></p>
+    <div class="grow"></div>
+    <button class="link" id="t-skip">Skip ahead</button>
+  </section>
+
   <!-- chakra intro -->
-  <section class="screen center" id="s-intro">
-    <div class="chain" id="chain1"></div>
+  <section class="screen" id="s-intro">
+    <div class="scene">
+      <span class="pill" id="i-pill"></span>
+      <div id="i-buddy"></div>
+      <span class="caption">tap to say hi</span>
+    </div>
+    <div class="panel">
+      <div class="ph"><span class="gem"></span><div><h3 id="i-name"></h3><p id="i-sk"></p></div></div>
+      <p class="label">01 · the theme</p>
+      <h4 id="i-theme"></h4>
+      <p class="label">02 · arriving</p>
+      <p id="i-intro"></p>
+    </div>
     <div class="grow"></div>
-    <p class="tag" id="i-n"></p>
-    <div id="i-buddy"></div>
-    <h2 id="i-name"></h2>
-    <p class="muted" style="margin:4px 0 0;font-family:'Space Mono',monospace;font-size:14px" id="i-sk"></p>
-    <p id="i-theme" style="margin:14px 0 0;font-weight:700"></p>
-    <p class="muted" id="i-intro" style="max-width:330px"></p>
-    <div class="grow"></div>
-    <button class="btn" id="ready">I'm ready</button>
+    <button class="btn" id="ready" style="margin-top:16px">I'm ready</button>
   </section>
 
   <!-- pick -->
   <section class="screen" id="s-pick">
-    <div class="chain" id="chain2"></div>
-    <div class="grow"></div>
-    <div id="p-buddy"></div>
-    <h2 style="text-align:center">What do you need?</h2>
+    <div class="scene" style="min-height:190px">
+      <div id="p-buddy"></div>
+    </div>
+    <h2 style="text-align:center;margin-top:18px">What do you need?</h2>
     <div class="choice">
-      <button id="pick-reflect"><b><em>☾</em>Reflect</b><span>A question to answer from the heart.</span></button>
-      <button id="pick-practice"><b><em>✦</em>Practice</b><span>Breath, movement, kind words, a little ritual.</span></button>
+      <button id="pick-reflect"><span class="ico">☾</span><span><b>Reflect</b><span>A question to answer from the heart.</span></span><span class="go">↗</span></button>
+      <button id="pick-practice"><span class="ico">✦</span><span><b>Practice</b><span>Breath, movement, kind words, a little ritual.</span></span><span class="go">↗</span></button>
     </div>
     <div class="grow"></div>
   </section>
 
   <!-- card -->
   <section class="screen" id="s-card">
-    <div class="chain" id="chain3"></div>
     <div class="grow"></div>
-    <p class="tag" id="c-meta" style="text-align:center;margin-bottom:0"></p>
     <div class="card">
       <div class="sitter" id="c-buddy"></div>
+      <p class="label" id="c-meta" style="margin-bottom:12px"></p>
       <div class="text" id="c-text"></div>
       <div class="timer" id="c-timer" hidden>
         <div class="t" id="c-t"></div>
@@ -231,7 +347,7 @@
     </div>
     <div class="grow"></div>
     <button class="btn" id="done">Done</button>
-    <div class="row" style="margin-top:14px">
+    <div class="row" style="margin-top:10px">
       <button class="btn ghost" id="swap">Another card</button>
       <button class="btn ghost" id="skip">Not this one</button>
     </div>
@@ -239,29 +355,37 @@
 
   <!-- chakra result -->
   <section class="screen center" id="s-result">
-    <div class="grow"></div>
-    <div class="bubble" id="r-say"></div>
-    <div id="r-buddy"></div>
-    <h2 id="r-title"></h2>
+    <div class="scene" style="min-height:300px">
+      <div class="bubble" id="r-say"></div>
+      <div id="r-buddy"></div>
+    </div>
+    <h2 id="r-title" style="margin-top:18px"></h2>
     <p class="muted" id="r-sub" style="max-width:310px"></p>
     <div class="grow"></div>
     <button class="btn" id="next">Onward</button>
-    <button class="btn ghost" id="more" style="margin-top:14px">One more card here</button>
+    <button class="btn ghost" id="more" style="margin-top:10px">One more card here</button>
   </section>
 
   <!-- end -->
   <section class="screen center" id="s-end">
-    <div class="grow"></div>
-    <p class="tag">journey complete</p>
-    <h2 id="e-title"></h2>
-    <div class="ending" id="e-chain"></div>
-    <p class="muted" id="e-sub" style="max-width:330px"></p>
+    <div class="scene" style="min-height:220px">
+      <div class="ending" id="e-chain"></div>
+    </div>
+    <p class="label" style="justify-content:center;margin-top:20px">journey complete</p>
+    <h2 id="e-title" style="margin-top:6px"></h2>
+    <p class="muted" id="e-sub" style="max-width:320px"></p>
     <div class="grow"></div>
     <button class="btn" id="again">Journey again</button>
   </section>
 
+  <div class="dock-wrap">
+    <div class="dock-head"><p class="label">your seven worlds</p><span class="script">one at a time</span></div>
+    <div class="dock" id="dock"></div>
+  </div>
+
   <footer>chakras come from the yoga + tantra traditions of india.<br>a reflection game, not medical advice.</footer>
 </main>
+</div>
 
 <script src="cards.js"></script>
 <script>
@@ -279,7 +403,6 @@ let S = null; // { step: chakra index, opened: [bool x7], used: {}, card }
 const ch = () => CHAKRAS[S.step];
 const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((p) => p[1]);
 
-// what each buddy says when it wakes up
 const SAYS = {
   root: ["i feel so grounded ♡", "home sweet home", "rooted and cozy"],
   sacral: ["wheee!!", "party time ♪", "let's play!!"],
@@ -290,8 +413,34 @@ const SAYS = {
   crown: ["everything is connected…", "so much peace ♡", "i feel whole"],
 };
 
+// ---------- color helpers ----------
+const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+const mix = (a, b, t) => "#" + hex(a).map((v, i) => Math.round(v + (hex(b)[i] - v) * t).toString(16).padStart(2, "0")).join("");
+
+// ---------- clouds (two banks, tiled so they can drift forever) ----------
+function cloudBank(rim, body, shade, seed, cls) {
+  let r = seed; const rnd = () => ((r = (r * 9301 + 49297) % 233280) / 233280);
+  const puffs = Array.from({ length: 11 }, (_, i) => [i * 40 + rnd() * 16, 78 + rnd() * 30, 30 + rnd() * 22]);
+  const all = [...puffs, ...puffs.map(([x, y, s]) => [x + 440, y, s])];
+  const layer = (dx, dy, k, col, op = 1) => all.map(([x, y, s]) => `<circle cx="${x + dx}" cy="${y + dy}" r="${s * k}" fill="${col}" opacity="${op}"/>`).join("");
+  return `<svg class="clouds ${cls}" viewBox="0 0 880 150" preserveAspectRatio="none">
+    ${layer(0, -5, 1, rim)}${layer(0, 0, 1, body)}${layer(-6, -6, .62, rim, .28)}${layer(4, 12, .9, shade, .7)}
+    <rect x="0" y="118" width="880" height="40" fill="${shade}"/></svg>`;
+}
+const CLOUDS = cloudBank("#d9b6ff", "#4a2a5e", "#3a2049", 7, "back") + cloudBank("#ffa8d8", "#3c2048", "#26142f", 3, "");
+document.querySelectorAll(".scene").forEach((s) => s.insertAdjacentHTML("afterbegin", CLOUDS));
+
+// ---------- the rocket ----------
+const ROCKET = `<svg class="rocket" viewBox="0 0 60 100" aria-hidden="true">
+  <path class="flame" d="M22 80q8 24 8 20q0 4 8-20z" fill="#ffd98a"/><path class="flame" d="M25 80q5 14 5 12q0 2 5-12z" fill="#ff9ed1"/>
+  <path d="M18 58L6 76l14-2zM42 58l12 18-14-2z" fill="#ff7ab8" stroke="#fff2fb" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M30 4C14 18 14 54 20 80h20c6-26 6-62-10-76z" fill="#fff2fb" stroke="#ff9ed1" stroke-width="2"/>
+  <path d="M30 4c-6 5-9 11-11 18h22c-2-7-5-13-11-18z" fill="#ff7ab8"/>
+  <circle cx="30" cy="40" r="8" fill="#c9a7ff" stroke="#ff7ab8" stroke-width="3"/><circle cx="27.5" cy="37.5" r="2.2" fill="#fff"/>
+  <path d="M30 60v20" stroke="#ff9ed1" stroke-width="3"/></svg>`;
+
 // ---------- the chakra buddy ----------
-const INK = "#0d0b10", CHALK = "#f7f1ff", BLUSH = "#ff8fc0", GOLD = "#ffdc5e";
+const INK = "#0b0810", CHALK = "#fff2fb", BLUSH = "#ff8fc0", GOLD = "#ffd98a";
 const RAYS = Array.from({ length: 10 }, (_, i) => {
   const a = (i / 10) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
   return `M${60 + c * 52} ${64 + s * 52}L${60 + c * 62} ${64 + s * 62}`;
@@ -315,19 +464,20 @@ function accessory(id, awake) {
       : `<path d="M51 39q9 6 18 0M54 42l-1 3M60 43v3M66 42l1 3" stroke="${INK}" stroke-width="2.4" fill="none" stroke-linecap="round"/>` };
     case "crown": return { front: `<path d="M44 27L41 6L52 15L60 1L68 15L79 6L76 27z" fill="${GOLD}" stroke="${CHALK}" stroke-width="3" stroke-linejoin="round"/>
       <circle cx="60" cy="19" r="3" fill="${BLUSH}"/><circle cx="50" cy="21" r="2" fill="${CHALK}"/><circle cx="70" cy="21" r="2" fill="${CHALK}"/>` };
-    default: return { back: `<path d="M60 22q-6-6 0-12q5-4 8 1" stroke="${CHALK}" stroke-width="3" fill="none" stroke-linecap="round"/>` };
+    default: return {};
   }
 }
 
+let gid = 0;
 function buddy(c, mood, cls = "") {
-  const awake = mood !== "sleep", acc = accessory(c.id, awake), color = c.color;
+  const awake = mood !== "sleep", acc = accessory(c.id, awake), color = c.color, g = "g" + ++gid;
   const face = awake
     ? `<g class="eyes"><ellipse cx="46" cy="62" rx="5.5" ry="7.5" fill="${INK}"/><ellipse cx="74" cy="62" rx="5.5" ry="7.5" fill="${INK}"/>
        <circle cx="48" cy="59" r="2.2" fill="#fff"/><circle cx="76" cy="59" r="2.2" fill="#fff"/></g>
        <path d="M53 75q7 7 14 0" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
        <ellipse cx="35" cy="74" rx="7" ry="4" fill="${BLUSH}" opacity=".85"/><ellipse cx="85" cy="74" rx="7" ry="4" fill="${BLUSH}" opacity=".85"/>
-       <path class="spark" d="M104 18l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="${CHALK}"/>
-       <path class="spark" d="M14 28l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${color}"/>`
+       <path class="spark" d="M104 18l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="${GOLD}"/>
+       <path class="spark" d="M14 28l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${CHALK}"/>`
     : `<path d="M40 64q6 6 12 0M68 64q6 6 12 0" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
        <ellipse cx="60" cy="79" rx="3" ry="3.6" fill="${INK}"/>
        <ellipse cx="35" cy="74" rx="6" ry="3.4" fill="${BLUSH}" opacity=".5"/><ellipse cx="85" cy="74" rx="6" ry="3.4" fill="${BLUSH}" opacity=".5"/>
@@ -335,20 +485,25 @@ function buddy(c, mood, cls = "") {
   const label = `${c.name || "a"} chakra, ${awake ? "awake" : "asleep"}. Tap to boop.`;
   return `<svg class="buddy ${awake ? "" : "sleepy"} ${cls}" data-id="${c.id || ""}" data-cls="${cls}" data-mood="${mood}"
       viewBox="0 0 120 120" role="button" tabindex="0" aria-label="${label}">
+    <defs><radialGradient id="${g}" cx=".36" cy=".3" r=".78">
+      <stop offset="0" stop-color="${mix(color, "#ffffff", .6)}"/><stop offset=".45" stop-color="${color}"/><stop offset="1" stop-color="${mix(color, "#1a0820", .45)}"/>
+    </radialGradient></defs>
     ${acc.back || ""}
-    <g class="feet"><ellipse cx="44" cy="106" rx="10" ry="7" fill="${color}" stroke="${CHALK}" stroke-width="3"/>
-      <ellipse cx="76" cy="106" rx="10" ry="7" fill="${color}" stroke="${CHALK}" stroke-width="3"/></g>
-    <circle cx="60" cy="64" r="44" fill="${color}" stroke="${CHALK}" stroke-width="3.5"/>
-    <ellipse cx="42" cy="42" rx="11" ry="6" fill="#fff" opacity=".45" transform="rotate(-32 42 42)"/>
+    <g class="feet"><ellipse cx="44" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/>
+      <ellipse cx="76" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/></g>
+    <circle cx="60" cy="64" r="44" fill="url(#${g})" stroke="${CHALK}" stroke-width="2.5"/>
+    <circle cx="82" cy="46" r="5" fill="${mix(color, "#1a0820", .3)}" opacity=".35"/><circle cx="88" cy="88" r="3.5" fill="${mix(color, "#1a0820", .3)}" opacity=".35"/>
+    <circle cx="30" cy="92" r="4" fill="${mix(color, "#1a0820", .3)}" opacity=".3"/>
+    <ellipse cx="42" cy="40" rx="12" ry="6.5" fill="#fff" opacity=".6" transform="rotate(-32 42 40)"/><circle cx="56" cy="31" r="2.5" fill="#fff" opacity=".7"/>
     ${face}${acc.front || ""}</svg>`;
 }
-const chakraById = (id) => CHAKRAS.find((c) => c.id === id) || { id: "", color: "#b69cff", name: "" };
+const chakraById = (id) => CHAKRAS.find((c) => c.id === id) || { id: "", color: "#ff9ed1", name: "" };
 
 // ---------- particles ----------
-function burst(el, { n = 12, glyphs = ["✦", "♡", "✧", "★", "☾"], spread = 120, up = 0, colors } = {}) {
+function burst(el, { n = 12, glyphs = ["✦", "♡", "✧", "★", "☾"], spread = 120, up = 0 } = {}) {
   if (still || !el) return;
   const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-  const pal = colors || [CHALK, BLUSH, GOLD, getComputedStyle(document.documentElement).getPropertyValue("--glow").trim()];
+  const pal = [CHALK, BLUSH, GOLD, "#c9a7ff", getComputedStyle(document.documentElement).getPropertyValue("--glow").trim()];
   for (let i = 0; i < n; i++) {
     const s = document.createElement("span");
     s.className = "fx"; s.textContent = pickOne(glyphs);
@@ -365,7 +520,6 @@ function burst(el, { n = 12, glyphs = ["✦", "♡", "✧", "★", "☾"], sprea
   }
 }
 
-// boop any buddy: awake ones squish + puff hearts, sleepy ones peek awake for a moment
 function boop(el) {
   if (el.dataset.peeking) return;
   const c = chakraById(el.dataset.id), cls = el.dataset.cls || "";
@@ -389,32 +543,54 @@ document.addEventListener("keydown", (e) => {
 // ---------- game ----------
 function show(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id));
+  document.body.classList.toggle("home", id === "s-welcome");
+  document.body.classList.toggle("end", id === "s-end");
   window.scrollTo(0, 0);
 }
-function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#b69cff"); }
+function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#ff9ed1"); }
 function save() { store.set("cj.solo", S); }
+function crumb(...parts) { $("crumb").textContent = parts.join(" / "); }
 
-function drawChain(el) {
-  el.innerHTML = CHAKRAS.map((c, i) => {
-    const cls = S.opened[i] ? "open" : i === S.step ? "now" : "";
-    return `<i class="${cls}" style="--c:${c.color}" title="${c.name}"></i>`;
+function drawDock() {
+  $("dock").innerHTML = CHAKRAS.map((c, i) => {
+    const cls = [S.opened[i] && "open", i === S.step && "now"].filter(Boolean).join(" ");
+    return `<div class="${cls}" style="--c:${c.color}"><i></i>${c.name.replace(" Plexus", "").replace("Third ", "3rd ")}</div>`;
   }).join("");
 }
 const moodNow = () => (S.opened[S.step] ? "awake" : "sleep");
 
+// fly the rocket to the current chakra, then land
+let travelTimer = null;
+function travel() {
+  const c = ch(); setGlow(c.color); drawDock(); crumb("in flight");
+  if (still) return startIntro();
+  $("t-dest").innerHTML = buddy(c, moodNow(), "small");
+  $("t-rocket").innerHTML = ROCKET;
+  $("t-where").textContent = `the ${c.name.toLowerCase()} world`;
+  let n = 3; $("t-count").textContent = n;
+  show("s-travel");
+  clearInterval(travelTimer);
+  travelTimer = setInterval(() => {
+    n -= 1;
+    if (n <= 0) { clearInterval(travelTimer); return startIntro(); }
+    const el = $("t-count"); el.textContent = n; el.classList.remove("tick"); void el.offsetWidth; el.classList.add("tick");
+  }, 900);
+}
+
 function startIntro() {
-  const c = ch(); setGlow(c.color); drawChain($("chain1"));
-  $("i-n").textContent = `chakra ${S.step + 1} of 7`;
+  clearInterval(travelTimer);
+  const c = ch(); setGlow(c.color); drawDock(); crumb(`world ${S.step + 1} of 7`);
+  $("i-pill").textContent = c.name;
   $("i-buddy").innerHTML = buddy(c, moodNow());
-  $("i-name").textContent = c.name;
-  $("i-sk").textContent = c.sanskrit;
+  $("i-name").textContent = `Your ${c.name} chakra`;
+  $("i-sk").textContent = `${c.sanskrit.toLowerCase()} · world ${S.step + 1} of 7`;
   $("i-theme").textContent = c.theme;
   $("i-intro").textContent = c.intro;
   S.card = null; save(); show("s-intro");
 }
 
 function startPick() {
-  const c = ch(); setGlow(c.color); drawChain($("chain2"));
+  const c = ch(); setGlow(c.color); drawDock(); crumb(c.name.toLowerCase(), "choose");
   $("p-buddy").innerHTML = buddy(c, moodNow(), "small");
   S.card = null; save(); show("s-pick");
 }
@@ -434,15 +610,13 @@ let tick = null;
 function stopTimer() { clearInterval(tick); tick = null; }
 function renderCard() {
   stopTimer();
-  const c = ch(), k = S.card; setGlow(c.color); drawChain($("chain3"));
-  $("c-meta").textContent = `${c.name} · ${k.type === "reflect" ? "reflect" : "practice"}`;
+  const c = ch(), k = S.card; setGlow(c.color); drawDock();
+  crumb(c.name.toLowerCase(), k.type);
+  $("c-meta").textContent = `${c.name} · ${k.type}`;
   $("c-buddy").innerHTML = buddy(c, moodNow());
   $("c-text").textContent = k.text;
   $("c-timer").hidden = !k.seconds;
-  if (k.seconds) {
-    $("c-t").textContent = fmt(k.seconds); $("c-bar").style.width = "0";
-    $("c-start").textContent = "Start";
-  }
+  if (k.seconds) { $("c-t").textContent = fmt(k.seconds); $("c-bar").style.width = "0"; $("c-start").textContent = "Start"; }
   show("s-card");
 }
 const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
@@ -465,21 +639,21 @@ function finishCard(completed) {
   stopTimer();
   const c = ch(), wasOpen = S.opened[S.step];
   if (completed) S.opened[S.step] = true;
-  S.card = null; save();
+  S.card = null; save(); drawDock();
   const open = S.opened[S.step], fresh = open && !wasOpen;
-  setGlow(c.color);
+  setGlow(c.color); crumb(c.name.toLowerCase(), open ? "awake" : "resting");
   $("r-buddy").innerHTML = buddy(c, open ? "awake" : "sleep", fresh ? "wake" : "");
   $("r-say").textContent = open ? (wasOpen ? "even more?? ♡" : pickOne(SAYS[c.id] || ["hi!!"])) : "five more minutes…";
   $("r-say").style.animation = "none"; void $("r-say").offsetWidth; $("r-say").style.animation = "";
-  $("r-title").textContent = open ? (wasOpen ? `${c.name} is glowing brighter` : `${c.name} is awake!`) : `${c.name} is still snoozing`;
+  $("r-title").textContent = open ? (wasOpen ? `${c.name} glows brighter` : `${c.name} is awake`) : `${c.name} is still snoozing`;
   $("r-sub").textContent = open ? c.theme + "." : "That's okay. Try another card, or let it rest until next time.";
-  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Onward";
+  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Fly onward";
   show("s-result");
   if (open) setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
 }
 
 function showEnd() {
-  setGlow("#d9b8ff");
+  setGlow("#d9b8ff"); crumb("journey complete");
   const n = S.opened.filter(Boolean).length;
   $("e-title").textContent = n === 7 ? "All seven, wide awake" : `${n} of 7 awake`;
   $("e-chain").innerHTML = CHAKRAS.map((c, i) =>
@@ -488,23 +662,21 @@ function showEnd() {
     ? "Root to crown. Be soft with yourself tonight, you earned it."
     : "Every step counts. The sleepy ones will wake in their own time.";
   store.del("cj.solo"); show("s-end");
-  if (n) {
-    const all = [...$("e-chain").querySelectorAll(".open .buddy")];
-    all.forEach((b, i) => setTimeout(() => burst(b, { n: 5, spread: 60 }), 300 + i * 180));
-  }
+  [...$("e-chain").querySelectorAll(".open .buddy")].forEach((b, i) => setTimeout(() => burst(b, { n: 5, spread: 60 }), 300 + i * 180));
 }
 
 // ---------- wiring ----------
-$("title").innerHTML = [..."Chakras"].map((l, i) => `<span style="--i:${i}">${l}</span>`).join("");
 $("w-line").innerHTML = CHAKRAS.map((c) => buddy(c, "sleep")).join("");
+$("w-rocket").innerHTML = ROCKET;
 const saved = store.get("cj.solo");
 if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") $("resume").hidden = false;
 
 $("begin").onclick = () => {
   S = { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null };
-  startIntro();
+  travel();
 };
 $("resume").onclick = () => { S = saved; S.card ? renderCard() : startIntro(); };
+$("t-skip").onclick = startIntro;
 $("ready").onclick = startPick;
 $("pick-reflect").onclick = () => draw("reflect");
 $("pick-practice").onclick = () => draw("practice");
@@ -514,22 +686,22 @@ $("skip").onclick = () => finishCard(false);
 $("more").onclick = startPick;
 $("next").onclick = () => {
   if (S.step >= CHAKRAS.length - 1) return showEnd();
-  S.step += 1; startIntro();
+  S.step += 1; travel();
 };
 $("again").onclick = () => { $("resume").hidden = true; setGlow(); show("s-welcome"); };
 
-// ---------- starfield: dots, sparkles, and the odd shooting star ----------
+// ---------- starfield ----------
 (() => {
   const cv = $("stars"), x = cv.getContext("2d");
-  const tints = ["#f7f1ff", "#f7f1ff", "#f7f1ff", "#ff8fc0", "#b69cff", "#7fd4ff"];
+  const tints = ["#fff2fb", "#fff2fb", "#fff2fb", "#ff9ed1", "#c9a7ff", "#ffd98a"];
   let stars = [], w, h, d, shoot = null;
   function size() {
     d = devicePixelRatio || 1;
     w = cv.width = innerWidth * d; h = cv.height = innerHeight * d;
     cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
-    stars = Array.from({ length: 110 }, (_, i) => ({
+    stars = Array.from({ length: 120 }, (_, i) => ({
       x: Math.random() * w, y: Math.random() * h, p: Math.random() * 6.28, s: Math.random() * .02 + .005,
-      sparkle: i % 9 === 0, r: i % 9 === 0 ? Math.random() * 3 + 3 : Math.random() * 1.3 + .3,
+      sparkle: i % 8 === 0, r: i % 8 === 0 ? Math.random() * 3 + 3 : Math.random() * 1.3 + .3,
       c: tints[Math.floor(Math.random() * tints.length)],
     }));
   }
@@ -551,10 +723,10 @@ $("again").onclick = () => { $("resume").hidden = true; setGlow(); show("s-welco
       if (shoot) {
         const vx = -9 * d, vy = 4.5 * d, tx = shoot.x - vx * 10, ty = shoot.y - vy * 10;
         const g = x.createLinearGradient(shoot.x, shoot.y, tx, ty);
-        g.addColorStop(0, "rgba(247,241,255,1)"); g.addColorStop(1, "rgba(247,241,255,0)");
+        g.addColorStop(0, "rgba(255,242,251,1)"); g.addColorStop(1, "rgba(255,242,251,0)");
         x.globalAlpha = shoot.life; x.strokeStyle = g; x.lineWidth = 2 * d; x.lineCap = "round";
         x.beginPath(); x.moveTo(shoot.x, shoot.y); x.lineTo(tx, ty); x.stroke();
-        x.fillStyle = "#f7f1ff"; sparkle(shoot.x, shoot.y, 5 * d);
+        x.fillStyle = "#fff2fb"; sparkle(shoot.x, shoot.y, 5 * d);
         shoot.x += vx; shoot.y += vy; shoot.life -= .018;
         if (shoot.life <= 0) shoot = null;
       }
