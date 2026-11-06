@@ -189,6 +189,21 @@
   .card .sitter { position: absolute; top: -58px; right: 18px; }
   .card .sitter .buddy { width: 68px; height: 68px; margin: 0; }
   .card .text { font-size: 22px; line-height: 1.4; font-weight: 700; }
+  .qbar { height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); margin: 10px 0 18px; overflow: hidden; }
+  .qbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lilac), var(--rose)); transition: width .4s ease; }
+  .qopts button { padding: 14px 16px; }
+  .qopts button b { font-family: "Quicksand", sans-serif; font-size: 16px; letter-spacing: 0; text-transform: none; font-weight: 700; }
+  .qopts button.sel { border-color: var(--rose); background: color-mix(in srgb, var(--rose) 18%, rgba(42,27,51,.85)); }
+  .qopts .tick { margin-left: auto; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--rose); flex: none; display: grid; place-items: center; font-size: 13px; color: #2a0f2b; }
+  .qopts button.sel .tick { background: var(--rose); }
+  .pathcard { margin-top: 14px; text-align: left; }
+  .pathcard li { margin: 6px 0; color: #e6d6ee; font-weight: 500; font-size: 14.5px; line-height: 1.45; }
+  .pathcard .note { text-align: left; font-size: 13px; color: var(--gold); margin: 8px 0 0; }
+  .foryou { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; margin-left: 6px; border-radius: 999px;
+    vertical-align: middle; color: #2a0f2b; background: var(--gold); }
+  .choice .foryou { color: #2a0f2b; font-weight: 700; }
+  .chip.path { cursor: pointer; border-color: var(--lilac); }
+  .chip.path.ask { border-color: var(--gold); color: var(--gold); animation: ready 1.6s ease-in-out infinite; }
   .care { margin: 14px 0 0; padding: 8px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 600; line-height: 1.45; color: #ffe7c2;
     background: rgba(255,217,138,.08); border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent); }
   .care[hidden] { display: none; }
@@ -522,7 +537,7 @@
       <div class="lrate" id="h-rate">+0 per second</div>
     </div>
     <div class="scene sanct" id="h-scene"><canvas id="h-canvas" aria-hidden="true"></canvas></div>
-    <div class="chips"><span class="chip boost" id="h-boost" hidden></span><span class="chip" id="h-align" hidden></span><span class="chip" id="h-seekers"></span><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
+    <div class="chips"><span class="chip path" id="h-path" role="button" tabindex="0"></span><span class="chip boost" id="h-boost" hidden></span><span class="chip" id="h-align" hidden></span><span class="chip" id="h-seekers"></span><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
     <div class="altar">
       <div><b>Thousand-petal lotus</b><span class="lv" id="a-lv"></span><div class="rr" id="a-info"></div></div>
       <button id="a-buy">Raise<small id="a-cost"></small></button>
@@ -543,6 +558,29 @@
     <h2>The lotus</h2>
     <p class="muted" id="l-sub" style="margin:6px 0 14px"></p>
     <div class="jlist" id="l-list"></div>
+  </section>
+
+  <!-- the path quiz -->
+  <section class="screen" id="s-quiz">
+    <div class="jhead"><p class="label" id="q-step"></p><button class="link" id="q-back" style="padding:6px 0">← Back</button></div>
+    <div class="qbar"><i id="q-prog"></i></div>
+    <h2 id="q-title" style="font-size:21px;letter-spacing:.05em;text-transform:none;line-height:1.3"></h2>
+    <p class="muted" id="q-help" style="margin:8px 0 0"></p>
+    <div class="choice qopts" id="q-opts"></div>
+    <button class="btn" id="q-next" style="margin-top:16px" hidden>Next</button>
+    <button class="link" id="q-skip">Skip this one</button>
+  </section>
+
+  <!-- your path -->
+  <section class="screen center" id="s-path">
+    <div class="scene" style="min-height:200px"><div class="lineup" id="pa-line"></div></div>
+    <p class="label" style="justify-content:center;margin-top:18px">your path</p>
+    <h2 id="pa-name" style="margin-top:4px"></h2>
+    <p class="script" id="pa-sub" style="font-size:26px;margin:4px 0 0"></p>
+    <div class="panel pathcard"><ul id="pa-list" style="margin:0;padding-left:18px"></ul><div id="pa-notes"></div></div>
+    <div class="grow"></div>
+    <button class="btn" id="pa-go" style="margin-top:16px">Begin the journey</button>
+    <button class="link" id="pa-retake">Retake the quiz</button>
   </section>
 
   <!-- travel -->
@@ -868,7 +906,7 @@ function show(id) {
   document.body.classList.toggle("home", id === "s-welcome");
   document.body.classList.toggle("end", id === "s-end");
   document.body.classList.toggle("hub", id === "s-hub");
-  document.body.classList.toggle("jour", id === "s-journal" || id === "s-lotus");
+  document.body.classList.toggle("jour", ["s-journal", "s-lotus", "s-quiz", "s-path"].includes(id));
   window.scrollTo(0, 0);
 }
 function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#ff9ed1"); }
@@ -917,15 +955,24 @@ function startPick() {
   const c = ch(); setGlow(c.color); drawDock(); crumb(c.name.toLowerCase(), "choose");
   $("p-buddy").innerHTML = buddy(c, moodNow(), "small");
   $("pick-intimacy").hidden = !c.intimacy;
-  const canDeep = S.opened[S.step] && c.deepen;
+  const canDeep = !!c.deepen && deepenOpen(S.step);
   $("pick-deepen").classList.toggle("locked", !canDeep);
-  $("p-deep-sub").textContent = canDeep ? "Challenging practices for those already open. Counts double." : `Opens once ${c.name} is awake.`;
+  $("p-deep-sub").textContent = canDeep ? `Challenging practices for those already open. Pays ×${rewardMult("deepen")}.` : deepenHint(S.step, c);
+  const lv = levelNow(), forYou = lv === 0 ? ["pick-practice", "pick-reflect"] : lv === 1 ? ["pick-reflect", ...(canDeep ? ["pick-deepen"] : [])] : canDeep ? ["pick-deepen"] : ["pick-reflect"];
+  ["pick-reflect", "pick-practice", "pick-deepen"].forEach((id) => {
+    const b = $(id).querySelector("b"); b.querySelector(".foryou")?.remove();
+    if (forYou.includes(id)) b.insertAdjacentHTML("beforeend", `<span class="foryou">for you</span>`);
+  });
   S.card = null; save(); show("s-pick");
 }
 
 function draw(type, avoid) {
   const c = ch(), key = c.id + ":" + type;
-  const all = c[type].map((x, i) => ({ i, ...(typeof x === "string" ? { text: x } : x) }));
+  if (!Array.isArray(c[type]) || !c[type].length) return type === "reflect" ? openHub() : draw("reflect");
+  const all = c[type].map((x, i) => ({ i, ...(typeof x === "string" ? { text: x } : x) })).filter(safeCard);
+  // if safety leaves nothing in this deck, fall back to a gentler one
+  if (!all.length) { toast("Those practices aren't safe for you right now, so here's a reflection instead ♡"); return type === "reflect" ? openHub() : draw("reflect"); }
+  if (avoid !== undefined && all.length === 1) avoid = undefined;
   const used = S.used[key] || [];
   let pool = all.filter((x) => !used.includes(x.i) && x.i !== avoid);
   if (!pool.length) { S.used[key] = []; pool = all.filter((x) => x.i !== avoid); }
@@ -941,7 +988,9 @@ function renderCard() {
   const c = ch(), k = S.card; setGlow(c.color); drawDock();
   crumb(c.name.toLowerCase(), k.type);
   $("c-meta").textContent = `${c.name} · ${k.type === "intimacy" ? "intimacy 18+" : k.type === "deepen" ? "deepen ✦✦" : k.type}${k.theme ? " · " + k.theme : ""}`;
-  $("c-care").hidden = !k.care; $("c-care").textContent = k.care ? "Take care: " + k.care : "";
+  const gentle = prof().trauma && (k.type === "deepen" || k.type === "intimacy") ? "Go gently. You can stop or skip anything that feels like too much." : "";
+  const careText = [k.care, gentle].filter(Boolean).join(" ");
+  $("c-care").hidden = !careText; $("c-care").textContent = careText ? "Take care: " + careText : "";
   $("c-deep-btn").hidden = !k.deeper; $("c-deep").hidden = true; $("c-deep-t").textContent = k.deeper || "";
   $("c-ans").value = k.draft || "";
   $("c-ans").placeholder = k.type === "practice" ? "How did it feel? (optional)" : k.type === "deepen" ? "What came up? (optional, stays on this device)" : "Write your answer… (optional, stays on this device)";
@@ -982,9 +1031,10 @@ function finishCard(completed) {
     S.opened[i] = true; S.glow[i] = Math.max(i === 0 && S.firstLight ? S.firstLight : 1, S.glow[i]); S.cards[i] += deep ? 2 : 1;
     if (i === 0) S.firstLight = 0;
     const streakUp = bumpStreak();
-    const g = cardReward(i, !wasOpen) * (deep ? 2 : 1); earn(g);
+    const rm = rewardMult(deep ? "deepen" : "gentle");
+    const g = cardReward(i, !wasOpen) * rm; earn(g);
     const newSeekers = (wasOpen ? 3 : 10) + (wrote ? 5 : 0); S.seekers += newSeekers;
-    gainText = [deep ? "deep work ×2 ✦✦" : "", `+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
+    gainText = [`${LEVELS[levelNow()].name} ${deep ? "deep work" : "card"} ×${rm}`, `+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
       `+${newSeekers} seekers`, wrote ? "insight +2% ✎" : "", streakUp ? `day ${S.streak.n} streak ✦` : ""].filter(Boolean).join(" · ");
   }
   S.card = null; save(); drawDock();
@@ -1256,7 +1306,8 @@ function alignment() {
   if (lv.length < 2) return { mult: 1, ratio: 1, low: -1 };
   const lo = Math.min(...lv), hi = Math.max(...lv), ratio = lo / hi;
   const low = S.glow.findIndex((g, i) => S.opened[i] && g === lo);
-  return { mult: ratio >= .5 ? 1.5 : ratio >= .25 ? 1.2 : 1, ratio, low };
+  const top = levelNow() === 2 ? 1.75 : 1.5;
+  return { mult: ratio >= .5 ? top : ratio >= .25 ? 1.2 : 1, ratio, low, top };
 }
 const UNITS = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
 function fmtN(n) {
@@ -1291,7 +1342,7 @@ const blessMult = (m) => 1 + (m - 1) * (1 + gift(5) / 100);
 const sk = (id) => S.skills[id] || 0;
 const altarMult = () => 1 + .25 * S.altar;
 const altarCost = () => ALTAR_COST0 * ALTAR_GROWTH ** S.altar;
-const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest") + gift(0));
+const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest") + gift(0) + (levelNow() === 0 ? 2 : 0));
 const cycleOf = (i) => CYCLE[i] / (1 + .1 * sk("swift"));
 const guideMult = (i) => S.guides[i] ? STAR_MULT[S.stars[i]] * (1 + .5 * sk("devoted")) : 1;
 const starCost = (i) => GUIDE_COST[i] * 8 ** S.stars[i];
@@ -1381,6 +1432,167 @@ $("a-buy").onclick = () => {
   toast(`The thousand-petal lotus opens wider · all light ×${altarMult().toFixed(2)}`); NOTES.slice(0, 3).forEach((f, k) => bowl(f, 3, .07, k * .1));
   burst($("h-scene"), { n: 18, spread: 150 }); save(); updateHub();
 };
+
+// ---------- your path: a short quiz that sets how the whole game meets you ----------
+const QUIZ = [
+  { id: "exp", q: "How long have you been working with chakras or energy practices?",
+    o: ["I'm brand new", "A few months", "A year or two", "Many years, it's part of my life"] },
+  { id: "sit", q: "How often do you meditate or sit in stillness?",
+    o: ["Rarely or never", "Now and then", "Most weeks", "Daily, often 20 minutes or more"] },
+  { id: "tried", q: "Which of these have you practiced?", help: "Pick all that apply.", multi: true,
+    o: [["breath", "Breathwork like kapalabhati or alternate-nostril breathing"], ["mantra", "Chanting seed sounds or mantras, like 108 rounds"],
+      ["bandha", "Bandhas, like mula bandha"], ["shadow", "Shadow work or deep journaling"], ["vision", "Candle gazing or visualization"],
+      ["silence", "Long silence or a retreat"], ["none", "None of these yet"]] },
+  { id: "emotion", q: "When you sit with a hard emotion, what usually happens?",
+    o: ["I avoid it or distract myself", "I can notice it for a little while", "I can stay with it and breathe through it", "I can feel it fully and let it move through me"] },
+  { id: "aware", q: "Could you name a chakra that feels blocked or overactive in you right now?",
+    o: ["Not really", "I have a guess", "Yes, and I know why", "Yes, and I know what practice it needs"] },
+  { id: "intensity", q: "How do you feel about intense practices: long holds, cold water, two hours of silence?",
+    o: ["I'd rather start gentle", "Curious, in small doses", "I like a challenge", "That's where I grow most"] },
+  { id: "energy", q: "Have you felt energy move in your body during practice, like warmth, tingling or a rising feeling?",
+    o: ["No", "I'm not sure", "Sometimes", "Often, and I know how to work with it"] },
+  { id: "safety", q: "Does any of this apply to you right now?", multi: true, unscored: true,
+    help: "Private, and it stays on this device. It only keeps some practices off your cards.",
+    o: [["pregnant", "Pregnant"], ["heart", "High blood pressure or a heart condition"], ["epilepsy", "Epilepsy or seizures"],
+      ["injury", "A recent injury or surgery"], ["trauma", "Working through trauma that feels raw"], ["none", "None of these"]] },
+  { id: "intent", q: "What brings you here?", unscored: true,
+    o: [["calm", "Calm and rest"], ["heal", "Healing something"], ["grow", "Growing my practice"], ["awaken", "Awakening, and deep work"]] },
+];
+const LEVELS = [
+  { name: "Seedling", sub: "a gentle beginning", bullets: [
+    "Reflect and Practice cards are made for you, and pay ×1.5.",
+    "Deepen opens in a chakra after three cards there, and pays ×3 when you're ready.",
+    "More visitors drift by, and your sanctuary rests 2 hours longer while you're away."] },
+  { name: "Blossoming", sub: "growing your practice", bullets: [
+    "Deepen opens as soon as a chakra wakes, and pays ×2.",
+    "Reflect and Practice keep you steady at ×1.",
+    "A balanced sanctuary pays up to ×1.5."] },
+  { name: "Open lotus", sub: "deep work, from the start", bullets: [
+    "Deepen is open from your very first card, and pays ×2.5.",
+    "Gentle cards pay ×0.75: your growth is in the deep work.",
+    "Balance is your practice: an aligned sanctuary pays up to ×1.75."] },
+];
+const REWARD = [[1.5, 3], [1, 2], [.75, 2.5]]; // [gentle cards, deep cards] by level
+const MEDICAL = ["pregnant", "heart", "epilepsy", "injury"];
+
+// score one answer 0..3, or null if skipped or unclear
+function scoreOf(id, v) {
+  const q = QUIZ.find((x) => x.id === id);
+  if (!q || q.unscored || v === undefined || v === null) return null;
+  if (q.multi) {
+    if (!Array.isArray(v) || !v.length) return null;
+    const n = v.filter((x) => x !== "none").length;
+    return n === 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : 3;
+  }
+  return Number.isInteger(v) && v >= 0 && v <= 3 ? v : null;
+}
+// turn answers into a path, with safeguards for skipped, mixed or sensitive answers
+function assess(a) {
+  a = a && typeof a === "object" ? a : {};
+  const notes = [], sc = (id) => scoreOf(id, a[id]);
+  const vals = QUIZ.filter((q) => !q.unscored).map((q) => sc(q.id)).filter((v) => v !== null);
+  let level = 0, score = null, gentleDeepen = false;
+  if (vals.length < 3) {
+    notes.push("You skipped most questions, so you're starting gently. Retake the quiz anytime.");
+  } else {
+    score = (vals.reduce((t, v) => t + v, 0) / vals.length) * 7; // average, scaled to 0–21
+    level = score >= 14 ? 2 : score >= 7 ? 1 : 0;
+    if (level === 0 && (sc("sit") ?? 0) >= 2 && (sc("tried") ?? 0) >= 2) {
+      level = 1; notes.push("Your practice is steadier than you might think, so you start at Blossoming.");
+    }
+    if (level === 2 && sc("exp") === 0) {
+      level = 1; notes.push("You're drawn to intensity but new to this work, so the deepest practices open step by step.");
+    }
+    if (level === 2 && sc("emotion") === 0) {
+      level = 1; notes.push("Hard feelings are still tough to stay with, so you'll build that first before the deepest work.");
+    }
+    if (level >= 1 && sc("intensity") === 0) {
+      gentleDeepen = true; notes.push("You'd rather start gentle, so Deepen opens after a few cards in each chakra.");
+    }
+  }
+  const cond = Array.isArray(a.safety) ? a.safety.filter((x) => x !== "none") : [];
+  const medical = cond.some((c) => MEDICAL.includes(c)), trauma = cond.includes("trauma");
+  if (trauma) {
+    if (level === 2) level = 1;
+    notes.push("Because something raw is being worked through, deep cards remind you to go gently. You can skip anything.");
+  }
+  if (medical) notes.push("Practices with breath holds, cold water or strong poses are kept off your cards.");
+  const intent = typeof a.intent === "string" ? a.intent : null;
+  if (intent === "awaken" && level === 0) notes.push("Awakening is a long road. You'll walk it from the root up.");
+  if (intent === "calm" && level === 2) notes.push("You came for calm: Reflect and Practice are always there when deep work isn't what you need.");
+  return { level, score, notes, cond, medical, trauma, gentleDeepen, intent, answers: a, takenAt: Date.now() };
+}
+// before the quiz is taken (older saves), estimate from how much they've done
+function levelNow() {
+  if (S && S.profile && Number.isInteger(S.profile.level)) return Math.max(0, Math.min(2, S.profile.level));
+  const n = S ? S.cards.reduce((t, v) => t + v, 0) : 0;
+  return n >= 25 ? 1 : 0;
+}
+const prof = () => (S && S.profile) || {};
+const rewardMult = (deck) => REWARD[levelNow()][deck === "deepen" ? 1 : 0];
+function deepenOpen(i) {
+  const lv = levelNow();
+  if (lv === 2 && !prof().gentleDeepen) return true;
+  if (lv >= 1 && !prof().gentleDeepen) return !!S.opened[i];
+  return !!S.opened[i] && S.cards[i] >= 3;
+}
+const deepenHint = (i, c) => levelNow() === 2 && !prof().gentleDeepen ? "" : !S.opened[i] ? `Opens once ${c.name} is awake.` : `Opens after 3 ${c.name} cards (${S.cards[i]}/3).`;
+// cards a player shouldn't get, for their safety
+const safeCard = (x) => !(prof().medical && x.care);
+
+let Q = { i: 0, a: {}, retake: false };
+function openQuiz(retake) {
+  Q = { i: 0, a: {}, retake: !!retake };
+  setGlow("#c9a7ff"); crumb("your path"); show("s-quiz"); renderQ();
+}
+function renderQ() {
+  const q = QUIZ[Q.i], v = Q.a[q.id];
+  $("q-step").textContent = `question ${Q.i + 1} of ${QUIZ.length}`;
+  $("q-prog").style.width = `${(Q.i / QUIZ.length) * 100}%`;
+  $("q-title").textContent = q.q;
+  $("q-help").textContent = q.help || ""; $("q-help").hidden = !q.help;
+  $("q-opts").innerHTML = q.o.map((o, n) => {
+    const [val, label] = Array.isArray(o) ? o : [n, o];
+    const sel = q.multi ? Array.isArray(v) && v.includes(val) : v === val;
+    return `<button class="${sel ? "sel" : ""}" data-v="${val}"><span><b>${label}</b></span>${q.multi ? `<span class="tick">${sel ? "✓" : ""}</span>` : ""}</button>`;
+  }).join("");
+  $("q-next").hidden = !q.multi;
+  $("q-next").textContent = Q.i === QUIZ.length - 1 ? "See my path" : "Next";
+  $("q-back").style.visibility = Q.i ? "visible" : "hidden";
+}
+function qNext() { if (Q.i < QUIZ.length - 1) { Q.i += 1; renderQ(); } else finishQuiz(); }
+$("q-opts").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  const q = QUIZ[Q.i], raw = b.dataset.v, val = /^\d+$/.test(raw) && !Array.isArray(q.o[0]) ? +raw : raw;
+  chime(Math.min(6, Q.i), .8, .05);
+  if (q.multi) {
+    let cur = Array.isArray(Q.a[q.id]) ? Q.a[q.id] : [];
+    if (val === "none") cur = cur.includes("none") ? [] : ["none"];           // "none" clears the rest
+    else cur = cur.includes(val) ? cur.filter((x) => x !== val) : [...cur.filter((x) => x !== "none"), val];
+    Q.a[q.id] = cur; renderQ();
+  } else { Q.a[q.id] = val; renderQ(); setTimeout(qNext, 220); }
+});
+$("q-next").onclick = qNext;
+$("q-skip").onclick = () => { delete Q.a[QUIZ[Q.i].id]; qNext(); };
+$("q-back").onclick = () => { if (Q.i > 0) { Q.i -= 1; renderQ(); } };
+function finishQuiz() {
+  const p = assess(Q.a);
+  S.profile = p; save();
+  const L = LEVELS[p.level];
+  $("pa-line").innerHTML = CHAKRAS.map((c, i) => buddy(c, i <= p.level * 3 ? "awake" : "sleep")).join("");
+  $("pa-name").textContent = L.name;
+  $("pa-sub").textContent = L.sub;
+  $("pa-list").innerHTML = L.bullets.map((b) => `<li>${esc(b)}</li>`).join("");
+  $("pa-notes").innerHTML = p.notes.map((n) => `<p class="note">✦ ${esc(n)}</p>`).join("");
+  $("pa-go").textContent = Q.retake ? "Back to your sanctuary" : "Begin the journey";
+  setGlow(CHAKRAS[[0, 3, 6][p.level]].color); crumb("your path"); show("s-path");
+  NOTES.slice(0, 3 + p.level * 2).forEach((f, k) => bowl(f, 3, .06, k * .12));
+  setTimeout(() => burst($("pa-name"), { n: 14 + p.level * 6, spread: 130 }), 300);
+}
+$("pa-go").onclick = () => (Q.retake || S.opened.some(Boolean) ? openHub() : travel());
+$("pa-retake").onclick = () => openQuiz(Q.retake);
+$("h-path").onclick = () => openQuiz(true);
+$("h-path").onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openQuiz(true); } };
 
 // ---------- the lotus: permanent skills bought with petals ----------
 function openLotus() {
@@ -1558,12 +1770,15 @@ function updateHub() {
   const b = S.boost && S.boost.until > Date.now() ? S.boost : null;
   $("h-boost").hidden = !b;
   if (b) $("h-boost").textContent = `${b.name} ×${b.mult} · ${Math.ceil((b.until - Date.now()) / 1000)}s`;
+  const hasP = !!(S.profile && Number.isInteger(S.profile.level));
+  $("h-path").classList.toggle("ask", !hasP);
+  $("h-path").innerHTML = hasP ? `path <b>${LEVELS[levelNow()].name}</b> · retake` : `path <b>${LEVELS[levelNow()].name}</b> (guessed) · take the quiz ✦`;
   const al = alignment();
   $("h-align").hidden = al.low < 0;
   if (al.low >= 0) {
     $("h-align").className = "chip " + (al.mult >= 1.5 ? "align-good" : "align-off");
-    $("h-align").innerHTML = al.mult >= 1.5 ? `aligned <b>×1.5</b> · your chakras are in balance`
-      : `${al.mult > 1 ? "partly aligned ×1.2" : "out of balance"} · raise <b>${CHAKRAS[al.low].name}</b> for ×1.5`;
+    $("h-align").innerHTML = al.mult >= 1.5 ? `aligned <b>×${al.top}</b> · your chakras are in balance`
+      : `${al.mult > 1 ? "partly aligned ×1.2" : "out of balance"} · raise <b>${CHAKRAS[al.low].name}</b> for ×${al.top}`;
   }
   $("h-seekers").innerHTML = `seekers <b>${Math.floor(S.seekers)}</b> · ×${seekerMult().toFixed(2)}`;
   $("h-streak").innerHTML = `streak <b>${S.streak.n}</b> day${S.streak.n === 1 ? "" : "s"} · ×${streakMult().toFixed(1)}`;
@@ -1640,7 +1855,7 @@ setInterval(() => {
   const now = Date.now(), dt = Math.min((now - lastTick) / 1000, S && S.glow ? restCap() : OFFLINE_CAP); lastTick = now;
   if (!S || !S.glow) return;
   advance(dt); S.lastSeen = now;
-  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / ((1 + .25 * sk("starlit")) * (1 + gift(1) / 100)); }
+  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / ((1 + .25 * sk("starlit")) * (1 + gift(1) / 100) * (levelNow() === 0 ? 1.25 : 1)); }
   if (now - lastSave > 3000) { lastSave = now; save(); }
   updateHub();
 }, 200);
@@ -1682,7 +1897,7 @@ if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") {
 $("begin").onclick = () => {
   if (S) { openHub(); return welcomeBack(); }
   S = newState(); save();
-  travel();
+  openQuiz(false);
 };
 $("resume").onclick = $("begin").onclick;
 $("t-skip").onclick = startIntro;
@@ -1690,7 +1905,7 @@ $("ready").onclick = startPick;
 $("pick-reflect").onclick = () => draw("reflect");
 $("pick-practice").onclick = () => draw("practice");
 $("pick-deepen").onclick = () => {
-  if (!S.opened[S.step]) { toast(`Finish a ${ch().name} card first, then Deepen opens ✦✦`); return; }
+  if (!deepenOpen(S.step)) { toast(deepenHint(S.step, ch()) + " ✦✦"); return; }
   draw("deepen");
 };
 $("pick-intimacy").onclick = () => {

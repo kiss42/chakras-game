@@ -14,6 +14,27 @@ or psychological advice.
 
 Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it feel like an app.
 
+## Your path (the opening quiz)
+
+New players start with a short quiz: seven scored questions (experience, stillness, techniques
+tried, staying with hard feelings, chakra awareness, appetite for intensity, felt energy), a
+private health question and "what brings you here". It places them on a path, and the whole game
+follows it:
+
+| | Seedling (beginner) | Blossoming (intermediate) | Open lotus (advanced) |
+|---|---|---|---|
+| Deepen opens | after 3 cards in that chakra | once the chakra wakes | from the first card |
+| Rewards: gentle / deep cards | ×1.5 / ×3 | ×1 / ×2 | ×0.75 / ×2.5 |
+| Also | more visitors, rests 2h longer | standard | alignment pays up to ×1.75 |
+
+Safeguards in `assess()`: most questions skipped → Seedling; steady practice but rating themselves
+low → Blossoming; new to the work but craving intensity → capped at Blossoming; can't yet stay with
+hard feelings → capped at Blossoming; prefers gentle → Deepen opens after 3 cards; raw trauma →
+capped at Blossoming with "go gently" notes on deep cards; pregnancy, a heart condition, epilepsy
+or an injury → cards with a safety note never appear (with a fallback to a reflection if a deck is
+left empty). Older saves get a guessed path until the quiz is taken; it can be retaken anytime
+from the sanctuary.
+
 ## Your sanctuary (the idle tycoon side)
 
 After the first chakra wakes, **Your sanctuary** becomes home: the seven chakras as temples, root
