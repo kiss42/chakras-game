@@ -4,7 +4,7 @@ window.CHAKRAS = [
     "id": "root",
     "name": "Root",
     "sanskrit": "Muladhara",
-    "color": "#E5484D",
+    "color": "#ff6b8b",
     "theme": "Safety, grounding, feeling at home in yourself",
     "intro": "Sit comfortably with your feet flat on the floor. Take three slow breaths and feel the ground holding you.",
     "reflect": [
@@ -40,7 +40,7 @@ window.CHAKRAS = [
     "id": "sacral",
     "name": "Sacral",
     "sanskrit": "Svadhisthana",
-    "color": "#F76B15",
+    "color": "#ffa05c",
     "theme": "Joy, play, feelings and creativity",
     "intro": "Roll your shoulders, shake out your hands, and let yourself smile for no reason at all.",
     "reflect": [
@@ -73,7 +73,7 @@ window.CHAKRAS = [
     "id": "solar",
     "name": "Solar Plexus",
     "sanskrit": "Manipura",
-    "color": "#FFC53D",
+    "color": "#ffdc5e",
     "theme": "Confidence, strength, believing in yourself",
     "intro": "Sit tall. Put a hand just above your belly button and breathe into it, slow and deep.",
     "reflect": [
@@ -106,7 +106,7 @@ window.CHAKRAS = [
     "id": "heart",
     "name": "Heart",
     "sanskrit": "Anahata",
-    "color": "#30A46C",
+    "color": "#6ee7a8",
     "theme": "Love, compassion, forgiveness",
     "intro": "Place both hands over your heart. Feel it beating, steady and faithful, just for you.",
     "reflect": [
@@ -136,7 +136,7 @@ window.CHAKRAS = [
     "id": "throat",
     "name": "Throat",
     "sanskrit": "Vishuddha",
-    "color": "#0090FF",
+    "color": "#6cc4ff",
     "theme": "Honest words, speaking your truth, being heard",
     "intro": "Hum one long note on a single breath. Feel it buzz in your throat and chest.",
     "reflect": [
@@ -172,7 +172,7 @@ window.CHAKRAS = [
     "id": "thirdeye",
     "name": "Third Eye",
     "sanskrit": "Ajna",
-    "color": "#6E56CF",
+    "color": "#a98bff",
     "theme": "Intuition, vision, seeing clearly",
     "intro": "Close your eyes. Rest a fingertip lightly between your eyebrows and breathe.",
     "reflect": [
@@ -208,7 +208,7 @@ window.CHAKRAS = [
     "id": "crown",
     "name": "Crown",
     "sanskrit": "Sahasrara",
-    "color": "#C35EDB",
+    "color": "#f19cff",
     "theme": "Gratitude, purpose, feeling whole",
     "intro": "Sit still, palms open on your knees. Breathe in silence and feel the space around you.",
     "reflect": [
