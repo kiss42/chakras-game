@@ -44,6 +44,8 @@ at the bottom.
   Tap a full bar to collect it; tap any bar or buddy to nudge it along.
 - **Levels:** spend light to level a temple up (×1, ×10 or Max; +15% cost per level). Levels 10,
   25, 50, 100, 150… double that temple's payout.
+- **Buddies evolve:** as a temple levels up, its buddy evolves: Spark, Glow (level 10, an aura),
+  Bloom (25, lotus petals), Radiant (50, a gold outline and rays) and Ascended (100, wings).
 - **Guides:** hire a guide for each temple (Mira, Juno, Sol, Rosa, Echo, Iris, Lumen). A guide
   collects automatically, pays ×1.5, and keeps working while the game is closed (up to 8 hours,
   collected as a welcome-back gift).

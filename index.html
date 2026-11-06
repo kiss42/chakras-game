@@ -147,7 +147,18 @@
 
   /* buttons */
   button { font: inherit; cursor: pointer; border: 0; color: inherit; }
-  button:focus-visible, .buddy:focus-visible { outline: 2px dashed var(--rose); outline-offset: 4px; }
+  .buddy:focus, .buddy:focus-visible { outline: none; }
+  button:focus-visible { outline: 2px dashed var(--rose); outline-offset: 4px; }
+  .buddy:focus-visible { outline: 2px dashed var(--rose); outline-offset: 4px; border-radius: 50%; }
+  .buddy { -webkit-tap-highlight-color: transparent; }
+  .buddy .petals { transform-origin: 60px 64px; animation: spin 40s linear infinite; }
+  .buddy .wing { transform-box: fill-box; animation: flap 2.4s ease-in-out infinite; }
+  .buddy .wing.l, .buddy .wing.r2 { transform-origin: right center; }
+  @keyframes flap { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-8deg); } }
+  .buddy .wing.r { animation-name: flap-r; }
+  @keyframes flap-r { 0%,100% { transform: rotate(0); } 50% { transform: rotate(8deg); } }
+  .buddy.sleepy .petals, .buddy.sleepy .wing { animation-play-state: paused; }
+  .stage { font-family: "Pinyon Script", cursive; font-size: 16px; color: var(--c); margin-left: 6px; text-transform: none; letter-spacing: 0; }
   .btn { position: relative; width: 100%; padding: 15px; border-radius: 999px; font-family: "Cinzel", serif; font-weight: 700; font-size: 15px;
     letter-spacing: .14em; text-transform: uppercase; color: #2a0f2b; overflow: hidden;
     background: linear-gradient(180deg, #ffd3ec 0%, var(--rose) 55%, #e48fd8 100%);
@@ -814,8 +825,32 @@ function accessory(id, awake) {
 }
 
 let gid = 0;
+// buddies evolve as their temple levels up
+const STAGES = [["Spark", 1], ["Glow", 10], ["Bloom", 25], ["Radiant", 50], ["Ascended", 100]];
+const stageOf = (lv) => STAGES.reduce((s, [, at], n) => (lv >= at ? n : s), 0);
+function stageFor(id) {
+  if (typeof S === "undefined" || !S || !S.glow) return 0;
+  const i = CHAKRAS.findIndex((k) => k.id === id);
+  return i >= 0 && S.opened[i] ? stageOf(S.glow[i]) : 0;
+}
+function evolution(st, color, g) {
+  let back = "", front = "";
+  if (st >= 1) back += `<circle cx="60" cy="64" r="60" fill="url(#${g}a)" opacity="${.35 + .1 * st}"/>`;
+  if (st >= 2) back += `<g class="petals">${Array.from({ length: 8 }, (_, k) =>
+    `<ellipse cx="60" cy="14" rx="10" ry="18" transform="rotate(${k * 45} 60 64)" fill="${mix(color, "#ffffff", .35)}" stroke="${CHALK}" stroke-width="1.5" opacity=".9"/>`).join("")}</g>`;
+  if (st >= 3) back += `<path class="halo" d="${RAYS}" stroke="${GOLD}" stroke-width="2.2" stroke-linecap="round" transform="translate(60 64) scale(1.25) translate(-60 -64)"/>`;
+  if (st >= 4) { // ascended: wings, in front of the petals, behind the body
+    const L = "M34 50C14 26-14 26-26 40c6 2 10 5 12 9-9 0-15 4-17 9 9 0 15 2 18 6-6 2-9 6-10 11 12-3 24-4 40-10 6-2 12-6 14-12z";
+    const wing = (side) => `<path class="wing ${side}" d="${L}" ${side === "r" ? 'transform="translate(120 0) scale(-1 1)"' : ""}
+      fill="#fff6ff" stroke="#c9a7ff" stroke-width="2" stroke-linejoin="round"/>`;
+    back += wing("l") + `<g transform="translate(120 0) scale(-1 1)">${wing("l").replace('class="wing l"', 'class="wing r2"')}</g>`;
+    front += `<path class="spark" d="M8 104l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${GOLD}"/><path class="spark" d="M112 100l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${CHALK}"/>`;
+  }
+  return { back, front, rim: st >= 3 ? GOLD : CHALK, rimW: st >= 3 ? 3.5 : 2.5 };
+}
 function buddy(c, mood, cls = "") {
   const awake = mood !== "sleep", acc = accessory(c.id, awake), color = c.color, g = "g" + ++gid;
+  const evo = evolution(stageFor(c.id), color, g);
   const face = mood === "glow"
     ? `<g filter="url(#${g}f)"><ellipse cx="46" cy="62" rx="6" ry="8" fill="#fff"/><ellipse cx="74" cy="62" rx="6" ry="8" fill="#fff"/></g>
        <ellipse cx="46" cy="62" rx="4.6" ry="6.6" fill="#fff"/><ellipse cx="74" cy="62" rx="4.6" ry="6.6" fill="#fff"/>
@@ -843,14 +878,14 @@ function buddy(c, mood, cls = "") {
     <filter id="${g}f" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3"/></filter></defs>
     ${mood === "glow" ? `<circle class="aura" cx="60" cy="64" r="64" fill="url(#${g}a)"/>
       <path class="halo" d="${RAYS}" stroke="${GOLD}" stroke-width="2" stroke-linecap="round" opacity=".8" transform="translate(60 64) scale(1.18) translate(-60 -64)"/>` : ""}
-    ${acc.back || ""}
+    ${evo.back}${acc.back || ""}
     <g class="feet"><ellipse cx="44" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/>
       <ellipse cx="76" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/></g>
-    <circle cx="60" cy="64" r="44" fill="url(#${g})" stroke="${CHALK}" stroke-width="2.5"/>
+    <circle cx="60" cy="64" r="44" fill="url(#${g})" stroke="${evo.rim}" stroke-width="${evo.rimW}"/>
     <circle cx="82" cy="46" r="5" fill="${mix(color, "#1a0820", .3)}" opacity=".35"/><circle cx="88" cy="88" r="3.5" fill="${mix(color, "#1a0820", .3)}" opacity=".35"/>
     <circle cx="30" cy="92" r="4" fill="${mix(color, "#1a0820", .3)}" opacity=".3"/>
     <ellipse cx="42" cy="40" rx="12" ry="6.5" fill="#fff" opacity=".6" transform="rotate(-32 42 40)"/><circle cx="56" cy="31" r="2.5" fill="#fff" opacity=".7"/>
-    ${face}${acc.front || ""}</svg>`;
+    ${face}${acc.front || ""}${evo.front}</svg>`;
 }
 const chakraById = (id) => CHAKRAS.find((c) => c.id === id) || { id: "", color: "#ff9ed1", name: "" };
 
@@ -1408,8 +1443,9 @@ function hireGuide(i) {
 function buyGlow(i) {
   const n = buyCount(i), cost = costOf(i, n);
   if (!S.opened[i] || n < 1 || cost > S.light) return;
-  const before = milesOf(S.glow[i]);
+  const before = milesOf(S.glow[i]), stBefore = stageOf(S.glow[i]);
   S.light -= cost; S.glow[i] += n;
+  if (stageOf(S.glow[i]) > stBefore) { evolve(i); save(); return; }
   const bud = $("h-ladder").querySelector(`[data-i="${i}"] .buddy`);
   chime(i, .9, .06); navigator.vibrate?.(8);
   if (milesOf(S.glow[i]) > before) {
@@ -1419,6 +1455,17 @@ function buyGlow(i) {
   save(); updateHub();
 }
 
+// a buddy evolves: redraw it in its new form and celebrate
+function evolve(i) {
+  const c = CHAKRAS[i], st = stageOf(S.glow[i]);
+  renderHub();
+  const bud = $("h-ladder").querySelector(`[data-i="${i}"] .buddy`);
+  bud?.classList.add("wake");
+  toast(`${c.name} evolves into ${STAGES[st][0]} ✦`);
+  [0, 2, 4].forEach((k, n) => bowl(NOTES[(i + k) % 7], 3.5, .1, n * .15));
+  navigator.vibrate?.([30, 40, 60, 40, 120]);
+  setTimeout(() => burst(bud, { n: 24, spread: 150 }), 150);
+}
 function raiseStar(i) {
   if (!S.guides[i] || S.stars[i] >= 5) return;
   const cost = starCost(i); if (cost > S.light) return;
@@ -1754,7 +1801,7 @@ function renderHub() {
       : `<button class="hire" data-hire="${i}" title="${gname}, ${grole}: collects for you and pays ×1.5">Hire ${gname} ✦ ${fmtN(GUIDE_COST[i])}</button>`;
     return `<div class="rung ${awake ? "awake" : canWake ? "" : "locked"}" data-i="${i}" style="--c:${c.color}">
       ${buddy(c, awake ? "awake" : "sleep")}
-      <div class="info"><b>${c.name}</b><span class="lv"></span><span class="elem">${ELEMENTS[i]} · ${c.bija}</span>
+      <div class="info"><b>${c.name}</b><span class="lv"></span><span class="stage"></span><span class="elem">${ELEMENTS[i]} · ${c.bija}</span>
         ${awake ? `<button class="cyc" data-collect="${i}" aria-label="Collect ${c.name} light"><i></i><span></span></button>` : ""}
         <div class="rr"></div>${awake ? `<div class="mbar"><i></i></div>` : ""}<span class="gift"><b>${GIFTS[i].name}</b><span class="gd"></span></span>${guide}</div>
       <div class="ra">${act}</div></div>`;
@@ -1790,6 +1837,7 @@ function updateHub() {
   $("h-ladder").querySelectorAll(".rung").forEach((row) => {
     const i = +row.dataset.i, g = S.glow[i], awake = S.opened[i];
     row.querySelector(".lv").textContent = awake ? `Lv ${g}` : "asleep";
+    const stEl = row.querySelector(".stage"); if (stEl) stEl.textContent = awake ? STAGES[stageOf(g)][0] : "";
     row.querySelector(".gd").textContent = GIFTS[i].d(gift(i));
     if (!awake) { row.querySelector(".rr").textContent = "finish a card to awaken"; return; }
     if (!row.querySelector(".cyc")) { stale = true; return; }
