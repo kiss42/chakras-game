@@ -1,6 +1,8 @@
 // Chakras game cards. Edit freely. A card can be plain text, or an object:
 //   {"text": "...", "seconds": 60}                       adds a timer (practices)
 //   {"text": "...", "deeper": "...", "theme": "..."}     adds a "Go deeper" follow-up and a small theme label
+//   {"text": "...", "care": "..."}                       adds a short safety note
+// "deepen" decks hold challenging practices for people who are already open; they unlock once a chakra is awake.
 // A chakra can also have an "intimacy" deck behind an 18+ check (Sacral has one): intimacy with yourself, your body, pleasure and desire.
 window.CHAKRAS = [
   {
@@ -132,6 +134,54 @@ window.CHAKRAS = [
         "theme": "safety & money",
         "text": "What would you do if money were never a worry again?",
         "deeper": "Which small piece of that could you start this month?"
+      }
+    ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Hold Malasana, a deep squat, heels down if you can, palms together at your heart. Breathe into your pelvic floor and stay through the discomfort.",
+        "seconds": 180,
+        "deeper": "What did your mind tell you to make you stand up early?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Mula Bandha: on each exhale, gently draw up the pelvic floor and hold for five counts; release on the inhale. Twenty rounds.",
+        "seconds": 240,
+        "deeper": "Where else in your body were you gripping without noticing?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Walk barefoot on the earth (grass, soil or sand) slowly for twenty minutes, phone away. Feel every part of each foot land.",
+        "seconds": 1200,
+        "deeper": "What changed in your thoughts between minute one and minute twenty?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Horse stance: feet wide, knees bent, back straight, arms forward. Stay until your legs shake, then stay ten more breaths.",
+        "seconds": 180,
+        "deeper": "When the shaking started, what did you want to do? What did you do?",
+        "care": "Ease off if your knees hurt."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant LAM aloud 108 times, slow and low, feeling it at the base of your spine.",
+        "seconds": 600,
+        "deeper": "Where did the sound land in your body?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Write down your three deepest survival fears (money, home, being alone, illness). Next to each, write the oldest memory it comes from.",
+        "deeper": "Which fear is protecting a younger you, and what does that younger you need now?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "List everything you'd keep if your whole life had to fit in one bag.",
+        "deeper": "What does that tell you about what actually makes you safe?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Do one thing today that feels unsafe in a healthy way: ask for what you're worth, eat alone in a restaurant, or let go of a backup plan.",
+        "deeper": "What did you learn about how solid your ground really is?"
       }
     ],
     "practice": [
@@ -371,6 +421,55 @@ window.CHAKRAS = [
         "deeper": "How did it feel to move only for your own pleasure?"
       }
     ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Pigeon pose, three minutes on each side, breathing into the hip. Let emotion come up if it does.",
+        "seconds": 360,
+        "deeper": "What feeling was stored in your hips today?",
+        "care": "Ease out if you feel sharp knee pain."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Shaking release: stand and shake your whole body, starting from the knees and hips, for five minutes. Let sound come out.",
+        "seconds": 300,
+        "deeper": "What did your body release that your words never have?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Dance with your eyes closed to three songs you've never danced to. No steps, only impulse.",
+        "seconds": 720,
+        "deeper": "Which movement surprised you?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Feel one difficult emotion fully for five minutes (sadness, envy, anger) without fixing it. Breathe and name only the body sensations.",
+        "seconds": 300,
+        "deeper": "Where did it live in your body, and did it change?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant VAM 108 times, letting your pelvis rock gently with the sound.",
+        "seconds": 600,
+        "deeper": "What did the rocking stir up?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Create something for one hour with no goal and no audience: paint, write, cook, move. Don't show anyone.",
+        "seconds": 3600,
+        "deeper": "What came out when no one was going to see it?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Name the pleasure you deny yourself most. Write the rule you live by about it, and where that rule came from.",
+        "deeper": "Is that rule still yours? What would you rewrite it to?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Water ritual: take a slow bath or shower in silence, and with each part of you that you wash, name one feeling you're letting go.",
+        "deeper": "Which feeling didn't want to leave?"
+      }
+    ],
     "practice": [
       {
         "text": "Put on a song you love and dance like nobody's watching, because nobody is.",
@@ -488,6 +587,56 @@ window.CHAKRAS = [
         "theme": "self-worth",
         "text": "When do you shrink yourself to make others comfortable?",
         "deeper": "What would it feel like to take up your full space?"
+      }
+    ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Kapalabhati: three rounds of thirty quick, forceful exhales through the nose, belly snapping in, inhales passive. Rest a minute between rounds.",
+        "seconds": 300,
+        "deeper": "How did your energy and focus feel afterward?",
+        "care": "Skip if pregnant, or with high blood pressure, a heart condition or epilepsy. Stop if you feel dizzy."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Boat pose: five holds of thirty seconds, resting fifteen between. Breathe into your core instead of holding your breath.",
+        "seconds": 240,
+        "deeper": "When it burned, what did you tell yourself?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Agni Sara: stand with hands on thighs, exhale fully, and on empty lungs pump the belly in and out ten times. Five rounds.",
+        "seconds": 240,
+        "deeper": "Where did you feel the fire afterward?",
+        "care": "Empty stomach only. Skip if pregnant or during your period."
+      },
+      {
+        "theme": "deep practice",
+        "text": "End your shower with sixty seconds of cold water, breathing slowly through it.",
+        "seconds": 60,
+        "deeper": "What did you learn about choosing discomfort?",
+        "care": "Skip with a heart condition or Raynaud's."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant RAM 108 times with force, one hand on your upper belly.",
+        "seconds": 600,
+        "deeper": "Did your voice get stronger or weaker as you went?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Write a letter from your most powerful self to your current self: what it sees, what it's tired of waiting for, and what it demands next.",
+        "deeper": "Which demand scares you most?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Do the thing you've avoided all week, today, before dinner.",
+        "deeper": "What was the avoiding really protecting you from?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Say no today to one request you'd normally say yes to out of guilt, without explaining yourself.",
+        "deeper": "What happened in your body as you said it?"
       }
     ],
     "practice": [
@@ -609,6 +758,54 @@ window.CHAKRAS = [
         "deeper": "What small part of that lives in how you treat people?"
       }
     ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Loving-kindness for a difficult person: for ten minutes, send \"May you be happy, may you be free from suffering\" to someone who hurt you.",
+        "seconds": 600,
+        "deeper": "Where did your heart close, and what happened when you breathed into it?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Camel pose: kneel, hands to your lower back or heels, and lift your chest open. Five breaths, three times.",
+        "seconds": 180,
+        "deeper": "What came up when your heart was exposed?",
+        "care": "Keep your neck long. Skip with a back injury."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Hold your own gaze in a mirror for five full minutes. Every time you look away and come back, say \"I love you.\"",
+        "seconds": 300,
+        "deeper": "What did you see in your eyes at minute four?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Let yourself grieve one loss fully, with music or photos, without pulling yourself together.",
+        "seconds": 900,
+        "deeper": "What does that grief say about how much you loved?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant YAM 108 times with both hands over your heart.",
+        "seconds": 600,
+        "deeper": "What softened?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Where do you give love to be needed, rather than freely?",
+        "deeper": "What would giving without needing anything back feel like?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Write a forgiveness letter to someone you still resent. Don't send it. Then write their reply as if they finally understood.",
+        "deeper": "What do you need, now that you've heard it?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Tell someone today something true and tender you've never said: \"I'm proud of you,\" \"I miss you,\" or \"You hurt me.\"",
+        "deeper": "What did that vulnerability cost, and what did it give?"
+      }
+    ],
     "practice": [
       {
         "text": "Give yourself a long hug. Arms all the way around, squeeze gently, and stay.",
@@ -723,6 +920,53 @@ window.CHAKRAS = [
         "theme": "truth",
         "text": "If your voice could say anything to the world right now, what would it say?",
         "deeper": "Say one sentence of it out loud."
+      }
+    ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Mauna: stay completely silent for two hours. No talking, no texting, no typing to anyone.",
+        "seconds": 7200,
+        "deeper": "What did you notice about the words you usually reach for?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Ujjayi breath for ten minutes: slow, ocean-sounding breaths with a slight squeeze at the back of the throat, inhale and exhale equal.",
+        "seconds": 600,
+        "deeper": "How did your throat feel when you finished?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Lion's breath: inhale through the nose, then exhale through a wide-open mouth, tongue out, with a loud \"haaa.\" Twelve rounds.",
+        "seconds": 120,
+        "deeper": "Did it feel freeing or embarrassing, and why?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Record yourself talking for three minutes about something you believe in. Listen back all the way through.",
+        "seconds": 180,
+        "deeper": "What would you change, and what do you secretly like?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant HAM 108 times, feeling the buzz in your throat.",
+        "seconds": 600,
+        "deeper": "Where did your voice want to go quiet?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Write the truth you'd say if no one could punish you for it. Then decide who needs to hear it.",
+        "deeper": "What would it cost to keep it in for another year?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Have the conversation you've been avoiding, within 24 hours. Speak in \"I feel… I need…\"",
+        "deeper": "What did your voice sound like when it was honest?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Sing a whole song out loud, alone, at full voice, and don't stop when it cracks.",
+        "deeper": "Where did you hold back?"
       }
     ],
     "practice": [
@@ -847,6 +1091,55 @@ window.CHAKRAS = [
         "deeper": "And what would you do next?"
       }
     ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Trataka: gaze at a candle flame without blinking for as long as you can, then close your eyes and hold the afterimage. Repeat for ten minutes.",
+        "seconds": 600,
+        "deeper": "What did you see in the darkness?",
+        "care": "Skip with epilepsy or an eye condition. Blink whenever you need to."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Nadi Shodhana: alternate-nostril breathing for ten minutes, in for 4, hold for 4, out for 8.",
+        "seconds": 600,
+        "deeper": "How balanced did you feel afterward?",
+        "care": "The breath holds are optional. Skip them if pregnant or with high blood pressure."
+      },
+      {
+        "theme": "deep practice",
+        "text": "Sit in complete darkness for fifteen minutes with your eyes open and watch what your mind shows you.",
+        "seconds": 900,
+        "deeper": "What did your mind fill the dark with?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "For ten minutes, picture your life five years from now in vivid detail: rooms, people, sounds, and how you feel.",
+        "seconds": 600,
+        "deeper": "What detail surprised you?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant OM 108 times, feeling it between your brows.",
+        "seconds": 600,
+        "deeper": "What image or color appeared?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Write down a belief you hold that might be an illusion, then argue against it as convincingly as you can.",
+        "deeper": "What shifts if it isn't true?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Keep a dream journal for seven mornings. Write before you touch your phone.",
+        "deeper": "Which symbols or feelings keep repeating?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Make one decision today using only your gut. Notice the first answer in your body before your mind argues.",
+        "deeper": "How did it turn out, and how did it feel to trust yourself?"
+      }
+    ],
     "practice": [
       {
         "text": "Eyes closed, imagine a deep indigo light between your brows, growing brighter with each breath.",
@@ -967,6 +1260,53 @@ window.CHAKRAS = [
         "theme": "peace",
         "text": "What would you tell yourself at the start of this journey, now that you've reached the end?",
         "deeper": "What will you carry into tomorrow?"
+      }
+    ],
+    "deepen": [
+      {
+        "theme": "deep practice",
+        "text": "Sit in silent meditation for twenty minutes. No music, no guidance. Each time you notice a thought, return to the breath.",
+        "seconds": 1200,
+        "deeper": "What was underneath the thoughts when they paused?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Self-inquiry: ask yourself \"Who am I?\" Each time an answer comes (a name, a role, a feeling), ask \"Who is noticing that?\"",
+        "seconds": 900,
+        "deeper": "What was left when every answer fell away?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Yoga nidra: lie down and move your awareness slowly through every part of your body, staying awake at the edge of sleep.",
+        "seconds": 1200,
+        "deeper": "Where were you at the deepest point?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Spend one hour with no phone and no media, outside if you can, simply present.",
+        "seconds": 3600,
+        "deeper": "What came to you in the empty space?"
+      },
+      {
+        "theme": "deep practice",
+        "text": "Chant AUM, or sit in silence, for 108 breaths, ending in total stillness.",
+        "seconds": 900,
+        "deeper": "What was the stillness like?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "For ten minutes, imagine it's the last evening of a life fully lived. What matters now?",
+        "deeper": "What will you change tomorrow because of it?"
+      },
+      {
+        "theme": "inquiry",
+        "text": "Write down every person, being and force that made today possible, going back as far as you can.",
+        "deeper": "How did it feel to see how held you are?"
+      },
+      {
+        "theme": "real-life challenge",
+        "text": "Go a whole day without complaining. Each time you catch one, replace it with a blessing.",
+        "deeper": "What did your mind reach for instead?"
       }
     ],
     "practice": [

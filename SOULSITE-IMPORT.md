@@ -41,7 +41,7 @@ Nothing is sent anywhere. Every question and follow-up is hand-written.
 | `entries[].createdAt` | When the answer was kept (ISO 8601, UTC). Use as the journal entry's date. |
 | `entries[].kind` | Always `"chakra-reflection"` for now. |
 | `entries[].chakra` | Which of the seven chakras. `id` is one of `root`, `sacral`, `solar`, `heart`, `throat`, `thirdeye`, `crown`. |
-| `entries[].deck` | `reflect` (a question), `practice` (a small ritual; the answer is how it felt) or `intimacy` (adults-only sacral questions). |
+| `entries[].deck` | `reflect` (a question), `practice` (a small ritual; the answer is how it felt), `deepen` (a challenging practice or inquiry for people already open) or `intimacy` (adults-only sacral self-intimacy). |
 | `entries[].theme` | Small theme label, such as `boundaries` or `self-worth`. Can be `null`. |
 | `entries[].prompt` | The question or practice, exactly as shown. Good as the journal entry's title or "today's question". |
 | `entries[].followUp` | The "Go deeper" question, or `null`. |

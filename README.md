@@ -72,6 +72,11 @@ All cards live in `cards.js`. A card can be plain text, or an object:
 - `{ "text": "...", "seconds": 60 }` adds a timer (good for practices)
 - `{ "text": "...", "deeper": "...", "theme": "..." }` adds a "Go deeper" follow-up question and a small theme label
 
+Every chakra also has a `deepen` deck: challenging practices for people who are already open
+(bandhas, kapalabhati, nadi shodhana, trataka, 108 rounds of the seed mantra, long holds and
+silences, self-inquiry, real-life challenges and hard inquiry). It opens once that chakra is
+awake, counts double toward the temple, and a card can carry a `care` safety note.
+
 A chakra can also have an `intimacy` deck, shown behind an 18+ check. Sacral has one: intimacy with yourself, covering your body and senses, pleasure and desire, shame and healing, plus a few self-love rituals.
 
 Each chakra also has a `bija` (seed sound) and an `affirmation`, shown when it awakens.

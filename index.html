@@ -189,6 +189,10 @@
   .card .sitter { position: absolute; top: -58px; right: 18px; }
   .card .sitter .buddy { width: 68px; height: 68px; margin: 0; }
   .card .text { font-size: 22px; line-height: 1.4; font-weight: 700; }
+  .care { margin: 14px 0 0; padding: 8px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 600; line-height: 1.45; color: #ffe7c2;
+    background: rgba(255,217,138,.08); border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent); }
+  .care[hidden] { display: none; }
+  .choice button.locked { opacity: .5; }
   .deep-btn { margin-top: 18px; padding: 8px 16px; border-radius: 999px; font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .14em;
     text-transform: uppercase; color: var(--rose); background: color-mix(in srgb, var(--rose) 12%, transparent); border: 1px solid color-mix(in srgb, var(--rose) 45%, transparent); }
   .deep-btn[hidden], .deeper[hidden] { display: none; }
@@ -580,6 +584,7 @@
     <div class="choice">
       <button id="pick-reflect"><span class="ico">☾</span><span><b>Reflect</b><span>A question to answer from the heart.</span></span><span class="go">↗</span></button>
       <button id="pick-practice"><span class="ico">✦</span><span><b>Practice</b><span>Breath, movement, kind words, a little ritual.</span></span><span class="go">↗</span></button>
+      <button id="pick-deepen"><span class="ico">✦✦</span><span><b>Deepen</b><span id="p-deep-sub">Challenging practices for those already open.</span></span><span class="go">↗</span></button>
       <button id="pick-intimacy" hidden><span class="ico">♡</span><span><b>Intimacy<small>18+</small></b><span>Closeness with yourself: your body, pleasure and desire.</span></span><span class="go">↗</span></button>
     </div>
     <div class="grow"></div>
@@ -592,6 +597,7 @@
       <div class="sitter" id="c-buddy"></div>
       <p class="label" id="c-meta" style="margin-bottom:12px"></p>
       <div class="text" id="c-text"></div>
+      <p class="care" id="c-care" hidden></p>
       <button class="deep-btn" id="c-deep-btn" hidden>Go deeper ✦</button>
       <div class="deeper" id="c-deep" hidden><p class="label">go deeper</p><p id="c-deep-t"></p></div>
       <div class="timer" id="c-timer" hidden>
@@ -911,6 +917,9 @@ function startPick() {
   const c = ch(); setGlow(c.color); drawDock(); crumb(c.name.toLowerCase(), "choose");
   $("p-buddy").innerHTML = buddy(c, moodNow(), "small");
   $("pick-intimacy").hidden = !c.intimacy;
+  const canDeep = S.opened[S.step] && c.deepen;
+  $("pick-deepen").classList.toggle("locked", !canDeep);
+  $("p-deep-sub").textContent = canDeep ? "Challenging practices for those already open. Counts double." : `Opens once ${c.name} is awake.`;
   S.card = null; save(); show("s-pick");
 }
 
@@ -931,10 +940,11 @@ function renderCard() {
   stopTimer();
   const c = ch(), k = S.card; setGlow(c.color); drawDock();
   crumb(c.name.toLowerCase(), k.type);
-  $("c-meta").textContent = `${c.name} · ${k.type === "intimacy" ? "intimacy 18+" : k.type}${k.theme ? " · " + k.theme : ""}`;
+  $("c-meta").textContent = `${c.name} · ${k.type === "intimacy" ? "intimacy 18+" : k.type === "deepen" ? "deepen ✦✦" : k.type}${k.theme ? " · " + k.theme : ""}`;
+  $("c-care").hidden = !k.care; $("c-care").textContent = k.care ? "Take care: " + k.care : "";
   $("c-deep-btn").hidden = !k.deeper; $("c-deep").hidden = true; $("c-deep-t").textContent = k.deeper || "";
   $("c-ans").value = k.draft || "";
-  $("c-ans").placeholder = k.type === "practice" ? "How did it feel? (optional)" : "Write your answer… (optional, stays on this device)";
+  $("c-ans").placeholder = k.type === "practice" ? "How did it feel? (optional)" : k.type === "deepen" ? "What came up? (optional, stays on this device)" : "Write your answer… (optional, stays on this device)";
   $("c-kept").textContent = "";
   $("c-buddy").innerHTML = buddy(c, moodNow());
   $("c-text").textContent = k.text;
@@ -967,13 +977,14 @@ function finishCard(completed) {
   stopTimer();
   const c = ch(), wasOpen = S.opened[S.step], i = S.step;
   let gainText = "";
+  const deep = S.card?.type === "deepen";
   if (completed) {
-    S.opened[i] = true; S.glow[i] = Math.max(i === 0 && S.firstLight ? S.firstLight : 1, S.glow[i]); S.cards[i] += 1;
+    S.opened[i] = true; S.glow[i] = Math.max(i === 0 && S.firstLight ? S.firstLight : 1, S.glow[i]); S.cards[i] += deep ? 2 : 1;
     if (i === 0) S.firstLight = 0;
     const streakUp = bumpStreak();
-    const g = cardReward(i, !wasOpen); earn(g);
+    const g = cardReward(i, !wasOpen) * (deep ? 2 : 1); earn(g);
     const newSeekers = (wasOpen ? 3 : 10) + (wrote ? 5 : 0); S.seekers += newSeekers;
-    gainText = [`+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
+    gainText = [deep ? "deep work ×2 ✦✦" : "", `+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
       `+${newSeekers} seekers`, wrote ? "insight +2% ✎" : "", streakUp ? `day ${S.streak.n} streak ✦` : ""].filter(Boolean).join(" · ");
   }
   S.card = null; save(); drawDock();
@@ -1678,6 +1689,10 @@ $("t-skip").onclick = startIntro;
 $("ready").onclick = startPick;
 $("pick-reflect").onclick = () => draw("reflect");
 $("pick-practice").onclick = () => draw("practice");
+$("pick-deepen").onclick = () => {
+  if (!S.opened[S.step]) { toast(`Finish a ${ch().name} card first, then Deepen opens ✦✦`); return; }
+  draw("deepen");
+};
 $("pick-intimacy").onclick = () => {
   if (store.get("cj.adult")) return draw("intimacy");
   const d = $("adult");
