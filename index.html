@@ -1371,6 +1371,7 @@ const petalsFor = () => Math.floor(Math.sqrt(S.total / CYCLE_AT));
 
 // move time forward: bars fill, guides collect, seekers drift in. Returns light gathered.
 function advance(dt) {
+  if (!(dt > 0)) return 0;
   let got = 0;
   CHAKRAS.forEach((_, i) => {
     if (!S.opened[i]) return;
@@ -1852,7 +1853,8 @@ $("h-cycle").onclick = () => {
 // the tick: bars fill and guides keep working, even with the screen closed
 let lastTick = Date.now(), lastSave = 0;
 setInterval(() => {
-  const now = Date.now(), dt = Math.min((now - lastTick) / 1000, S && S.glow ? restCap() : OFFLINE_CAP); lastTick = now;
+  // time only moves forward: if the clock jumps back, nothing is lost (and nothing is gained)
+  const now = Date.now(), dt = Math.max(0, Math.min((now - lastTick) / 1000, S && S.glow ? restCap() : OFFLINE_CAP)); lastTick = now;
   if (!S || !S.glow) return;
   advance(dt); S.lastSeen = now;
   if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / ((1 + .25 * sk("starlit")) * (1 + gift(1) / 100) * (levelNow() === 0 ? 1.25 : 1)); }
@@ -1862,8 +1864,10 @@ setInterval(() => {
 // what gathered while the game was closed: worked out the moment it opens, shown when you come in
 let awayGift = null;
 function gatherAway() {
-  const away = Math.min((Date.now() - (S.lastSeen || Date.now())) / 1000, restCap());
-  S.lastSeen = Date.now(); lastTick = Date.now();
+  const now = Date.now(), seen = Number.isFinite(S.lastSeen) ? S.lastSeen : now;
+  // a clock that moved backwards (or a save from "the future") counts as no time away
+  const away = seen > now ? 0 : Math.min((now - seen) / 1000, restCap());
+  S.lastSeen = now; lastTick = now;
   if (away < 60) return;
   const seekers0 = S.seekers, g = advance(away);
   save();
