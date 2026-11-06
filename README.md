@@ -14,6 +14,26 @@ or psychological advice.
 
 Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it feel like an app.
 
+## Your sky (the idle side)
+
+After the first chakra wakes, **Your sky** becomes home: a ladder of the seven chakras, root at the
+bottom. Every awakened chakra gathers ✦ light each second, even while the game is closed (up to
+8 hours, collected as a welcome-back gift).
+
+- **Glow:** spend light to raise a chakra's glow level (×1, ×10 or Max). Costs grow 15% per level.
+  Glow 10, 25, 50, 100, 150… doubles that chakra's output.
+- **Cards are power:** chakras wake only by finishing a card, root to crown. Every card done in a
+  chakra adds +25% to it for good, and pays a burst of light.
+- **Insight:** every answer kept in the journal adds +2% to all light (up to +200%).
+- **Streak:** playing on new days adds +10% per day (up to +100%). Missed days lower it gently,
+  they never wipe it out.
+- **Tap** an awake buddy for a little light.
+- **New cycle:** with all seven awake and 1M light gathered in a cycle, be reborn for lotus petals
+  (+10% light each, forever). Light and glow start over; cards, journal, streak and petals stay.
+
+The numbers live at the top of the "your sky" section in `index.html` (`BASE`, `COST0`, `GROWTH`,
+`MILES`, `CYCLE_AT`) if you want to tune the pace.
+
 ## Your journal
 
 Players can write an answer on any card. Answers stay on their device, and from **Your journal**

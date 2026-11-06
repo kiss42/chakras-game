@@ -231,7 +231,7 @@
   .dock .open i { opacity: 1; background: radial-gradient(circle at 35% 30%, #fff, var(--c) 45%, color-mix(in srgb, var(--c) 55%, #000)); box-shadow: 0 0 10px var(--c); }
   .dock .now { border-color: color-mix(in srgb, var(--c) 70%, transparent); background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--chalk); }
   .dock .now i { opacity: 1; }
-  body.home .dock-wrap, body.end .dock-wrap { display: none; }
+  body.home .dock-wrap, body.end .dock-wrap, body.hub .dock-wrap, body.jour .dock-wrap { display: none; }
 
   .ending { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; width: 100%; }
   .ending div { text-align: center; font-family: "Space Mono", monospace; font-size: 9px; color: var(--fog); text-transform: lowercase; }
@@ -352,6 +352,58 @@
     #print .foot { margin-top: 24pt; text-align: center; font-size: 8pt; color: #8a7590; }
   }
 
+  /* ---------- your sky: the idle hub ---------- */
+  .hl { font-family: "Space Mono", monospace; font-size: 11px; color: var(--gold); letter-spacing: .04em; white-space: nowrap; }
+  body.home .hl { display: none; }
+  .crumb { white-space: nowrap; }
+  body.hub .crumb { display: none; }
+  .top-r { gap: 8px !important; }
+  @media (max-width: 400px) { .brand { font-size: 15px; letter-spacing: .2em; } .crumb { max-width: 92px; overflow: hidden; text-overflow: ellipsis; } }
+  .rung.locked { grid-template-columns: 36px 1fr auto; padding: 4px 10px 4px 6px; }
+  .rung.locked .buddy { width: 36px; height: 36px; }
+  .rung.locked .rr, .rung.locked .mbar { display: none; }
+  .rung.locked b { font-size: 12px; }
+  .lightbar { text-align: center; padding: 6px 0 2px; }
+  .lnum { font-family: "Cinzel", serif; font-weight: 700; font-size: 44px; line-height: 1; color: #fff;
+    text-shadow: 0 0 18px color-mix(in srgb, var(--gold) 70%, transparent), 0 0 40px color-mix(in srgb, var(--rose) 50%, transparent); font-variant-numeric: tabular-nums; }
+  .lunit { display: block; font-family: "Pinyon Script", cursive; font-size: 22px; color: var(--gold); margin-top: 2px; }
+  .lrate { font-family: "Space Mono", monospace; font-size: 12px; color: var(--fog); margin-top: 4px; letter-spacing: .06em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 12px 0 4px; }
+  .chip { font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px;
+    background: rgba(42,27,51,.85); border: 1px solid color-mix(in srgb, var(--rose) 30%, transparent); color: var(--chalk); }
+  .chip b { color: var(--gold); font-weight: 700; }
+  .buymode { display: flex; justify-content: flex-end; gap: 4px; margin: 10px 0 6px; }
+  .buymode button { font-family: "Space Mono", monospace; font-size: 11px; padding: 4px 10px; border-radius: 999px; color: var(--fog);
+    background: none; border: 1px solid color-mix(in srgb, var(--rose) 25%, transparent); }
+  .buymode button.on { color: #2a0f2b; background: var(--rose); border-color: var(--rose); }
+  .ladder { display: grid; gap: 8px; }
+  .rung { display: grid; grid-template-columns: 50px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px 8px 6px; border-radius: 18px;
+    background: rgba(27,18,34,.85); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); position: relative; }
+  .rung.awake { box-shadow: 0 0 18px -8px var(--c); }
+  .rung.locked { opacity: .45; }
+  .rung .buddy { width: 50px; height: 50px; margin: 0; }
+  .rung b { font-family: "Cinzel", serif; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+  .rung .lv { font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--c); margin-left: 6px; }
+  .rung .rr { font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--fog); margin-top: 2px; }
+  .rung .mbar { height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); margin-top: 6px; overflow: hidden; }
+  .rung .mbar i { display: block; height: 100%; width: 0; background: var(--c); box-shadow: 0 0 8px var(--c); transition: width .3s; }
+  .ra { display: flex; gap: 6px; align-items: center; }
+  .ra button { border-radius: 14px; padding: 7px 10px; font-weight: 700; font-size: 12px; line-height: 1.15; text-align: center; transition: transform .1s, opacity .2s; }
+  .ra button:active { transform: scale(.94); }
+  .ra .glow-b { color: #2a0f2b; background: linear-gradient(180deg, #ffe7c2, var(--gold)); min-width: 78px; }
+  .ra .glow-b small { display: block; font-family: "Space Mono", monospace; font-size: 9.5px; font-weight: 700; opacity: .8; }
+  .ra .glow-b:disabled { background: rgba(255,255,255,.07); color: var(--fog); cursor: default; }
+  .ra .card-b { color: var(--chalk); background: color-mix(in srgb, var(--c) 25%, transparent); border: 1px solid color-mix(in srgb, var(--c) 60%, transparent); font-size: 15px; width: 36px; height: 40px; padding: 0; }
+  .ra .awk-b { color: #2a0f2b; background: linear-gradient(180deg, #fff, var(--c)); padding: 10px 14px; animation: beckon 1.8s ease-in-out infinite; }
+  @keyframes beckon { 0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 60%, transparent); } 50% { box-shadow: 0 0 16px 3px color-mix(in srgb, var(--c) 60%, transparent); } }
+  .ra .lock { font-family: "Space Mono", monospace; font-size: 10px; color: var(--fog); max-width: 84px; text-align: right; }
+  .cyclebox { margin-top: 14px; padding: 14px 16px; border-radius: 20px; text-align: center; background: rgba(27,18,34,.85);
+    border: 1px dashed color-mix(in srgb, var(--gold) 50%, transparent); }
+  .cyclebox p { margin: 0 0 4px; font-size: 13px; color: var(--fog); font-weight: 500; }
+  .cyclebox .btn { margin-top: 8px; background: linear-gradient(180deg, #fff3d6, var(--gold) 60%, #e0a95a); }
+  .gain { font-family: "Space Mono", monospace; font-size: 12px; color: var(--gold); letter-spacing: .04em; margin: 2px 0 0; line-height: 1.6; }
+  .big { font-family: "Cinzel", serif; font-size: 36px; font-weight: 700; color: #fff; text-shadow: 0 0 20px var(--gold); margin: 4px 0 18px; }
+
   .fx { position: fixed; z-index: 9; pointer-events: none; font-weight: 700; line-height: 1; }
   footer { text-align: center; font-family: "Space Mono", monospace; font-size: 10px; color: var(--fog); opacity: .6; margin-top: 16px; line-height: 1.5; }
 
@@ -385,7 +437,7 @@
 <main>
   <header class="top">
     <div class="brand"><svg viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ff9ed1"/></svg>CHAKRAS</div>
-    <div class="top-r"><div class="crumb" id="crumb"></div><button class="jbtn" id="open-journal" aria-label="Your journal">✎</button><button class="sound" id="sound" aria-pressed="true" aria-label="Sound">♪</button></div>
+    <div class="top-r"><span class="hl" id="hdr-light"></span><div class="crumb" id="crumb"></div><button class="jbtn" id="open-journal" aria-label="Your journal">✎</button><button class="sound" id="sound" aria-pressed="true" aria-label="Sound">♪</button></div>
   </header>
 
   <!-- welcome -->
@@ -403,6 +455,23 @@
     <button class="btn" id="begin" style="margin-top:18px">Start the journey</button>
     <button class="link" id="resume" hidden>Continue where you left off</button>
     <button class="link" id="w-journal" hidden style="padding-top:0"></button>
+  </section>
+
+  <!-- your sky: the idle hub -->
+  <section class="screen" id="s-hub">
+    <div class="lightbar">
+      <span class="lnum" id="h-light">0</span>
+      <span class="lunit">light gathered</span>
+      <div class="lrate" id="h-rate">+0 per second</div>
+    </div>
+    <div class="chips"><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
+    <div class="buymode" id="h-buy"><button data-m="1" class="on">×1</button><button data-m="10">×10</button><button data-m="max">Max</button></div>
+    <div class="ladder" id="h-ladder"></div>
+    <div class="cyclebox">
+      <p class="label" style="justify-content:center">a new cycle</p>
+      <p id="h-cycle-t"></p>
+      <button class="btn" id="h-cycle" hidden></button>
+    </div>
   </section>
 
   <!-- travel -->
@@ -481,7 +550,8 @@
       <div id="r-buddy"></div>
     </div>
     <h2 id="r-title" style="margin-top:18px"></h2>
-    <p class="muted" id="r-sub" style="max-width:310px"></p>
+    <p class="muted" id="r-sub" style="max-width:310px;margin-bottom:4px"></p>
+    <p class="gain" id="r-gain"></p>
     <div class="grow"></div>
     <button class="btn" id="next">Onward</button>
     <button class="btn ghost" id="more" style="margin-top:10px">One more card here</button>
@@ -497,7 +567,7 @@
     <p class="muted" id="e-sub" style="max-width:320px"></p>
     <div class="grow"></div>
     <button class="btn" id="e-journal" hidden>Save your answers</button>
-    <button class="btn ghost" id="again" style="margin-top:10px">Journey again</button>
+    <button class="btn ghost" id="again" style="margin-top:10px">Back to your sky</button>
   </section>
 
   <!-- journal -->
@@ -526,6 +596,15 @@
 </div>
 
 <div id="print"></div>
+
+<dialog class="ask" id="away">
+  <form method="dialog">
+    <h3>While you rested</h3>
+    <p id="away-t">your chakras kept glowing and gathered</p>
+    <div class="big" id="away-n"></div>
+    <button class="btn" value="ok">Collect</button>
+  </form>
+</dialog>
 
 <dialog class="ask" id="adult">
   <form method="dialog">
@@ -697,7 +776,12 @@ function boop(el) {
   } else {
     el.classList.remove("boop"); void el.getBoundingClientRect(); el.classList.add("boop");
     setTimeout(() => el.classList.remove("boop"), 520);
-    burst(el, { n: 6, glyphs: ["♡", "♡", "✧"], spread: 80, up: 1 });
+    const i = CHAKRAS.findIndex((k) => k.id === el.dataset.id);
+    if (S && S.glow && i >= 0 && S.opened[i]) {
+      const g = tapGain(i); earn(g);
+      burst(el, { n: 1, glyphs: ["+" + fmtN(g) + "✦"], spread: 50, up: 1 });
+      burst(el, { n: 3, glyphs: ["♡", "✧"], spread: 70, up: 1 });
+    } else burst(el, { n: 6, glyphs: ["♡", "♡", "✧"], spread: 80, up: 1 });
   }
 }
 document.addEventListener("click", (e) => { const b = e.target.closest(".buddy"); if (b) boop(b); });
@@ -713,6 +797,8 @@ function show(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id));
   document.body.classList.toggle("home", id === "s-welcome");
   document.body.classList.toggle("end", id === "s-end");
+  document.body.classList.toggle("hub", id === "s-hub");
+  document.body.classList.toggle("jour", id === "s-journal");
   window.scrollTo(0, 0);
 }
 function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#ff9ed1"); }
@@ -813,10 +899,17 @@ $("c-start").onclick = () => {
 };
 
 function finishCard(completed) {
-  keepAnswer();
+  const wrote = keepAnswer();
   stopTimer();
-  const c = ch(), wasOpen = S.opened[S.step];
-  if (completed) S.opened[S.step] = true;
+  const c = ch(), wasOpen = S.opened[S.step], i = S.step;
+  let gainText = "";
+  if (completed) {
+    S.opened[i] = true; S.glow[i] = Math.max(1, S.glow[i]); S.cards[i] += 1;
+    const streakUp = bumpStreak();
+    const g = cardReward(i, !wasOpen); earn(g);
+    gainText = [`+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
+      wrote ? "insight +2% ✎" : "", streakUp ? `day ${S.streak.n} streak ✦` : ""].filter(Boolean).join(" · ");
+  }
   S.card = null; save(); drawDock();
   const open = S.opened[S.step], fresh = open && !wasOpen;
   setGlow(c.color); crumb(c.name.toLowerCase(), open ? "awake" : "resting");
@@ -825,7 +918,8 @@ function finishCard(completed) {
   $("r-say").style.animation = "none"; void $("r-say").offsetWidth; $("r-say").style.animation = "";
   $("r-title").textContent = open ? (wasOpen ? `${c.name} glows brighter` : `${c.name} is awake`) : `${c.name} is still snoozing`;
   $("r-sub").textContent = open ? `“${c.affirmation}”` : "That's okay. Try another card, or let it rest until next time.";
-  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Drift onward";
+  $("r-gain").textContent = gainText;
+  $("next").textContent = S.opened.every(Boolean) && !S.grand ? "See your journey" : "Back to your sky";
   show("s-result");
   const celebrate = () => open && setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
   if (fresh) awaken(S.step, celebrate); else { if (open) chime(S.step, 2.5, .14); celebrate(); }
@@ -841,7 +935,7 @@ function showEnd() {
     ? "Root to crown. Be soft with yourself tonight, you earned it."
     : "Every step counts. The sleepy ones will wake in their own time.";
   $("e-journal").hidden = !journal().length;
-  store.del("cj.solo"); show("s-end");
+  save(); show("s-end");
   [...$("e-chain").querySelectorAll(".open .buddy")].forEach((b, i) => setTimeout(() => burst(b, { n: 5, spread: 60 }), 300 + i * 180));
 }
 
@@ -941,7 +1035,8 @@ document.addEventListener("keydown", (e) => { if (!$("aw").hidden && awReady && 
 
 // ---------- journal: answers saved on this device, exported as PDF / SoulSite file / text ----------
 const journal = () => store.get("cj.journal") || [];
-const setJournal = (j) => store.set("cj.journal", j);
+let jCount = journal().length;
+const setJournal = (j) => { store.set("cj.journal", j); jCount = j.length; };
 const esc = (t) => String(t).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[m]);
 function toast(msg) {
   const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
@@ -951,7 +1046,7 @@ function toast(msg) {
 $("c-ans").addEventListener("input", () => { if (S?.card) { S.card.draft = $("c-ans").value; save(); } });
 function keepAnswer() {
   const text = $("c-ans").value.trim(), k = S?.card;
-  if (!text || !k) return;
+  if (!text || !k) return false;
   const c = ch(), j = journal();
   j.push({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
@@ -962,6 +1057,7 @@ function keepAnswer() {
   });
   setJournal(j); $("c-ans").value = ""; k.draft = ""; save();
   toast("Kept in your journal ✦");
+  return true;
 }
 const order = (e) => CHAKRAS.findIndex((c) => c.id === e.chakra.id);
 const sorted = () => journal().slice().sort((a, b) => order(a) - order(b) || a.createdAt.localeCompare(b.createdAt));
@@ -991,6 +1087,7 @@ $("w-journal").onclick = openJournal;
 $("e-journal").onclick = openJournal;
 $("j-back").onclick = () => {
   if (beforeJournal === "s-card" && S?.card) return renderCard();
+  if (beforeJournal === "s-hub") return openHub();
   if (beforeJournal === "s-welcome" || !S) { refreshWelcome(); return show("s-welcome"); }
   show(beforeJournal);
 };
@@ -1041,17 +1138,188 @@ function refreshWelcome() {
   $("w-journal").textContent = `Your journal (${n} ${n === 1 ? "answer" : "answers"})`;
 }
 
+// ---------- your sky: light, glow levels, streaks, cycles ----------
+const BASE = [1, 4, 15, 60, 240, 1000, 4000];               // light per second per glow level
+const COST0 = [10, 120, 1500, 18000, 220000, 2.6e6, 3.2e7]; // first glow level price
+const GROWTH = 1.15, MILES = [10, 25, 50, 100, 150, 200, 300, 400, 500, 750, 1000];
+const CYCLE_AT = 1e6, OFFLINE_CAP = 8 * 3600;
+const UNITS = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
+function fmtN(n) {
+  if (n < 1000) return Math.floor(n).toString();
+  let u = -1; while (n >= 1000 && u < UNITS.length - 1) { n /= 1000; u++; }
+  return (n < 10 ? n.toFixed(2) : n < 100 ? n.toFixed(1) : Math.floor(n)) + UNITS[u];
+}
+function newState() {
+  return { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null,
+    light: 0, total: 0, lifetime: 0, glow: CHAKRAS.map(() => 0), cards: CHAKRAS.map(() => 0),
+    petals: 0, cycle: 1, grand: false, streak: { n: 0, last: "" }, lastSeen: Date.now(), buy: "1" };
+}
+function normalize(x) {
+  const d = newState();
+  for (const k in d) if (x[k] === undefined) x[k] = d[k];
+  // anything awakened before the idle update starts glowing at level 1
+  x.opened.forEach((o, i) => { if (o && !x.glow[i]) x.glow[i] = 1; });
+  return x;
+}
+const milesOf = (g) => MILES.filter((m) => g >= m).length;
+const nextMile = (g) => MILES.find((m) => m > g);
+const prevMile = (g) => [0, ...MILES].filter((m) => m <= g).pop();
+const insightMult = () => 1 + .02 * Math.min(jCount, 100);
+const streakMult = () => 1 + .1 * Math.min(S.streak.n, 10);
+const globalMult = () => (1 + .1 * S.petals) * insightMult() * streakMult();
+const chakraRate = (i) => S.opened[i] ? BASE[i] * S.glow[i] * 2 ** milesOf(S.glow[i]) * (1 + .25 * S.cards[i]) * globalMult() : 0;
+const rate = () => CHAKRAS.reduce((t, _, i) => t + chakraRate(i), 0);
+const costOf = (i, n) => COST0[i] * GROWTH ** S.glow[i] * (GROWTH ** n - 1) / (GROWTH - 1);
+const maxBuy = (i) => Math.max(0, Math.floor(Math.log(S.light * (GROWTH - 1) / (COST0[i] * GROWTH ** S.glow[i]) + 1) / Math.log(GROWTH)));
+const buyCount = (i) => S.buy === "max" ? Math.max(1, maxBuy(i)) : +S.buy;
+const tapGain = (i) => Math.max(1, BASE[i] * (1 + .25 * S.cards[i]) + rate() * .03);
+const cardReward = (i, fresh) => Math.round((rate() * 45 + BASE[i] * 25 * (1 + S.glow[i])) * (fresh ? 2 : 1));
+function earn(g) { S.light += g; S.total += g; S.lifetime += g; }
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+function bumpStreak() {
+  const today = dayKey(); if (S.streak.last === today) return false;
+  const gap = S.streak.last ? Math.round((new Date(today) - new Date(S.streak.last)) / 864e5) : 1;
+  // a gentle streak: rest days only lower it a little, they never wipe it out
+  S.streak.n = gap <= 1 ? S.streak.n + 1 : Math.max(1, S.streak.n - (gap - 1) + 1);
+  S.streak.last = today; return true;
+}
+const petalsFor = () => Math.floor(Math.sqrt(S.total / CYCLE_AT));
+
+function buyGlow(i) {
+  const n = buyCount(i), cost = costOf(i, n);
+  if (!S.opened[i] || n < 1 || cost > S.light) return;
+  const before = milesOf(S.glow[i]);
+  S.light -= cost; S.glow[i] += n;
+  const row = $("h-ladder").querySelector(`[data-i="${i}"]`);
+  chime(i, .9, .06); navigator.vibrate?.(8);
+  if (milesOf(S.glow[i]) > before) {
+    toast(`${CHAKRAS[i].name} resonance ×2 ✦`); bowl(NOTES[i], 3, .16);
+    burst(row?.querySelector(".buddy"), { n: 14, spread: 110 });
+  } else burst(row?.querySelector(".buddy"), { n: 3, glyphs: ["✦", "✧"], spread: 50, up: 1 });
+  save(); updateHub();
+}
+
+function renderHub() {
+  const firstAsleep = S.opened.indexOf(false);
+  $("h-ladder").innerHTML = CHAKRAS.map((c, i) => i).reverse().map((i) => {
+    const c = CHAKRAS[i], awake = S.opened[i], canWake = i === firstAsleep;
+    const act = awake
+      ? `<button class="card-b" data-card="${i}" aria-label="Do a ${c.name} card">☾</button><button class="glow-b" data-glow="${i}">Glow +<span class="n">1</span><small class="c"></small></button>`
+      : canWake ? `<button class="awk-b" data-wake="${i}">Awaken ✦</button>`
+      : `<span class="lock">awaken ${CHAKRAS[i - 1].name.replace(" Plexus", "")} first</span>`;
+    return `<div class="rung ${awake ? "awake" : canWake ? "" : "locked"}" data-i="${i}" style="--c:${c.color}">
+      ${buddy(c, awake ? "awake" : "sleep")}
+      <div><b>${c.name}</b><span class="lv"></span><div class="rr"></div><div class="mbar"><i></i></div></div>
+      <div class="ra">${act}</div></div>`;
+  }).join("");
+  $("h-buy").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.m === S.buy));
+  updateHub();
+}
+function updateHub() {
+  const r = rate();
+  $("hdr-light").textContent = S && S.glow ? "✦ " + fmtN(S.light) : "";
+  if (current !== "s-hub") return;
+  $("h-light").textContent = fmtN(S.light);
+  $("h-rate").textContent = `+${fmtN(r)} per second`;
+  $("h-streak").innerHTML = `streak <b>${S.streak.n}</b> day${S.streak.n === 1 ? "" : "s"} · ×${streakMult().toFixed(1)}`;
+  $("h-insight").innerHTML = `insight <b>${jCount}</b> ✎ · ×${insightMult().toFixed(2)}`;
+  $("h-petals").innerHTML = `petals <b>${S.petals}</b> ❀ · ×${(1 + .1 * S.petals).toFixed(1)}`;
+  $("h-ladder").querySelectorAll(".rung").forEach((row) => {
+    const i = +row.dataset.i, g = S.glow[i];
+    row.querySelector(".lv").textContent = S.opened[i] ? `Lv ${g}` : "asleep";
+    row.querySelector(".rr").textContent = S.opened[i]
+      ? `+${fmtN(chakraRate(i))}/s · ☾ ${S.cards[i]} card${S.cards[i] === 1 ? "" : "s"}`
+      : "finish a card to awaken";
+    const lo = prevMile(g), hi = nextMile(g);
+    row.querySelector(".mbar i").style.width = hi ? `${(100 * (g - lo)) / (hi - lo)}%` : "100%";
+    const gb = row.querySelector(".glow-b");
+    if (gb) {
+      const n = buyCount(i), cost = costOf(i, n);
+      gb.querySelector(".n").textContent = n; gb.querySelector(".c").textContent = "✦ " + fmtN(cost);
+      gb.disabled = cost > S.light;
+    }
+  });
+  const all = S.opened.every(Boolean), p = petalsFor();
+  $("h-cycle-t").textContent = !all
+    ? `Awaken all seven, then gather ${fmtN(CYCLE_AT)} light to be reborn with lotus petals (+10% light each, forever).`
+    : p < 1 ? `${fmtN(S.total)} / ${fmtN(CYCLE_AT)} light gathered this cycle.`
+    : `Begin cycle ${S.cycle + 1}: your light and glow return to the start, your cards, words and petals stay.`;
+  $("h-cycle").hidden = !(all && p >= 1);
+  $("h-cycle").textContent = `Be reborn · +${p} petal${p === 1 ? "" : "s"} ❀`;
+}
+function openHub() {
+  if (!S) return show("s-welcome");
+  stopTimer(); clearInterval(travelTimer);
+  setGlow("#ff9ed1"); crumb("your sky"); save();
+  show("s-hub"); renderHub();
+  // bring the chakra you're working on into view (the ladder rises from root at the bottom)
+  const frontier = $("h-ladder").querySelector(".awk-b")?.closest(".rung");
+  if (frontier) setTimeout(() => frontier.scrollIntoView({ block: "center", behavior: still ? "auto" : "smooth" }), 350);
+}
+$("h-ladder").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.glow) buyGlow(+b.dataset.glow);
+  else if (b.dataset.card) { S.step = +b.dataset.card; startPick(); }
+  else if (b.dataset.wake) { S.step = +b.dataset.wake; travel(); }
+});
+$("h-buy").addEventListener("click", (e) => { const m = e.target.dataset?.m; if (m) { S.buy = m; save(); renderHub(); } });
+$("h-cycle").onclick = () => {
+  const p = petalsFor(); if (p < 1) return;
+  if (!confirm(`Be reborn with ${p} lotus petal${p === 1 ? "" : "s"}?\n\nYour light and glow levels start over and your chakras fall asleep again. Your cards, journal, streak and petals stay, and every petal gives +10% light forever.`)) return;
+  Object.assign(S, { petals: S.petals + p, cycle: S.cycle + 1, light: 0, total: 0, grand: false, step: 0, card: null,
+    glow: CHAKRAS.map(() => 0), opened: CHAKRAS.map(() => false) });
+  NOTES.forEach((f, k) => bowl(f, 5, .06, k * .12)); save();
+  toast(`Cycle ${S.cycle} begins ❀`); travel();
+};
+
+// the idle tick: light keeps gathering, even with the screen closed
+let lastTick = Date.now(), lastSave = 0;
+setInterval(() => {
+  const now = Date.now(), dt = Math.min((now - lastTick) / 1000, OFFLINE_CAP); lastTick = now;
+  if (!S || !S.glow) return;
+  earn(rate() * dt); S.lastSeen = now;
+  if (now - lastSave > 3000) { lastSave = now; save(); }
+  updateHub();
+}, 200);
+addEventListener("visibilitychange", () => {
+  if (!S || !S.glow) return;
+  if (document.hidden) { S.lastSeen = Date.now(); save(); return; }
+  // back from the background: the tick may have been asleep, so count it as time away
+  const before = S.light; gatherAway();
+  if (gift && current === "s-hub") welcomeBack(); else if (gift) gift = null; else if (S.light === before) lastTick = Date.now();
+});
+// what gathered while the game was closed: worked out the moment it opens, shown when you come in
+let gift = null;
+function gatherAway() {
+  const away = Math.min((Date.now() - (S.lastSeen || Date.now())) / 1000, OFFLINE_CAP), g = rate() * away;
+  S.lastSeen = Date.now(); lastTick = Date.now();
+  if (away >= 60 && g >= 1) { earn(g); save(); gift = { away, g }; }
+}
+function welcomeBack() {
+  if (!gift) return;
+  const { away, g } = gift; gift = null;
+  const h = Math.floor(away / 3600), m = Math.floor((away % 3600) / 60);
+  $("away-t").textContent = `For ${h ? h + "h " : ""}${m}m your chakras kept glowing and gathered`;
+  $("away-n").textContent = "✦ " + fmtN(g);
+  $("away").onclose = () => { burst($("h-light"), { n: 16, spread: 140 }); chime(0, 1.6, .1); };
+  setTimeout(() => $("away").showModal(), 500);
+}
+
 // ---------- wiring ----------
 $("w-line").innerHTML = CHAKRAS.map((c) => buddy(c, "sleep")).join("");
 refreshWelcome();
 const saved = store.get("cj.solo");
-if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") $("resume").hidden = false;
+if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") {
+  S = normalize(saved); gatherAway();
+  $("begin").textContent = "Return to your sky";
+}
 
 $("begin").onclick = () => {
-  S = { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null };
+  if (S) { openHub(); return welcomeBack(); }
+  S = newState(); save();
   travel();
 };
-$("resume").onclick = () => { S = saved; S.card ? renderCard() : startIntro(); };
+$("resume").onclick = $("begin").onclick;
 $("t-skip").onclick = startIntro;
 $("ready").onclick = startPick;
 $("pick-reflect").onclick = () => draw("reflect");
@@ -1067,10 +1335,10 @@ $("done").onclick = () => finishCard(true);
 $("skip").onclick = () => finishCard(false);
 $("more").onclick = startPick;
 $("next").onclick = () => {
-  if (S.step >= CHAKRAS.length - 1) return S.opened.every(Boolean) ? awaken(-1, showEnd) : showEnd();
-  S.step += 1; travel();
+  if (S.opened.every(Boolean) && !S.grand) { S.grand = true; save(); return awaken(-1, showEnd); }
+  openHub();
 };
-$("again").onclick = () => { $("resume").hidden = true; setGlow(); refreshWelcome(); show("s-welcome"); };
+$("again").onclick = openHub;
 
 // ---------- starfield ----------
 (() => {
