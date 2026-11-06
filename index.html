@@ -225,6 +225,75 @@
   .ending .open:nth-child(even) .buddy { animation-delay: -1.7s; }
   .ending .open { color: var(--chalk); }
 
+  /* power: the frame glows brighter with every chakra awakened */
+  .frame::after { content: ""; position: absolute; inset: 0; border-radius: 30px; pointer-events: none; z-index: 0;
+    opacity: var(--power, 0); transition: opacity 2s ease;
+    box-shadow: 0 0 0 2px var(--chalk), 0 0 60px 12px color-mix(in srgb, var(--rose) 55%, transparent), 0 0 120px 30px color-mix(in srgb, var(--lilac) 30%, transparent); }
+  .sound { background: none; color: var(--fog); font-size: 15px; padding: 2px 4px; line-height: 1; }
+  .sound[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+  .top-r { display: flex; align-items: center; gap: 10px; }
+
+  /* awakened buddy: glowing eyes + aura */
+  .buddy .aura { transform-origin: 60px 64px; animation: aura 2.6s ease-in-out infinite; }
+  .buddy .halo { transform-origin: 60px 64px; animation: spin 18s linear infinite; }
+  @keyframes aura { 0%,100% { transform: scale(.92); opacity: .75; } 50% { transform: scale(1.08); opacity: 1; } }
+
+  /* ---------- the awakening ceremony ---------- */
+  .awaken { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; overflow: hidden; cursor: pointer;
+    background: radial-gradient(60% 45% at 50% 50%, color-mix(in srgb, var(--glow) 18%, #000), #000 75%); opacity: 0; transition: opacity .6s ease; }
+  .awaken[hidden] { display: none; }
+  .awaken.on { opacity: 1; }
+  .awaken > * { grid-area: 1 / 1; }
+  .aw-rays { position: absolute; width: 160vmax; height: 160vmax; left: calc(50% - 80vmax); top: calc(50% - 80vmax - 90px); opacity: 0; transition: opacity 1.2s ease; animation: spin 40s linear infinite;
+    background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--glow) 32%, transparent) 0deg 5deg, transparent 5deg 15deg);
+    -webkit-mask: radial-gradient(circle, #000 0%, transparent 45%); mask: radial-gradient(circle, #000 0%, transparent 45%); }
+  .awaken.p2 .aw-rays { opacity: 1; }
+
+  .aw-col { position: relative; height: 340px; width: 30px; display: flex; flex-direction: column-reverse; justify-content: space-between; align-items: center;
+    transition: opacity .7s ease, transform .9s ease; }
+  .aw-col::before { content: ""; position: absolute; left: 50%; top: 12px; bottom: 12px; width: 2px; transform: translateX(-50%); background: rgba(255,255,255,.12); }
+  .aw-beam { position: absolute; left: 50%; bottom: 12px; width: 4px; height: 0; transform: translateX(-50%); border-radius: 4px;
+    background: linear-gradient(0deg, var(--b0, #fff), var(--b1, #fff)); box-shadow: 0 0 14px 3px color-mix(in srgb, var(--glow) 70%, transparent);
+    transition: height 1.3s cubic-bezier(.5,0,.3,1); }
+  .aw-col i { position: relative; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--c); background: #000; transition: all .35s ease; }
+  .aw-col i.lit { background: radial-gradient(circle at 35% 30%, #fff, var(--c) 50%); box-shadow: 0 0 18px 4px var(--c); transform: scale(1.15); }
+  .aw-col i.pass { box-shadow: 0 0 10px var(--c); }
+  .awaken.p2 .aw-col { opacity: 0; transform: scale(.6); }
+  .awaken.grand.p2 .aw-col { opacity: .0; }
+
+  .aw-hero { opacity: 0; transform: scale(.2); transition: opacity .5s ease, transform 1.1s cubic-bezier(.3,1.6,.5,1); }
+  .aw-hero .buddy { width: 210px; height: 210px; margin: 0 auto; filter: drop-shadow(0 0 40px var(--glow)); }
+  .aw-hero .lineup { height: auto; gap: 2px; }
+  .aw-hero .lineup .buddy { width: 46px; height: 46px; filter: drop-shadow(0 0 14px var(--glow)); }
+  .awaken.p2 .aw-hero { opacity: 1; transform: translateY(-90px) scale(1); }
+
+  .aw-rings { position: relative; width: 10px; height: 10px; transform: translateY(-90px); }
+  .aw-rings i { position: absolute; left: 50%; top: 50%; width: 120px; height: 120px; margin: -60px; border-radius: 50%; opacity: 0;
+    border: 2px solid var(--glow); box-shadow: 0 0 20px var(--glow), inset 0 0 20px var(--glow); }
+  .awaken.p2 .aw-rings i { animation: ring 2.2s cubic-bezier(.1,.6,.3,1) forwards; }
+  .awaken.p2 .aw-rings i:nth-child(2) { animation-delay: .35s; }
+  .awaken.p2 .aw-rings i:nth-child(3) { animation-delay: .7s; }
+  @keyframes ring { from { transform: scale(.3); opacity: 1; } to { transform: scale(5); opacity: 0; } }
+
+  .aw-flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(circle at 50% 40%, #fff 0%, color-mix(in srgb, var(--glow) 60%, #fff) 30%, transparent 70%); }
+  .awaken.p2 .aw-flash { animation: flash 1.4s ease-out forwards; }
+  .awaken.grand.p2 .aw-flash { animation-duration: 2.4s; }
+  @keyframes flash { 0% { opacity: 0; } 12% { opacity: .95; } 100% { opacity: 0; } }
+
+  .aw-text { text-align: center; transform: translateY(120px); opacity: 0; transition: opacity 1.2s ease, transform 1.2s ease; padding: 0 24px; }
+  .awaken.p3 .aw-text { opacity: 1; transform: translateY(105px); }
+  .aw-text .label { justify-content: center; color: var(--chalk); opacity: .8; }
+  .bija { font-family: "Cinzel", serif; font-weight: 700; font-size: 64px; letter-spacing: .3em; margin: 4px -.3em 2px 0; color: #fff;
+    text-shadow: 0 0 18px var(--glow), 0 0 44px var(--glow), 0 0 90px var(--glow); }
+  .awaken.p3 .bija { animation: hum 3s ease-in-out infinite; }
+  @keyframes hum { 0%,100% { text-shadow: 0 0 18px var(--glow), 0 0 44px var(--glow), 0 0 90px var(--glow); } 50% { text-shadow: 0 0 26px var(--glow), 0 0 70px var(--glow), 0 0 140px var(--glow); } }
+  .aw-text h2 { font-size: 18px; letter-spacing: .24em; }
+  .aw-text .script { font-size: 30px; color: var(--chalk); margin: 10px 0 0; line-height: 1.15; text-shadow: 0 0 16px color-mix(in srgb, var(--glow) 80%, transparent); }
+  .aw-tap { align-self: end; margin-bottom: max(36px, env(safe-area-inset-bottom)); font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--fog); opacity: 0; transition: opacity .8s; }
+  .awaken.p4 .aw-tap { opacity: 1; animation: breathe-o 2.4s ease-in-out infinite; }
+  @keyframes breathe-o { 50% { opacity: .4; } }
+
   .fx { position: fixed; z-index: 9; pointer-events: none; font-weight: 700; line-height: 1; }
   footer { text-align: center; font-family: "Space Mono", monospace; font-size: 10px; color: var(--fog); opacity: .6; margin-top: 16px; line-height: 1.5; }
 
@@ -258,7 +327,7 @@
 <main>
   <header class="top">
     <div class="brand"><svg viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ff9ed1"/></svg>CHAKRAS</div>
-    <div class="crumb" id="crumb"></div>
+    <div class="top-r"><div class="crumb" id="crumb"></div><button class="sound" id="sound" aria-pressed="true" aria-label="Sound">♪</button></div>
   </header>
 
   <!-- welcome -->
@@ -375,6 +444,21 @@
 </main>
 </div>
 
+<div class="awaken" id="aw" hidden aria-live="polite">
+  <div class="aw-rays"></div>
+  <div class="aw-flash"></div>
+  <div class="aw-col" id="aw-col"></div>
+  <div class="aw-rings"><i></i><i></i><i></i></div>
+  <div class="aw-hero" id="aw-hero"></div>
+  <div class="aw-text">
+    <p class="label" id="aw-label">chakra awakened</p>
+    <div class="bija" id="aw-bija"></div>
+    <h2 id="aw-name"></h2>
+    <p class="script" id="aw-aff"></p>
+  </div>
+  <p class="aw-tap">tap to continue</p>
+</div>
+
 <script src="cards.js"></script>
 <script>
 const CHAKRAS = window.CHAKRAS;
@@ -451,7 +535,14 @@ function accessory(id, awake) {
 let gid = 0;
 function buddy(c, mood, cls = "") {
   const awake = mood !== "sleep", acc = accessory(c.id, awake), color = c.color, g = "g" + ++gid;
-  const face = awake
+  const face = mood === "glow"
+    ? `<g filter="url(#${g}f)"><ellipse cx="46" cy="62" rx="6" ry="8" fill="#fff"/><ellipse cx="74" cy="62" rx="6" ry="8" fill="#fff"/></g>
+       <ellipse cx="46" cy="62" rx="4.6" ry="6.6" fill="#fff"/><ellipse cx="74" cy="62" rx="4.6" ry="6.6" fill="#fff"/>
+       <path d="M54 77q6 4 12 0" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round"/>
+       <ellipse cx="35" cy="74" rx="7" ry="4" fill="${BLUSH}" opacity=".6"/><ellipse cx="85" cy="74" rx="7" ry="4" fill="${BLUSH}" opacity=".6"/>
+       <path class="spark" d="M104 18l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="${GOLD}"/>
+       <path class="spark" d="M14 28l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="${CHALK}"/>`
+    : awake
     ? `<g class="eyes"><ellipse cx="46" cy="62" rx="5.5" ry="7.5" fill="${INK}"/><ellipse cx="74" cy="62" rx="5.5" ry="7.5" fill="${INK}"/>
        <circle cx="48" cy="59" r="2.2" fill="#fff"/><circle cx="76" cy="59" r="2.2" fill="#fff"/></g>
        <path d="M53 75q7 7 14 0" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
@@ -467,7 +558,10 @@ function buddy(c, mood, cls = "") {
       viewBox="0 0 120 120" role="button" tabindex="0" aria-label="${label}">
     <defs><radialGradient id="${g}" cx=".36" cy=".3" r=".78">
       <stop offset="0" stop-color="${mix(color, "#ffffff", .6)}"/><stop offset=".45" stop-color="${color}"/><stop offset="1" stop-color="${mix(color, "#1a0820", .45)}"/>
-    </radialGradient></defs>
+    </radialGradient><radialGradient id="${g}a"><stop offset=".45" stop-color="${color}" stop-opacity=".9"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></radialGradient>
+    <filter id="${g}f" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="3"/></filter></defs>
+    ${mood === "glow" ? `<circle class="aura" cx="60" cy="64" r="64" fill="url(#${g}a)"/>
+      <path class="halo" d="${RAYS}" stroke="${GOLD}" stroke-width="2" stroke-linecap="round" opacity=".8" transform="translate(60 64) scale(1.18) translate(-60 -64)"/>` : ""}
     ${acc.back || ""}
     <g class="feet"><ellipse cx="44" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/>
       <ellipse cx="76" cy="106" rx="10" ry="7" fill="${mix(color, "#1a0820", .2)}" stroke="${CHALK}" stroke-width="2.5"/></g>
@@ -532,6 +626,7 @@ function save() { store.set("cj.solo", S); }
 function crumb(...parts) { $("crumb").textContent = parts.join(" / "); }
 
 function drawDock() {
+  document.documentElement.style.setProperty("--power", (S.opened.filter(Boolean).length / 7).toFixed(2));
   $("dock").innerHTML = CHAKRAS.map((c, i) => {
     const cls = [S.opened[i] && "open", i === S.step && "now"].filter(Boolean).join(" ");
     return `<div class="${cls}" style="--c:${c.color}"><i></i>${c.name.replace(" Plexus", "").replace("Third ", "3rd ")}</div>`;
@@ -621,14 +716,15 @@ function finishCard(completed) {
   S.card = null; save(); drawDock();
   const open = S.opened[S.step], fresh = open && !wasOpen;
   setGlow(c.color); crumb(c.name.toLowerCase(), open ? "awake" : "resting");
-  $("r-buddy").innerHTML = buddy(c, open ? "awake" : "sleep", fresh ? "wake" : "");
+  $("r-buddy").innerHTML = buddy(c, open ? (fresh ? "glow" : "awake") : "sleep", fresh ? "wake" : "");
   $("r-say").textContent = open ? (wasOpen ? "even more?? ♡" : pickOne(SAYS[c.id] || ["hi!!"])) : "five more minutes…";
   $("r-say").style.animation = "none"; void $("r-say").offsetWidth; $("r-say").style.animation = "";
   $("r-title").textContent = open ? (wasOpen ? `${c.name} glows brighter` : `${c.name} is awake`) : `${c.name} is still snoozing`;
-  $("r-sub").textContent = open ? c.theme + "." : "That's okay. Try another card, or let it rest until next time.";
+  $("r-sub").textContent = open ? `“${c.affirmation}”` : "That's okay. Try another card, or let it rest until next time.";
   $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Drift onward";
   show("s-result");
-  if (open) setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
+  const celebrate = () => open && setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
+  if (fresh) awaken(S.step, celebrate); else { if (open) chime(S.step, 2.5, .14); celebrate(); }
 }
 
 function showEnd() {
@@ -643,6 +739,100 @@ function showEnd() {
   store.del("cj.solo"); show("s-end");
   [...$("e-chain").querySelectorAll(".open .buddy")].forEach((b, i) => setTimeout(() => burst(b, { n: 5, spread: 60 }), 300 + i * 180));
 }
+
+// ---------- sound: soft singing-bowl tones, one note per chakra ----------
+const NOTES = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88];
+let actx = null, soundOn = store.get("cj.sound") !== false;
+function audio() {
+  if (!soundOn) return null;
+  try { actx ||= new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === "suspended") actx.resume(); } catch { return null; }
+  return actx;
+}
+function bowl(f, dur = 4, vol = .22, when = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + when, out = a.createGain(); out.gain.value = vol; out.connect(a.destination);
+  [[1, .55], [1.004, .35], [2.76, .16], [5.4, .05]].forEach(([r, g]) => {
+    const o = a.createOscillator(), v = a.createGain(); o.type = "sine"; o.frequency.value = f * r;
+    const end = t + dur * (r > 2 ? .45 : 1);
+    v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(g, t + .025); v.gain.exponentialRampToValueAtTime(.0001, end);
+    o.connect(v).connect(out); o.start(t); o.stop(end + .05);
+  });
+}
+const chime = (i, dur = 1.6, vol = .12, when = 0) => bowl(NOTES[i] * 2, dur, vol, when);
+function setSound(on) { soundOn = on; store.set("cj.sound", on); $("sound").setAttribute("aria-pressed", String(on)); }
+$("sound").onclick = () => { setSound(!soundOn); if (soundOn) chime(S ? S.step : 0); };
+setSound(soundOn);
+
+// ---------- the awakening ceremony ----------
+// i = chakra index; i = -1 is the full awakening after all seven
+let awTimers = [], awDone = null, awReady = false;
+function awaken(i, done) {
+  const grand = i < 0, aw = $("aw"), top = grand ? 6 : i;
+  const c = grand ? { color: "#ffffff", name: "", id: "" } : CHAKRAS[i];
+  awTimers.forEach(clearTimeout); awTimers = []; awDone = done; awReady = false;
+  setGlow(grand ? "#e9c8ff" : c.color);
+  aw.className = "awaken" + (grand ? " grand" : "");
+  aw.hidden = false;
+
+  // the column, root at the bottom
+  const H = 340, s = 24;
+  $("aw-col").innerHTML = `<div class="aw-beam" id="aw-beam"></div>` + CHAKRAS.map((k) => `<i style="--c:${k.color}"></i>`).join("");
+  const beam = $("aw-beam"); beam.style.setProperty("--b0", CHAKRAS[0].color); beam.style.setProperty("--b1", CHAKRAS[top].color);
+  const orbs = [...$("aw-col").querySelectorAll("i")];
+
+  // the hero and the words
+  $("aw-hero").innerHTML = grand
+    ? `<div class="lineup">${CHAKRAS.map((k) => buddy(k, "glow")).join("")}</div>`
+    : buddy(c, "glow");
+  $("aw-label").textContent = grand ? "root to crown" : `chakra ${i + 1} of 7 awakened`;
+  $("aw-bija").textContent = grand ? "✦" : c.bija;
+  $("aw-name").textContent = grand ? "Fully awakened" : `${c.name} · ${c.sanskrit}`;
+  $("aw-aff").textContent = grand ? "Every light in you is on." : c.affirmation;
+
+  const at = (ms, fn) => awTimers.push(setTimeout(fn, ms));
+  const step = grand ? 420 : Math.min(260, 1100 / (top + 1));
+  if (still) {
+    orbs.forEach((o, k) => k <= top && S.opened[k] && o.classList.add("lit"));
+    aw.classList.add("on", "p2", "p3", "p4"); awReady = true; bowl(NOTES[top], 4, .22); return;
+  }
+  requestAnimationFrame(() => {
+    aw.classList.add("on", "p1");
+    beam.style.transitionDuration = (step * (top + 1)) / 1000 + "s";
+    requestAnimationFrame(() => (beam.style.height = Math.max(6, (top * (H - s)) / 6) + "px"));
+  });
+  // energy climbs, chiming through every world already awake
+  for (let k = 0; k <= top; k++) at(250 + k * step, () => {
+    const awakeHere = grand || S.opened[k] || k === top;
+    orbs[k].classList.add(awakeHere ? "lit" : "pass");
+    if (awakeHere) { chime(k, grand ? 3 : 1.4, grand ? .12 : .09); navigator.vibrate?.(18); }
+  });
+  const peak = 250 + (top + 1) * step + (grand ? 500 : 250);
+  at(peak, () => {
+    aw.classList.add("p2");
+    if (grand) { NOTES.forEach((f) => bowl(f, 7, .07)); bowl(NOTES[0] / 2, 8, .2); }
+    else { bowl(NOTES[i], 5.5, .26); bowl(NOTES[i] / 2, 6.5, .14); }
+    navigator.vibrate?.([40, 50, 80, 50, 160, 60, 320]);
+    at(350, () => burst($("aw-hero"), { n: grand ? 40 : 26, spread: grand ? 240 : 190 }));
+  });
+  at(peak + 1100, () => aw.classList.add("p3"));
+  at(peak + 2600, () => { aw.classList.add("p4"); awReady = true; });
+}
+function closeAwaken() {
+  const aw = $("aw"); awTimers.forEach(clearTimeout); awTimers = [];
+  aw.classList.remove("on");
+  setTimeout(() => { aw.hidden = true; aw.className = "awaken"; }, 600);
+  if (!S || !S.opened) return;
+  setGlow(ch().color);
+  const d = awDone; awDone = null; d?.();
+}
+$("aw").addEventListener("click", () => {
+  if (awReady) return closeAwaken();
+  // tapping early jumps straight to the words
+  awTimers.forEach(clearTimeout); awTimers = [];
+  $("aw-col").querySelectorAll("i").forEach((o) => o.classList.add("lit"));
+  $("aw").classList.add("p2", "p3", "p4"); awReady = true;
+});
+document.addEventListener("keydown", (e) => { if (!$("aw").hidden && awReady && (e.key === "Enter" || e.key === "Escape" || e.key === " ")) { e.preventDefault(); closeAwaken(); } });
 
 // ---------- wiring ----------
 $("w-line").innerHTML = CHAKRAS.map((c) => buddy(c, "sleep")).join("");
@@ -663,7 +853,7 @@ $("done").onclick = () => finishCard(true);
 $("skip").onclick = () => finishCard(false);
 $("more").onclick = startPick;
 $("next").onclick = () => {
-  if (S.step >= CHAKRAS.length - 1) return showEnd();
+  if (S.step >= CHAKRAS.length - 1) return S.opened.every(Boolean) ? awaken(-1, showEnd) : showEnd();
   S.step += 1; travel();
 };
 $("again").onclick = () => { $("resume").hidden = true; setGlow(); show("s-welcome"); };

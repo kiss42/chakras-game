@@ -2,6 +2,8 @@
 window.CHAKRAS = [
   {
     "id": "root",
+    "bija": "LAM",
+    "affirmation": "I am safe. I belong here.",
     "name": "Root",
     "sanskrit": "Muladhara",
     "color": "#ff6b8b",
@@ -38,6 +40,8 @@ window.CHAKRAS = [
   },
   {
     "id": "sacral",
+    "bija": "VAM",
+    "affirmation": "I let joy move through me.",
     "name": "Sacral",
     "sanskrit": "Svadhisthana",
     "color": "#ffa05c",
@@ -71,6 +75,8 @@ window.CHAKRAS = [
   },
   {
     "id": "solar",
+    "bija": "RAM",
+    "affirmation": "I trust my own fire.",
     "name": "Solar Plexus",
     "sanskrit": "Manipura",
     "color": "#ffdc5e",
@@ -104,6 +110,8 @@ window.CHAKRAS = [
   },
   {
     "id": "heart",
+    "bija": "YAM",
+    "affirmation": "I give and receive love freely.",
     "name": "Heart",
     "sanskrit": "Anahata",
     "color": "#6ee7a8",
@@ -134,6 +142,8 @@ window.CHAKRAS = [
   },
   {
     "id": "throat",
+    "bija": "HAM",
+    "affirmation": "My voice deserves to be heard.",
     "name": "Throat",
     "sanskrit": "Vishuddha",
     "color": "#6cc4ff",
@@ -170,6 +180,8 @@ window.CHAKRAS = [
   },
   {
     "id": "thirdeye",
+    "bija": "OM",
+    "affirmation": "I trust what I see within.",
     "name": "Third Eye",
     "sanskrit": "Ajna",
     "color": "#a98bff",
@@ -206,6 +218,8 @@ window.CHAKRAS = [
   },
   {
     "id": "crown",
+    "bija": "AUM",
+    "affirmation": "I am whole, and I am connected.",
     "name": "Crown",
     "sanskrit": "Sahasrara",
     "color": "#f19cff",
