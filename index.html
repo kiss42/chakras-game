@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0820">
+<title>Chakras</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0b0820;
+    --night-2: #160f33;
+    --ink: #efeaff;
+    --muted: #a99fd0;
+    --glass: rgba(255,255,255,0.06);
+    --glass-edge: rgba(255,255,255,0.12);
+    --glow: #9b7bff;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--night);
+    color: var(--ink);
+    font-family: "Nunito", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+  /* sky */
+  .sky { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(120% 70% at 50% 110%, color-mix(in srgb, var(--glow) 35%, transparent), transparent 60%),
+      radial-gradient(90% 60% at 10% 0%, #2a1a5e 0%, transparent 60%),
+      linear-gradient(180deg, var(--night) 0%, var(--night-2) 100%);
+    transition: background 1.2s ease;
+  }
+  canvas#stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  main { position: relative; z-index: 1; min-height: 100dvh; max-width: 480px; margin: 0 auto;
+    padding: max(28px, env(safe-area-inset-top)) 20px max(28px, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column; }
+  .screen { display: none; flex: 1; flex-direction: column; animation: rise .6s cubic-bezier(.2,.8,.2,1); }
+  .screen.on { display: flex; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  h1, h2 { font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; margin: 0; letter-spacing: .01em; }
+  h1 { font-size: clamp(42px, 12vw, 58px); line-height: 1; }
+  h2 { font-size: 36px; line-height: 1.05; }
+  .eyebrow { text-transform: uppercase; letter-spacing: .22em; font-size: 12px; color: var(--muted); font-weight: 700; }
+  p { line-height: 1.55; }
+  .muted { color: var(--muted); }
+  .center { text-align: center; align-items: center; }
+  .grow { flex: 1; }
+
+  /* orb */
+  .orb { width: 150px; height: 150px; border-radius: 50%; margin: 18px auto;
+    background: radial-gradient(circle at 35% 30%, #fff8 0%, var(--glow) 28%, color-mix(in srgb, var(--glow) 40%, #000) 75%);
+    box-shadow: 0 0 60px 10px color-mix(in srgb, var(--glow) 55%, transparent), 0 0 140px 40px color-mix(in srgb, var(--glow) 22%, transparent);
+    animation: breathe 6s ease-in-out infinite; transition: background 1.2s, box-shadow 1.2s; }
+  .orb.small { width: 84px; height: 84px; }
+  @keyframes breathe { 0%,100% { transform: scale(.94); } 50% { transform: scale(1.04); } }
+
+  /* chain of 7 */
+  .chain { display: flex; justify-content: center; gap: 10px; margin: 6px 0 4px; }
+  .chain i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--c); opacity: .45; transition: all .6s; }
+  .chain i.now { opacity: 1; box-shadow: 0 0 10px var(--c); }
+  .chain i.open { background: var(--c); opacity: 1; box-shadow: 0 0 12px var(--c); }
+
+  /* inputs + buttons */
+  label { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 6px; font-weight: 600; }
+  input { width: 100%; font: inherit; font-size: 17px; color: var(--ink); background: var(--glass);
+    border: 1px solid var(--glass-edge); border-radius: 14px; padding: 14px 16px; outline: none; }
+  input:focus { border-color: var(--glow); box-shadow: 0 0 0 3px color-mix(in srgb, var(--glow) 30%, transparent); }
+  button { font: inherit; cursor: pointer; border: 0; }
+  .btn { width: 100%; padding: 16px; border-radius: 999px; font-size: 17px; font-weight: 700; color: #120b2b;
+    background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--glow) 35%, #fff));
+    box-shadow: 0 8px 30px -8px color-mix(in srgb, var(--glow) 80%, transparent); transition: transform .15s; }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost { background: var(--glass); color: var(--ink); border: 1px solid var(--glass-edge); box-shadow: none; }
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+  .link { background: none; color: var(--muted); font-size: 14px; padding: 10px; text-decoration: underline; text-underline-offset: 3px; }
+
+  .choice { display: grid; gap: 14px; margin-top: 22px; }
+  .choice button { text-align: left; padding: 22px; border-radius: 22px; color: var(--ink);
+    background: var(--glass); border: 1px solid var(--glass-edge); transition: transform .15s, border-color .3s; }
+  .choice button:active { transform: scale(.98); }
+  .choice button b { display: block; font-family: "Cormorant Garamond", serif; font-size: 30px; font-weight: 600; margin-bottom: 4px; }
+  .choice button span { color: var(--muted); font-size: 15px; }
+  .choice button:hover { border-color: var(--glow); }
+
+  .card { margin: 20px 0; padding: 30px 24px; border-radius: 26px; background: linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+    border: 1px solid color-mix(in srgb, var(--glow) 45%, transparent);
+    box-shadow: 0 0 50px -12px color-mix(in srgb, var(--glow) 70%, transparent); }
+  .card .text { font-family: "Cormorant Garamond", serif; font-size: 28px; line-height: 1.25; font-weight: 500; }
+  .timer { margin-top: 20px; display: flex; align-items: center; gap: 14px; }
+  .timer .t { font-variant-numeric: tabular-nums; font-size: 26px; font-weight: 700; min-width: 64px; }
+  .timer button { padding: 10px 18px; border-radius: 999px; background: var(--glass); color: var(--ink); border: 1px solid var(--glass-edge); font-weight: 700; }
+  .bar { height: 4px; border-radius: 4px; background: var(--glass); overflow: hidden; flex: 1; }
+  .bar > div { height: 100%; width: 0; background: var(--glow); box-shadow: 0 0 10px var(--glow); transition: width 1s linear; }
+
+  .ending { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin: 26px 0 10px; }
+  .ending div { text-align: center; font-size: 11px; color: var(--muted); }
+  .ending i { display: block; width: 34px; height: 34px; margin: 0 auto 6px; border-radius: 50%; border: 1.5px solid var(--c); opacity: .4; }
+  .ending .open i { background: radial-gradient(circle at 35% 30%, #fff9, var(--c) 45%); opacity: 1; box-shadow: 0 0 16px var(--c); }
+  .ending .open { color: var(--ink); }
+
+  .pass { font-size: 15px; color: var(--muted); margin-top: 6px; }
+  footer { text-align: center; font-size: 12px; color: var(--muted); opacity: .7; margin-top: 18px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb { animation: none; } .screen { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="sky" id="sky"></div>
+<canvas id="stars"></canvas>
+<main>
+
+  <!-- welcome -->
+  <section class="screen on center" id="s-welcome">
+    <div class="grow"></div>
+    <div class="orb"></div>
+    <p class="eyebrow">Seven energy centers</p>
+    <h1>Chakras</h1>
+    <p class="muted" style="max-width:320px">Seven chakras, root to crown. A quiet journey back to yourself, one card at a time. Each chakra opens when you complete its card.</p>
+    <div class="grow"></div>
+    <button class="btn" id="begin" style="margin-top:24px">Begin the journey</button>
+    <button class="link" id="resume" hidden>Continue where we left off</button>
+  </section>
+
+  <!-- chakra intro -->
+  <section class="screen center" id="s-intro">
+    <div class="chain" id="chain1"></div>
+    <div class="grow"></div>
+    <p class="eyebrow" id="i-n"></p>
+    <div class="orb"></div>
+    <h2 id="i-name"></h2>
+    <p class="muted" style="margin:6px 0 0;font-style:italic;font-family:'Cormorant Garamond',serif;font-size:20px" id="i-sk"></p>
+    <p id="i-theme" style="margin:14px 0 0;font-weight:600"></p>
+    <p class="muted" id="i-intro" style="max-width:340px"></p>
+    <div class="grow"></div>
+    <button class="btn" id="ready">I'm ready</button>
+  </section>
+
+  <!-- pick -->
+  <section class="screen" id="s-pick">
+    <div class="chain" id="chain2"></div>
+    <div class="grow"></div>
+    <p class="eyebrow center" style="display:block;text-align:center" id="p-ch"></p>
+    <h2 style="text-align:center">What do you need?</h2>
+    <div class="choice">
+      <button id="pick-reflect"><b>Reflect</b><span>A question to answer from the heart.</span></button>
+      <button id="pick-practice"><b>Practice</b><span>Breath, movement, kind words, a little ritual.</span></button>
+    </div>
+    <div class="grow"></div>
+  </section>
+
+  <!-- card -->
+  <section class="screen" id="s-card">
+    <div class="chain" id="chain3"></div>
+    <div class="grow"></div>
+    <p class="eyebrow" id="c-meta"></p>
+    <div class="card">
+      <div class="text" id="c-text"></div>
+      <div class="timer" id="c-timer" hidden>
+        <div class="t" id="c-t"></div>
+        <div class="bar"><div id="c-bar"></div></div>
+        <button id="c-start">Start</button>
+      </div>
+    </div>
+    <div class="grow"></div>
+    <button class="btn" id="done">Done</button>
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost" id="swap">Another card</button>
+      <button class="btn ghost" id="skip">Not this one</button>
+    </div>
+  </section>
+
+  <!-- chakra result -->
+  <section class="screen center" id="s-result">
+    <div class="grow"></div>
+    <div class="orb" id="r-orb"></div>
+    <h2 id="r-title"></h2>
+    <p class="muted" id="r-sub" style="max-width:320px"></p>
+    <div class="grow"></div>
+    <button class="btn" id="next">Continue</button>
+    <button class="btn ghost" id="more" style="margin-top:10px">One more card here</button>
+  </section>
+
+  <!-- end -->
+  <section class="screen center" id="s-end">
+    <div class="grow"></div>
+    <p class="eyebrow">Journey complete</p>
+    <h2 id="e-title"></h2>
+    <div class="ending" id="e-chain"></div>
+    <p class="muted" id="e-sub" style="max-width:340px"></p>
+    <div class="grow"></div>
+    <button class="btn" id="again">Journey again</button>
+  </section>
+
+  <footer>Chakras come from yoga and tantra traditions of India. A reflection game, not medical advice.</footer>
+</main>
+
+<script src="cards.js"></script>
+<script>
+const CHAKRAS = window.CHAKRAS;
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  del(k) { try { localStorage.removeItem(k); } catch {} },
+};
+
+let S = null; // { step: chakra index, opened: [bool x7], used: {}, card }
+const ch = () => CHAKRAS[S.step];
+const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((p) => p[1]);
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id));
+  window.scrollTo(0, 0);
+}
+function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#9b7bff"); }
+function save() { store.set("cj.solo", S); }
+
+function drawChain(el) {
+  el.innerHTML = CHAKRAS.map((c, i) => {
+    const cls = S.opened[i] ? "open" : i === S.step ? "now" : "";
+    return `<i class="${cls}" style="--c:${c.color}" title="${c.name}"></i>`;
+  }).join("");
+}
+
+function startIntro() {
+  const c = ch(); setGlow(c.color); drawChain($("chain1"));
+  $("i-n").textContent = `Chakra ${S.step + 1} of 7`;
+  $("i-name").textContent = c.name;
+  $("i-sk").textContent = c.sanskrit;
+  $("i-theme").textContent = c.theme;
+  $("i-intro").textContent = c.intro;
+  S.card = null; save(); show("s-intro");
+}
+
+function startPick() {
+  const c = ch(); setGlow(c.color); drawChain($("chain2"));
+  $("p-ch").textContent = c.name;
+  S.card = null; save(); show("s-pick");
+}
+
+function draw(type, avoid) {
+  const c = ch(), key = c.id + ":" + type;
+  const all = c[type].map((x, i) => ({ i, ...(typeof x === "string" ? { text: x } : x) }));
+  const used = S.used[key] || [];
+  let pool = all.filter((x) => !used.includes(x.i) && x.i !== avoid);
+  if (!pool.length) { S.used[key] = []; pool = all.filter((x) => x.i !== avoid); }
+  const pick = shuffle(pool)[0];
+  S.used[key] = [...(S.used[key] || []), pick.i];
+  S.card = { type, ...pick }; save(); renderCard();
+}
+
+let tick = null;
+function stopTimer() { clearInterval(tick); tick = null; }
+function renderCard() {
+  stopTimer();
+  const c = ch(), k = S.card; drawChain($("chain3"));
+  $("c-meta").textContent = `${c.name} · ${k.type === "reflect" ? "Reflect" : "Practice"}`;
+  $("c-text").textContent = k.text;
+  $("c-timer").hidden = !k.seconds;
+  if (k.seconds) {
+    $("c-t").textContent = fmt(k.seconds); $("c-bar").style.width = "0";
+    $("c-start").textContent = "Start";
+  }
+  show("s-card");
+}
+const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+$("c-start").onclick = () => {
+  const total = S.card.seconds; let left = total;
+  if (tick) { stopTimer(); $("c-start").textContent = "Start"; $("c-t").textContent = fmt(total); $("c-bar").style.width = "0"; return; }
+  $("c-start").textContent = "Reset";
+  tick = setInterval(() => {
+    left -= 1; $("c-t").textContent = fmt(Math.max(0, left));
+    $("c-bar").style.width = `${100 * (total - left) / total}%`;
+    if (left <= 0) { stopTimer(); $("c-start").textContent = "Again"; navigator.vibrate?.([120, 80, 120]); }
+  }, 1000);
+};
+
+function finishCard(completed) {
+  stopTimer();
+  const c = ch(), wasOpen = S.opened[S.step];
+  if (completed) S.opened[S.step] = true;
+  S.card = null; save();
+  const open = S.opened[S.step];
+  setGlow(c.color);
+  $("r-orb").style.opacity = open ? 1 : .35;
+  $("r-title").textContent = open ? (wasOpen ? `${c.name}, glowing brighter` : `${c.name} chakra open`) : `${c.name}, still resting`;
+  $("r-sub").textContent = open ? c.theme + "." : "That's okay. Try another card, or come back to it next time.";
+  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Onward";
+  show("s-result");
+}
+
+function showEnd() {
+  setGlow("#c9a7ff");
+  const n = S.opened.filter(Boolean).length;
+  $("e-title").textContent = n === 7 ? "All seven, open" : `${n} of 7 open`;
+  $("e-chain").innerHTML = CHAKRAS.map((c, i) =>
+    `<div class="${S.opened[i] ? "open" : ""}" style="--c:${c.color}"><i></i>${c.name.replace(" Plexus", "")}</div>`).join("");
+  $("e-sub").textContent = n === 7
+    ? "Root to crown. Be gentle with yourself tonight, you deserve it."
+    : "Every step counts. The rest will open in their own time.";
+  store.del("cj.solo"); show("s-end");
+}
+
+// wiring
+const saved = store.get("cj.solo");
+if (saved && Array.isArray(saved.opened) && (saved.step > 0 || saved.card)) $("resume").hidden = false;
+
+$("begin").onclick = () => {
+  S = { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null };
+  startIntro();
+};
+$("resume").onclick = () => { S = saved; S.card ? renderCard() : startIntro(); };
+$("ready").onclick = startPick;
+$("pick-reflect").onclick = () => draw("reflect");
+$("pick-practice").onclick = () => draw("practice");
+$("swap").onclick = () => draw(S.card.type, S.card.i);
+$("done").onclick = () => finishCard(true);
+$("skip").onclick = () => finishCard(false);
+$("more").onclick = startPick;
+$("next").onclick = () => {
+  if (S.step >= CHAKRAS.length - 1) return showEnd();
+  S.step += 1; startIntro();
+};
+$("again").onclick = () => { $("resume").hidden = true; show("s-welcome"); };
+
+// starfield
+(() => {
+  const cv = $("stars"), x = cv.getContext("2d");
+  let stars = [], w, h;
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function size() {
+    w = cv.width = innerWidth * devicePixelRatio; h = cv.height = innerHeight * devicePixelRatio;
+    cv.style.width = innerWidth + "px"; cv.style.height = innerHeight + "px";
+    stars = Array.from({ length: 140 }, () => ({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.4 + .3, p: Math.random() * 6.28, s: Math.random() * .02 + .005 }));
+  }
+  function frame() {
+    x.clearRect(0, 0, w, h);
+    for (const s of stars) {
+      s.p += s.s; const a = .35 + .65 * (still ? .6 : (Math.sin(s.p) + 1) / 2);
+      x.globalAlpha = a; x.fillStyle = "#fff";
+      x.beginPath(); x.arc(s.x, s.y, s.r * devicePixelRatio, 0, 6.28); x.fill();
+    }
+    if (!still) requestAnimationFrame(frame);
+  }
+  addEventListener("resize", () => { size(); if (still) frame(); });
+  size(); frame();
+})();
+</script>
+</body>
+</html>

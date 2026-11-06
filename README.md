@@ -1,0 +1,28 @@
+# Chakras
+
+A quiet, solo reflection game through the seven chakras, root to crown.
+
+For each chakra, choose **Reflect** (a question to sit with) or **Practice** (a small ritual
+of breath, movement or kind words, some with a timer). Complete a card to open that chakra.
+Progress is saved in your browser, so you can come back any time.
+
+The seven-chakra system comes from the yoga and tantra traditions of India; the colors follow
+the common modern rainbow mapping. This is a game for reflection and relaxation, not medical
+or psychological advice.
+
+## Play
+
+Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it feel like an app.
+
+## Edit the cards
+
+All cards live in `cards.js`. A practice can be plain text or `{ "text": "...", "seconds": 60 }`
+to add a timer.
+
+## Run locally
+
+```bash
+python3 -m http.server 8095
+```
+
+Then open http://localhost:8095.
