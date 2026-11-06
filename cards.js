@@ -1,7 +1,7 @@
 // Chakras game cards. Edit freely. A card can be plain text, or an object:
 //   {"text": "...", "seconds": 60}                       adds a timer (practices)
 //   {"text": "...", "deeper": "...", "theme": "..."}     adds a "Go deeper" follow-up and a small theme label
-// A chakra can also have an "intimacy" deck: adults-only questions behind an 18+ check (Sacral has one).
+// A chakra can also have an "intimacy" deck behind an 18+ check (Sacral has one): intimacy with yourself, your body, pleasure and desire.
 window.CHAKRAS = [
   {
     "id": "root",
@@ -258,94 +258,117 @@ window.CHAKRAS = [
     ],
     "intimacy": [
       {
-        "theme": "desire",
-        "text": "What does desire feel like in your body?",
-        "deeper": "Where do you feel it first, and do you let yourself stay with it?"
+        "theme": "your body & senses",
+        "text": "When do you feel most at home in your body?",
+        "deeper": "What would it take to feel that way a little more often?"
       },
       {
-        "theme": "desire",
-        "text": "What turns you on that has nothing to do with another person?",
-        "deeper": "When did you last give that to yourself?"
+        "theme": "your body & senses",
+        "text": "How do you touch your own body when no one is watching: with care, or in a hurry?",
+        "deeper": "What would loving, unhurried touch feel like tonight?"
       },
       {
-        "theme": "desire",
-        "text": "What do you secretly want in your sex life that you've never said out loud?",
-        "deeper": "What do you imagine would happen if you said it?"
+        "theme": "your body & senses",
+        "text": "Which part of your body do you find hardest to love?",
+        "deeper": "What would you say to it if it could hear you?"
       },
       {
-        "theme": "desire",
-        "text": "Do you know what you like, or what you think you're supposed to like?",
-        "deeper": "How could you find out, gently and on your own terms?"
+        "theme": "your body & senses",
+        "text": "Which textures, scents and sounds make you feel sensual?",
+        "deeper": "When did you last surround yourself with them, just for you?"
       },
       {
-        "theme": "desire",
-        "text": "When do you feel most sexy?",
-        "deeper": "Is that a feeling you wait for, or one you can invite in?"
+        "theme": "your body & senses",
+        "text": "Can you look at your naked body in the mirror with kindness?",
+        "deeper": "What do you notice first, and what would you rather notice?"
       },
       {
-        "theme": "desire",
-        "text": "What would pleasure without performance look like for you?",
-        "deeper": "Who have you been performing for?"
+        "theme": "your body & senses",
+        "text": "How do you care for your body after a hard day?",
+        "deeper": "What would it look like to treat that care as sacred?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "What does pleasure mean to you, outside of sex?",
+        "deeper": "How much of it do you allow yourself in an ordinary week?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "How do you feel about touching yourself for pleasure?",
+        "deeper": "Whose voice comes up when you think about it?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "What do you desire just for you, not for anyone else?",
+        "deeper": "What's stopping you from giving it to yourself?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "Do you know your own body: what you like, and how you like it?",
+        "deeper": "How could you explore that gently, with curiosity instead of pressure?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "When do you feel sexy alone, with no one looking?",
+        "deeper": "What does that version of you know that you forget around others?"
+      },
+      {
+        "theme": "pleasure & desire",
+        "text": "Do you let yourself feel desire, or do you shut it down?",
+        "deeper": "What are you afraid it would ask of you?"
       },
       {
         "theme": "shame & healing",
-        "text": "What did you learn about sex growing up?",
-        "deeper": "Which of those messages still live in your body?"
+        "text": "What did you learn growing up about your body and pleasure?",
+        "deeper": "Which of those messages are you ready to put down?"
       },
       {
         "theme": "shame & healing",
-        "text": "Is there shame you carry about your body or your desires?",
-        "deeper": "Whose voice is that shame, really?"
+        "text": "Is there shame you carry about your sexuality?",
+        "deeper": "If it belonged to someone you love, would you judge them for it?"
       },
       {
         "theme": "shame & healing",
-        "text": "Has anyone ever made you feel small about your sexuality?",
-        "deeper": "What would you say to them now, from your full self?"
+        "text": "Has someone else's touch, words or opinion changed how you feel in your own skin?",
+        "deeper": "What would it take to claim your body back as yours? You don't have to do that alone."
       },
       {
         "theme": "shame & healing",
-        "text": "Is there an intimate experience you're still carrying?",
-        "deeper": "What would help you set it down? You don't have to do that alone."
+        "text": "Do you feel safe in your own body?",
+        "deeper": "Where do you feel safest in it, and can you breathe into that place now?"
       },
       {
         "theme": "shame & healing",
-        "text": "Do you feel safe being fully seen, in body and in feeling?",
-        "deeper": "What would make it feel safer?"
+        "text": "How do you honor your own yes and no, even with yourself?",
+        "deeper": "Where have you been pushing past your own limits?"
       },
       {
         "theme": "shame & healing",
-        "text": "How has your relationship with your sexuality changed over the years?",
-        "deeper": "What do you want the next chapter to feel like?"
+        "text": "What would it mean to be your own first love?",
+        "deeper": "What is one way you could court yourself this week?"
       },
       {
-        "theme": "intimacy & consent",
-        "text": "What does a true yes feel like in your body?",
-        "deeper": "And what does a quiet no feel like, before you say it?"
+        "theme": "self-love ritual",
+        "text": "Slowly massage oil or lotion into your skin, one part at a time, as if it belonged to someone you adore.",
+        "seconds": 120,
+        "deeper": "Which part of you was hungriest for that care?"
       },
       {
-        "theme": "intimacy & consent",
-        "text": "Do you ask for what you want in bed?",
-        "deeper": "What stops you, and what would one small ask sound like?"
+        "theme": "self-love ritual",
+        "text": "Rest one hand on your lower belly and one on your heart. Breathe slowly into both and let your hips soften.",
+        "seconds": 90,
+        "deeper": "What did your body want you to know?"
       },
       {
-        "theme": "intimacy & consent",
-        "text": "Have you ever said yes to intimacy when you meant maybe, or no?",
-        "deeper": "What would you need to feel free to say what you really meant?"
+        "theme": "self-love ritual",
+        "text": "Stand in front of a mirror and say three things you find beautiful about your body, out loud.",
+        "deeper": "Which one was hardest to say, and why?"
       },
       {
-        "theme": "intimacy & consent",
-        "text": "What makes you feel emotionally safe enough to be physically close?",
-        "deeper": "Do the people you're intimate with know that about you?"
-      },
-      {
-        "theme": "intimacy & consent",
-        "text": "What's the difference, for you, between sex and intimacy?",
-        "deeper": "Which one are you craving more right now?"
-      },
-      {
-        "theme": "intimacy & consent",
-        "text": "How do you want to feel after being intimate with someone?",
-        "deeper": "What helps you get there, and what gets in the way?"
+        "theme": "self-love ritual",
+        "text": "Put on music that makes you feel sensual and move your hips slowly, just for you.",
+        "seconds": 120,
+        "deeper": "How did it feel to move only for your own pleasure?"
       }
     ],
     "practice": [
