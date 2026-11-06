@@ -26,24 +26,34 @@ at the bottom.
 - **Guides:** hire a guide for each temple (Mira, Juno, Sol, Rosa, Echo, Iris, Lumen). A guide
   collects automatically, pays ×1.5, and keeps working while the game is closed (up to 8 hours,
   collected as a welcome-back gift).
+- **Each temple's gift:** every chakra's temple adds a power that fits its meaning, growing with
+  its level: Root (grounding) lets the sanctuary rest longer, Sacral (flow) brings visitors more
+  often, Solar Plexus (willpower) makes taps push further, Heart (love) draws seekers faster,
+  Throat (voice) makes written answers count for more, Third Eye (vision) strengthens blessings,
+  and Crown (unity) lifts every other temple. Each temple also shows its element and seed sound.
+- **Alignment:** chakras work best in balance. Keep your temples' levels close (the lowest at
+  least half the highest) for ×1.5, or a quarter for ×1.2. The sanctuary tells you which chakra
+  to raise.
 - **The living sanctuary:** at the top, seekers walk to the temples, meditate, and carry light
   back to the lotus altar; guides stand by their temples and payouts float up.
-- **Lotus altar:** raise it with light for +25% on all light per level; every 3 levels adds an
+- **Thousand-petal lotus:** the crown's lotus. Raise it with light for +25% on all light per level; every 3 levels adds an
   hour to how long the sanctuary keeps gathering while you're away.
 - **Guide stars:** raise each guide from ★1 to ★5 (×1.5, ×2.25, ×3.5, ×5, ×8).
 - **Seekers:** a following that drifts in as your temples grow (faster with guides), and arrives
   with every card and written answer. Each seeker adds +0.5% light.
 - **Visitors:** every minute or so on the sanctuary screen, someone drifts by for a few seconds:
-  a full moon (light ×2 for 60s), a shooting star (×3 for 30s), a pilgrim's gift, a circle of
-  seekers, or a sound bath that fills every bar. Tap to claim. Missing one costs nothing.
+  each from a chakra you've awakened: a pilgrim's gift (Root), the full moon (Sacral, light ×2),
+  a fire ceremony (Solar Plexus), a circle of seekers (Heart), a sound bath (Throat), a vision
+  (Third Eye) or a shooting star (Crown, light ×3). Tap to claim. Missing one costs nothing.
 - **Cards are power:** temples wake only by finishing a card, root to crown. Every card done in a
   chakra adds +25% to that temple for good. Every journal answer adds +2% to all light (up to
   +200%). Playing on new days adds +10% per streak day (up to +100%); rest days lower it gently.
 - **New cycle:** with all seven awake and 1M light gathered, be reborn for lotus petals. Light,
   levels, the altar, guides and seekers start over; cards, journal, streak, petals and skills stay.
 - **The lotus (ascension skills):** every petal you keep gives +10% light, or spend petals on
-  permanent skills: Swift breath (faster bars), Open door (more seekers), Devoted guides, Long rest
-  (more hours away), Starlit sky (more visitors, longer blessings), First light (a head start).
+  permanent skills: Prana flow (faster bars), Open heart (more seekers), Devoted guides, Deep roots
+  (more hours away), Crown of stars (more visitors, longer blessings), Kundalini rising (a head
+  start each cycle).
 
 The numbers live at the top of the "your sanctuary" section in `index.html` (`CYCLE`, `BASE`,
 `COST0`, `GUIDE_COST`, `STAR_MULT`, `ALTAR_COST0`, `SKILLS`, `MILES`, `CYCLE_AT`, `VISITORS`) if you want to tune the pace.

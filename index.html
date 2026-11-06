@@ -431,6 +431,12 @@
   #a-buy { border-radius: 14px; padding: 8px 14px; font-weight: 700; font-size: 12px; line-height: 1.15; color: #2a0f2b; background: linear-gradient(180deg, #fff3d6, var(--gold)); }
   #a-buy small { display: block; font-family: "Space Mono", monospace; font-size: 9.5px; opacity: .8; }
   #a-buy:disabled { background: rgba(255,255,255,.07); color: var(--fog); cursor: default; }
+  .elem { display: block; font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .08em; color: var(--fog); text-transform: lowercase; margin-top: 1px; }
+  .rung.locked .elem { display: inline; margin-left: 6px; }
+  .gift { display: block; margin-top: 3px; font-size: 11.5px; font-weight: 600; color: color-mix(in srgb, var(--c) 60%, #fff); }
+  .gift b { font-family: "Space Mono", monospace; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--c); margin-right: 4px; }
+  .chip.align-good { border-color: #6ee7a8; color: #c8ffe2; }
+  .chip.align-off { border-color: var(--gold); color: var(--gold); }
   .grow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
   .stars b { font-weight: 400; } .stars b.off { opacity: .25; }
   .stars { font-style: normal; font-family: "Quicksand", sans-serif; font-size: 12px; color: var(--gold); letter-spacing: 1px; margin-left: 4px; }
@@ -512,9 +518,9 @@
       <div class="lrate" id="h-rate">+0 per second</div>
     </div>
     <div class="scene sanct" id="h-scene"><canvas id="h-canvas" aria-hidden="true"></canvas></div>
-    <div class="chips"><span class="chip boost" id="h-boost" hidden></span><span class="chip" id="h-seekers"></span><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
+    <div class="chips"><span class="chip boost" id="h-boost" hidden></span><span class="chip" id="h-align" hidden></span><span class="chip" id="h-seekers"></span><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
     <div class="altar">
-      <div><b>Lotus altar</b><span class="lv" id="a-lv"></span><div class="rr" id="a-info"></div></div>
+      <div><b>Thousand-petal lotus</b><span class="lv" id="a-lv"></span><div class="rr" id="a-info"></div></div>
       <button id="a-buy">Raise<small id="a-cost"></small></button>
     </div>
     <div class="buymode" id="h-buy"><button data-m="1" class="on">×1</button><button data-m="10">×10</button><button data-m="max">Max</button></div>
@@ -1212,14 +1218,35 @@ const CYCLE_AT = 1e6, OFFLINE_CAP = 8 * 3600; // base rest; the altar and Long r
 const STAR_MULT = [1, 1.5, 2.25, 3.5, 5, 8];          // guide payout by stars (hired = 1 star)
 const ALTAR_COST0 = 150, ALTAR_GROWTH = 3;
 const SKILLS = [
-  { id: "swift", name: "Swift breath", max: 5, d: (l) => `Temple bars fill ${10 * l}% faster.` },
-  { id: "open", name: "Open door", max: 5, d: (l) => `Seekers arrive ${50 * l}% faster.` },
-  { id: "devoted", name: "Devoted guides", max: 5, d: (l) => `Guides pay ${50 * l}% more.` },
-  { id: "rest", name: "Long rest", max: 4, d: (l) => `Your sanctuary keeps gathering ${2 * l} more hours while you're away.` },
-  { id: "starlit", name: "Starlit sky", max: 3, d: (l) => `Visitors come ${25 * l}% more often and blessings last ${25 * l}% longer.` },
-  { id: "first", name: "First light", max: 3, d: (l) => `Each new cycle starts with ${fmtN(500 * 10 ** (l - 1))} light and Root at level ${10 * l}.` },
+  { id: "swift", name: "Prana flow", max: 5, d: (l) => `Life force moves freely: temple bars fill ${10 * l}% faster.` },
+  { id: "open", name: "Open heart", max: 5, d: (l) => `An open heart draws people in: seekers arrive ${50 * l}% faster.` },
+  { id: "devoted", name: "Devoted guides", max: 5, d: (l) => `Your guides hold space with love: guides pay ${50 * l}% more.` },
+  { id: "rest", name: "Deep roots", max: 4, d: (l) => `Rooted and safe: your sanctuary keeps gathering ${2 * l} more hours while you're away.` },
+  { id: "starlit", name: "Crown of stars", max: 3, d: (l) => `Connected to something bigger: visitors come ${25 * l}% more often and blessings last ${25 * l}% longer.` },
+  { id: "first", name: "Kundalini rising", max: 3, d: (l) => `Energy already stirring at the base: each new cycle starts with ${fmtN(500 * 10 ** (l - 1))} light and Root at level ${10 * l}.` },
 ];
 const SKILL_COST = [1, 2, 4, 7, 12];
+// each chakra's element, and the gift its temple gives (it grows with the temple's level)
+const ELEMENTS = ["earth", "water", "fire", "air", "sound", "light", "thought"];
+const lvOf = (i) => (S.opened[i] ? S.glow[i] : 0);
+const GIFTS = [
+  { name: "Grounding", v: () => Math.floor(lvOf(0) / 25), d: (v) => v ? `rests ${v}h longer while you're away` : "at level 25: rests longer while you're away" },
+  { name: "Flow", v: () => Math.min(50, 2 * Math.floor(lvOf(1) / 10)), d: (v) => v ? `visitors come ${v}% more often` : "at level 10: visitors come more often" },
+  { name: "Willpower", v: () => Math.min(25, Math.floor(lvOf(2) / 10)), d: (v) => v ? `your taps push bars ${15 + v}% (not 15%)` : "at level 10: your taps push bars further" },
+  { name: "Love", v: () => Math.min(100, 5 * Math.floor(lvOf(3) / 10)), d: (v) => v ? `seekers are drawn in ${v}% faster` : "at level 10: seekers are drawn in faster" },
+  { name: "Voice", v: () => Math.min(3, .2 * Math.floor(lvOf(4) / 10)), d: (v) => v ? `each written answer adds ${(2 + v).toFixed(1)}% (not 2%)` : "at level 10: each written answer counts for more" },
+  { name: "Vision", v: () => Math.min(100, 5 * Math.floor(lvOf(5) / 10)), d: (v) => v ? `blessings are ${v}% stronger and last longer` : "at level 10: blessings grow stronger" },
+  { name: "Unity", v: () => Math.min(200, Math.floor(lvOf(6) / 5)), d: (v) => v ? `every other temple pays ${v}% more` : "at level 5: every other temple pays more" },
+];
+const gift = (i) => GIFTS[i].v();
+// alignment: chakras work best in balance, so temples close in level pay more
+function alignment() {
+  const lv = S.glow.filter((g, i) => S.opened[i]);
+  if (lv.length < 2) return { mult: 1, ratio: 1, low: -1 };
+  const lo = Math.min(...lv), hi = Math.max(...lv), ratio = lo / hi;
+  const low = S.glow.findIndex((g, i) => S.opened[i] && g === lo);
+  return { mult: ratio >= .5 ? 1.5 : ratio >= .25 ? 1.2 : 1, ratio, low };
+}
 const UNITS = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
 function fmtN(n) {
   if (n < 1000) return Math.floor(n).toString();
@@ -1244,24 +1271,27 @@ function normalize(x) {
 const milesOf = (g) => MILES.filter((m) => g >= m).length;
 const nextMile = (g) => MILES.find((m) => m > g);
 const prevMile = (g) => [0, ...MILES].filter((m) => m <= g).pop();
-const insightMult = () => 1 + .02 * Math.min(jCount, 100);
+const insightMult = () => 1 + (.02 + (S && S.glow ? gift(4) / 100 : 0)) * Math.min(jCount, 100);
 const streakMult = () => 1 + .1 * Math.min(S.streak.n, 10);
 const seekerMult = () => 1 + .005 * Math.floor(S.seekers);
 const boostMult = () => (S.boost && S.boost.until > Date.now() ? S.boost.mult : 1);
+const blessLen = (t) => t * (1 + .25 * sk("starlit")) * (1 + gift(5) / 200);
+const blessMult = (m) => 1 + (m - 1) * (1 + gift(5) / 100);
 const sk = (id) => S.skills[id] || 0;
 const altarMult = () => 1 + .25 * S.altar;
 const altarCost = () => ALTAR_COST0 * ALTAR_GROWTH ** S.altar;
-const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest"));
+const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest") + gift(0));
 const cycleOf = (i) => CYCLE[i] / (1 + .1 * sk("swift"));
 const guideMult = (i) => S.guides[i] ? STAR_MULT[S.stars[i]] * (1 + .5 * sk("devoted")) : 1;
 const starCost = (i) => GUIDE_COST[i] * 8 ** S.stars[i];
-const globalMult = () => (1 + .1 * S.petals) * altarMult() * insightMult() * streakMult() * seekerMult() * boostMult();
-const payout = (i) => S.opened[i] ? PAY[i] * S.glow[i] * 2 ** milesOf(S.glow[i]) * (1 + .25 * S.cards[i]) * guideMult(i) * globalMult() : 0;
+const globalMult = () => (1 + .1 * S.petals) * altarMult() * insightMult() * streakMult() * seekerMult() * boostMult() * alignment().mult;
+const unity = (i) => (i === 6 ? 1 : 1 + gift(6) / 100);
+const payout = (i) => S.opened[i] ? PAY[i] * S.glow[i] * 2 ** milesOf(S.glow[i]) * (1 + .25 * S.cards[i]) * guideMult(i) * unity(i) * globalMult() : 0;
 // light per second from temples that run themselves (guided)
 const rate = () => CHAKRAS.reduce((t, _, i) => t + (S.guides[i] ? payout(i) / cycleOf(i) : 0), 0);
 const potential = () => CHAKRAS.reduce((t, _, i) => t + payout(i) / cycleOf(i), 0);
 const sumGlow = () => S.glow.reduce((t, g, i) => t + (S.opened[i] ? g : 0), 0);
-const seekerRate = () => sumGlow() ? .002 * Math.sqrt(sumGlow()) * (1 + .15 * S.guides.filter(Boolean).length) * (1 + .5 * sk("open")) : 0;
+const seekerRate = () => sumGlow() ? .002 * Math.sqrt(sumGlow()) * (1 + .15 * S.guides.filter(Boolean).length) * (1 + .5 * sk("open")) * (1 + gift(3) / 100) : 0;
 const costOf = (i, n) => COST0[i] * GROWTH ** S.glow[i] * (GROWTH ** n - 1) / (GROWTH - 1);
 const maxBuy = (i) => Math.max(0, Math.floor(Math.log(S.light * (GROWTH - 1) / (COST0[i] * GROWTH ** S.glow[i]) + 1) / Math.log(GROWTH)));
 const buyCount = (i) => S.buy === "max" ? Math.max(1, maxBuy(i)) : +S.buy;
@@ -1301,7 +1331,7 @@ function collect(i, el) {
 // tapping a temple: collect if ready, otherwise nudge its bar forward
 function nudge(i, el) {
   if (collect(i, el)) return updateHub();
-  S.prog[i] = Math.min(1, S.prog[i] + .15);
+  S.prog[i] = Math.min(1, S.prog[i] + (15 + gift(2)) / 100);
   updateHub();
 }
 function hireGuide(i) {
@@ -1337,7 +1367,7 @@ function raiseStar(i) {
 $("a-buy").onclick = () => {
   const cost = altarCost(); if (cost > S.light) return;
   S.light -= cost; S.altar += 1;
-  toast(`The lotus altar glows brighter · all light ×${altarMult().toFixed(2)}`); NOTES.slice(0, 3).forEach((f, k) => bowl(f, 3, .07, k * .1));
+  toast(`The thousand-petal lotus opens wider · all light ×${altarMult().toFixed(2)}`); NOTES.slice(0, 3).forEach((f, k) => bowl(f, 3, .07, k * .1));
   burst($("h-scene"), { n: 18, spread: 150 }); save(); updateHub();
 };
 
@@ -1463,21 +1493,24 @@ function startScene() { scene.disp = S.light; scene.last = 0; if (!scene.raf) sc
 
 // ---------- visitors: little moments that drift through the sanctuary ----------
 const VISITORS = [
-  { g: "☾", c: "#c9a7ff", t: "The full moon rises", sub: "light ×2 for 60s", w: 3, act: () => { const t = 60 * (1 + .25 * sk("starlit")); S.boost = { mult: 2, until: Date.now() + t * 1e3, name: "full moon" }; return `Full moon: light ×2 for ${Math.round(t)}s`; } },
-  { g: "★", c: "#ffd98a", t: "A shooting star", sub: "light ×3 for 30s", w: 2, act: () => { const t = 30 * (1 + .25 * sk("starlit")); S.boost = { mult: 3, until: Date.now() + t * 1e3, name: "shooting star" }; return `Wish made: light ×3 for ${Math.round(t)}s`; } },
-  { g: "✦", c: "#ff9ed1", t: "A pilgrim brings a gift", sub: "tap to receive", w: 3, act: () => { const g = Math.max(25, potential() * 90); earn(g); return `The pilgrim's gift: +${fmtN(g)} ✦`; } },
-  { g: "♡", c: "#6ee7a8", t: "A circle of seekers", sub: "tap to welcome them", w: 3, act: () => { const n = 3 + Math.floor(Math.sqrt(sumGlow()) * 1.5); S.seekers += n; return `${n} seekers join your sanctuary ♡`; } },
-  { g: "◎", c: "#6cc4ff", t: "A sound bath begins", sub: "every bar fills", w: 2, act: () => { let g = 0; CHAKRAS.forEach((_, i) => { if (S.opened[i]) { g += payout(i); S.prog[i] = 0; } }); earn(g); return `The sound bath fills every temple: +${fmtN(g)} ✦`; } },
+  { k: 1, g: "☾", t: "The full moon rises", sub: "Sacral · water & moon · light ×2", w: 3, act: () => { const t = blessLen(60), m = blessMult(2); S.boost = { mult: m, until: Date.now() + t * 1e3, name: "full moon" }; return `Full moon over the waters: light ×${+m.toFixed(2)} for ${Math.round(t)}s`; } },
+  { k: 2, g: "✺", t: "A fire ceremony", sub: "Solar Plexus · every bar leaps ahead", w: 2, act: () => { CHAKRAS.forEach((_, i) => { if (S.opened[i]) S.prog[i] = Math.min(1, S.prog[i] + .6); }); return "The fire ceremony: every temple leaps forward ✺"; } },
+  { k: 0, g: "✦", t: "A pilgrim brings a gift", sub: "Root · from the earth · tap to receive", w: 3, act: () => { const g = Math.max(25, potential() * 90); earn(g); return `The pilgrim's gift from the earth: +${fmtN(g)} ✦`; } },
+  { k: 3, g: "♡", t: "A circle of seekers", sub: "Heart · tap to welcome them", w: 3, act: () => { const n = 3 + Math.floor(Math.sqrt(sumGlow()) * 1.5 * (1 + gift(3) / 100)); S.seekers += n; return `Love draws them in: ${n} seekers join your sanctuary ♡`; } },
+  { k: 4, g: "◎", t: "A sound bath begins", sub: "Throat · every temple sings", w: 2, act: () => { let g = 0; CHAKRAS.forEach((_, i) => { if (S.opened[i]) { g += payout(i); S.prog[i] = 0; } }); earn(g); return `Every temple sings and pays: +${fmtN(g)} ✦`; } },
+  { k: 5, g: "◉", t: "A vision appears", sub: "Third Eye · see what's coming", w: 2, act: () => { const g = Math.max(25, potential() * 45); earn(g); nextVisit = Date.now() + 8e3; return `You see it coming: +${fmtN(g)} ✦, and another visitor is near`; } },
+  { k: 6, g: "★", t: "A shooting star", sub: "Crown · light ×3", w: 2, act: () => { const t = blessLen(30), m = blessMult(3); S.boost = { mult: m, until: Date.now() + t * 1e3, name: "shooting star" }; return `A wish to the cosmos: light ×${+m.toFixed(2)} for ${Math.round(t)}s`; } },
 ];
 let nextVisit = Date.now() + 25e3, visitorEl = null;
 function spawnVisitor() {
   if (!S.opened.some(Boolean)) return;
-  const pool = VISITORS.flatMap((v) => Array(v.w).fill(v)), v = pickOne(pool);
+  // visitors come from chakras you've awakened (the pilgrim from Root is always welcome)
+  const pool = VISITORS.filter((v) => S.opened[v.k] || v.k === 0).flatMap((v) => Array(v.w).fill(v)), v = pickOne(pool);
   const el = document.createElement("button");
-  el.className = "visitor"; el.style.setProperty("--vc", v.c);
+  el.className = "visitor"; el.style.setProperty("--vc", CHAKRAS[v.k].color);
   el.innerHTML = `<span class="vg">${v.g}</span><span>${v.t}<small>${v.sub}</small></span>`;
   el.onclick = () => {
-    const msg = v.act(); toast(msg); burst(el, { n: 16, spread: 130 }); bowl(NOTES[4], 2.5, .12);
+    const msg = v.act(); toast(msg); burst(el, { n: 16, spread: 130 }); bowl(NOTES[v.k], 2.5, .12);
     el.remove(); visitorEl = null; save(); updateHub();
   };
   el.addEventListener("animationend", () => { el.remove(); if (visitorEl === el) visitorEl = null; });
@@ -1497,9 +1530,9 @@ function renderHub() {
       : `<button class="hire" data-hire="${i}" title="${gname}, ${grole}: collects for you and pays ×1.5">Hire ${gname} ✦ ${fmtN(GUIDE_COST[i])}</button>`;
     return `<div class="rung ${awake ? "awake" : canWake ? "" : "locked"}" data-i="${i}" style="--c:${c.color}">
       ${buddy(c, awake ? "awake" : "sleep")}
-      <div class="info"><b>${c.name}</b><span class="lv"></span>
+      <div class="info"><b>${c.name}</b><span class="lv"></span><span class="elem">${ELEMENTS[i]} · ${c.bija}</span>
         ${awake ? `<button class="cyc" data-collect="${i}" aria-label="Collect ${c.name} light"><i></i><span></span></button>` : ""}
-        <div class="rr"></div>${awake ? `<div class="mbar"><i></i></div>` : ""}${guide}</div>
+        <div class="rr"></div>${awake ? `<div class="mbar"><i></i></div>` : ""}<span class="gift"><b>${GIFTS[i].name}</b><span class="gd"></span></span>${guide}</div>
       <div class="ra">${act}</div></div>`;
   }).join("");
   $("h-buy").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b.dataset.m === S.buy));
@@ -1514,6 +1547,13 @@ function updateHub() {
   const b = S.boost && S.boost.until > Date.now() ? S.boost : null;
   $("h-boost").hidden = !b;
   if (b) $("h-boost").textContent = `${b.name} ×${b.mult} · ${Math.ceil((b.until - Date.now()) / 1000)}s`;
+  const al = alignment();
+  $("h-align").hidden = al.low < 0;
+  if (al.low >= 0) {
+    $("h-align").className = "chip " + (al.mult >= 1.5 ? "align-good" : "align-off");
+    $("h-align").innerHTML = al.mult >= 1.5 ? `aligned <b>×1.5</b> · your chakras are in balance`
+      : `${al.mult > 1 ? "partly aligned ×1.2" : "out of balance"} · raise <b>${CHAKRAS[al.low].name}</b> for ×1.5`;
+  }
   $("h-seekers").innerHTML = `seekers <b>${Math.floor(S.seekers)}</b> · ×${seekerMult().toFixed(2)}`;
   $("h-streak").innerHTML = `streak <b>${S.streak.n}</b> day${S.streak.n === 1 ? "" : "s"} · ×${streakMult().toFixed(1)}`;
   $("h-insight").innerHTML = `insight <b>${jCount}</b> ✎ · ×${insightMult().toFixed(2)}`;
@@ -1523,6 +1563,7 @@ function updateHub() {
   $("h-ladder").querySelectorAll(".rung").forEach((row) => {
     const i = +row.dataset.i, g = S.glow[i], awake = S.opened[i];
     row.querySelector(".lv").textContent = awake ? `Lv ${g}` : "asleep";
+    row.querySelector(".gd").textContent = GIFTS[i].d(gift(i));
     if (!awake) { row.querySelector(".rr").textContent = "finish a card to awaken"; return; }
     if (!row.querySelector(".cyc")) { stale = true; return; }
     const full = S.prog[i] >= 1 && !S.guides[i];
@@ -1540,7 +1581,7 @@ function updateHub() {
   });
   if (stale) return renderHub();
   $("a-lv").textContent = `Lv ${S.altar}`;
-  $("a-info").textContent = `all light ×${altarMult().toFixed(2)} · rests up to ${Math.round(restCap() / 3600)}h`;
+  $("a-info").textContent = `the crown's lotus · all light ×${altarMult().toFixed(2)} · rests up to ${Math.round(restCap() / 3600)}h`;
   $("a-cost").textContent = "✦ " + fmtN(altarCost()); $("a-buy").disabled = altarCost() > S.light;
   const spent = Object.values(S.skills).reduce((t, v) => t + v, 0);
   $("h-lotus").hidden = !S.petals && !spent;
@@ -1549,7 +1590,7 @@ function updateHub() {
   $("h-cycle-t").textContent = !all
     ? `Awaken all seven temples, then gather ${fmtN(CYCLE_AT)} light to be reborn with lotus petals (+10% light each, forever).`
     : p < 1 ? `${fmtN(S.total)} / ${fmtN(CYCLE_AT)} light gathered this cycle.`
-    : `Begin cycle ${S.cycle + 1}: light, levels, guides and seekers start over. Your cards, words, streak and petals stay.`;
+    : `Kundalini has risen through all seven. Begin cycle ${S.cycle + 1}: light, levels, guides and seekers start over. Your cards, words, streak and petals stay.`;
   $("h-cycle").hidden = !(all && p >= 1);
   $("h-cycle").textContent = `Be reborn · +${p} petal${p === 1 ? "" : "s"} ❀`;
 }
@@ -1588,29 +1629,29 @@ setInterval(() => {
   const now = Date.now(), dt = Math.min((now - lastTick) / 1000, S && S.glow ? restCap() : OFFLINE_CAP); lastTick = now;
   if (!S || !S.glow) return;
   advance(dt); S.lastSeen = now;
-  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / (1 + .25 * sk("starlit")); }
+  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / ((1 + .25 * sk("starlit")) * (1 + gift(1) / 100)); }
   if (now - lastSave > 3000) { lastSave = now; save(); }
   updateHub();
 }, 200);
 // what gathered while the game was closed: worked out the moment it opens, shown when you come in
-let gift = null;
+let awayGift = null;
 function gatherAway() {
   const away = Math.min((Date.now() - (S.lastSeen || Date.now())) / 1000, restCap());
   S.lastSeen = Date.now(); lastTick = Date.now();
   if (away < 60) return;
   const seekers0 = S.seekers, g = advance(away);
   save();
-  if (g >= 1 || S.seekers - seekers0 >= 1) gift = { away, g, seekers: Math.floor(S.seekers - seekers0) };
+  if (g >= 1 || S.seekers - seekers0 >= 1) awayGift = { away, g, seekers: Math.floor(S.seekers - seekers0) };
 }
 addEventListener("visibilitychange", () => {
   if (!S || !S.glow) return;
   if (document.hidden) { S.lastSeen = Date.now(); save(); return; }
   gatherAway();
-  if (gift && current === "s-hub") welcomeBack(); else gift = null;
+  if (awayGift && current === "s-hub") welcomeBack(); else awayGift = null;
 });
 function welcomeBack() {
-  if (!gift) return;
-  const { away, g, seekers } = gift; gift = null;
+  if (!awayGift) return;
+  const { away, g, seekers } = awayGift; awayGift = null;
   const h = Math.floor(away / 3600), m = Math.floor((away % 3600) / 60);
   $("away-t").textContent = `For ${h ? h + "h " : ""}${m}m your guides kept the temples glowing${seekers ? `, and ${seekers} seeker${seekers === 1 ? "" : "s"} found you` : ""}. They gathered`;
   $("away-n").textContent = "✦ " + fmtN(g);
