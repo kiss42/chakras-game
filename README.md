@@ -26,6 +26,11 @@ at the bottom.
 - **Guides:** hire a guide for each temple (Mira, Juno, Sol, Rosa, Echo, Iris, Lumen). A guide
   collects automatically, pays ×1.5, and keeps working while the game is closed (up to 8 hours,
   collected as a welcome-back gift).
+- **The living sanctuary:** at the top, seekers walk to the temples, meditate, and carry light
+  back to the lotus altar; guides stand by their temples and payouts float up.
+- **Lotus altar:** raise it with light for +25% on all light per level; every 3 levels adds an
+  hour to how long the sanctuary keeps gathering while you're away.
+- **Guide stars:** raise each guide from ★1 to ★5 (×1.5, ×2.25, ×3.5, ×5, ×8).
 - **Seekers:** a following that drifts in as your temples grow (faster with guides), and arrives
   with every card and written answer. Each seeker adds +0.5% light.
 - **Visitors:** every minute or so on the sanctuary screen, someone drifts by for a few seconds:
@@ -34,12 +39,14 @@ at the bottom.
 - **Cards are power:** temples wake only by finishing a card, root to crown. Every card done in a
   chakra adds +25% to that temple for good. Every journal answer adds +2% to all light (up to
   +200%). Playing on new days adds +10% per streak day (up to +100%); rest days lower it gently.
-- **New cycle:** with all seven awake and 1M light gathered, be reborn for lotus petals (+10%
-  light each, forever). Light, levels, guides and seekers start over; cards, journal, streak and
-  petals stay.
+- **New cycle:** with all seven awake and 1M light gathered, be reborn for lotus petals. Light,
+  levels, the altar, guides and seekers start over; cards, journal, streak, petals and skills stay.
+- **The lotus (ascension skills):** every petal you keep gives +10% light, or spend petals on
+  permanent skills: Swift breath (faster bars), Open door (more seekers), Devoted guides, Long rest
+  (more hours away), Starlit sky (more visitors, longer blessings), First light (a head start).
 
 The numbers live at the top of the "your sanctuary" section in `index.html` (`CYCLE`, `BASE`,
-`COST0`, `GUIDE_COST`, `MILES`, `CYCLE_AT`, `VISITORS`) if you want to tune the pace.
+`COST0`, `GUIDE_COST`, `STAR_MULT`, `ALTAR_COST0`, `SKILLS`, `MILES`, `CYCLE_AT`, `VISITORS`) if you want to tune the pace.
 
 ## Your journal
 

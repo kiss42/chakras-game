@@ -421,6 +421,29 @@
   .visitor small { display: block; font-family: "Space Mono", monospace; font-size: 9.5px; font-weight: 400; opacity: .7; }
   @keyframes wander { 0% { transform: translateX(0) translateY(0); } 25% { transform: translateX(calc(50vw + 130px)) translateY(-10px); }
     75% { transform: translateX(calc(50vw + 130px)) translateY(10px); } 100% { transform: translateX(calc(100vw + 300px)) translateY(0); } }
+  .sanct { min-height: 0; height: 176px; padding: 0; margin: 12px 0 2px; }
+  .sanct canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; display: block; }
+  .altar { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; margin-top: 10px; padding: 10px 12px; border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255,217,138,.12), rgba(27,18,34,.9)); border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); }
+  .altar b { font-family: "Cinzel", serif; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+  .altar .lv { font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--gold); margin-left: 6px; }
+  .altar .rr { font-family: "Space Mono", monospace; font-size: 10.5px; color: var(--fog); margin-top: 3px; }
+  #a-buy { border-radius: 14px; padding: 8px 14px; font-weight: 700; font-size: 12px; line-height: 1.15; color: #2a0f2b; background: linear-gradient(180deg, #fff3d6, var(--gold)); }
+  #a-buy small { display: block; font-family: "Space Mono", monospace; font-size: 9.5px; opacity: .8; }
+  #a-buy:disabled { background: rgba(255,255,255,.07); color: var(--fog); cursor: default; }
+  .grow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .stars b { font-weight: 400; } .stars b.off { opacity: .25; }
+  .stars { font-style: normal; font-family: "Quicksand", sans-serif; font-size: 12px; color: var(--gold); letter-spacing: 1px; margin-left: 4px; }
+  .hire.star { margin-top: 0; color: #2a0f2b; background: linear-gradient(180deg, #fff3d6, var(--gold)); border-color: var(--gold); }
+  .skill { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 14px 14px; border-radius: 18px; text-align: left;
+    background: rgba(27,18,34,.88); border: 1px solid color-mix(in srgb, var(--rose) 28%, transparent); }
+  .skill h4 { margin: 0; font-family: "Cinzel", serif; font-size: 15px; letter-spacing: .06em; }
+  .skill p { margin: 3px 0 0; font-size: 13px; color: var(--fog); font-weight: 500; }
+  .pips { margin-top: 6px; display: flex; gap: 4px; }
+  .pips i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--rose); }
+  .pips i.on { background: var(--rose); box-shadow: 0 0 6px var(--rose); }
+  .skill button { border-radius: 14px; padding: 8px 12px; font-weight: 700; font-size: 12px; color: #2a0f2b; background: linear-gradient(180deg, #ffe3f3, var(--rose)); }
+  .skill button:disabled { background: rgba(255,255,255,.07); color: var(--fog); cursor: default; }
   .cyclebox { margin-top: 14px; padding: 14px 16px; border-radius: 20px; text-align: center; background: rgba(27,18,34,.85);
     border: 1px dashed color-mix(in srgb, var(--gold) 50%, transparent); }
   .cyclebox p { margin: 0 0 4px; font-size: 13px; color: var(--fog); font-weight: 500; }
@@ -488,14 +511,28 @@
       <span class="lunit">light gathered</span>
       <div class="lrate" id="h-rate">+0 per second</div>
     </div>
+    <div class="scene sanct" id="h-scene"><canvas id="h-canvas" aria-hidden="true"></canvas></div>
     <div class="chips"><span class="chip boost" id="h-boost" hidden></span><span class="chip" id="h-seekers"></span><span class="chip" id="h-streak"></span><span class="chip" id="h-insight"></span><span class="chip" id="h-petals"></span></div>
+    <div class="altar">
+      <div><b>Lotus altar</b><span class="lv" id="a-lv"></span><div class="rr" id="a-info"></div></div>
+      <button id="a-buy">Raise<small id="a-cost"></small></button>
+    </div>
     <div class="buymode" id="h-buy"><button data-m="1" class="on">×1</button><button data-m="10">×10</button><button data-m="max">Max</button></div>
     <div class="ladder" id="h-ladder"></div>
     <div class="cyclebox">
       <p class="label" style="justify-content:center">a new cycle</p>
       <p id="h-cycle-t"></p>
       <button class="btn" id="h-cycle" hidden></button>
+      <button class="link" id="h-lotus" hidden></button>
     </div>
+  </section>
+
+  <!-- the lotus: skills bought with petals -->
+  <section class="screen" id="s-lotus">
+    <div class="jhead"><p class="label">ascension</p><button class="link" id="l-back" style="padding:6px 0">← Back</button></div>
+    <h2>The lotus</h2>
+    <p class="muted" id="l-sub" style="margin:6px 0 14px"></p>
+    <div class="jlist" id="l-list"></div>
   </section>
 
   <!-- travel -->
@@ -819,7 +856,7 @@ function show(id) {
   document.body.classList.toggle("home", id === "s-welcome");
   document.body.classList.toggle("end", id === "s-end");
   document.body.classList.toggle("hub", id === "s-hub");
-  document.body.classList.toggle("jour", id === "s-journal");
+  document.body.classList.toggle("jour", id === "s-journal" || id === "s-lotus");
   window.scrollTo(0, 0);
 }
 function setGlow(color) { document.documentElement.style.setProperty("--glow", color || "#ff9ed1"); }
@@ -925,7 +962,8 @@ function finishCard(completed) {
   const c = ch(), wasOpen = S.opened[S.step], i = S.step;
   let gainText = "";
   if (completed) {
-    S.opened[i] = true; S.glow[i] = Math.max(1, S.glow[i]); S.cards[i] += 1;
+    S.opened[i] = true; S.glow[i] = Math.max(i === 0 && S.firstLight ? S.firstLight : 1, S.glow[i]); S.cards[i] += 1;
+    if (i === 0) S.firstLight = 0;
     const streakUp = bumpStreak();
     const g = cardReward(i, !wasOpen); earn(g);
     const newSeekers = (wasOpen ? 3 : 10) + (wrote ? 5 : 0); S.seekers += newSeekers;
@@ -1170,7 +1208,18 @@ const GUIDE_COST = [60, 900, 12000, 150000, 1.8e6, 2.4e7, 3e8];
 const GUIDES = [["Mira", "the grounding keeper"], ["Juno", "the dance teacher"], ["Sol", "the fire tender"], ["Rosa", "the heart healer"],
   ["Echo", "the sound bath keeper"], ["Iris", "the dream reader"], ["Lumen", "the silent monk"]];
 const GROWTH = 1.15, MILES = [10, 25, 50, 100, 150, 200, 300, 400, 500, 750, 1000];
-const CYCLE_AT = 1e6, OFFLINE_CAP = 8 * 3600;
+const CYCLE_AT = 1e6, OFFLINE_CAP = 8 * 3600; // base rest; the altar and Long rest add more
+const STAR_MULT = [1, 1.5, 2.25, 3.5, 5, 8];          // guide payout by stars (hired = 1 star)
+const ALTAR_COST0 = 150, ALTAR_GROWTH = 3;
+const SKILLS = [
+  { id: "swift", name: "Swift breath", max: 5, d: (l) => `Temple bars fill ${10 * l}% faster.` },
+  { id: "open", name: "Open door", max: 5, d: (l) => `Seekers arrive ${50 * l}% faster.` },
+  { id: "devoted", name: "Devoted guides", max: 5, d: (l) => `Guides pay ${50 * l}% more.` },
+  { id: "rest", name: "Long rest", max: 4, d: (l) => `Your sanctuary keeps gathering ${2 * l} more hours while you're away.` },
+  { id: "starlit", name: "Starlit sky", max: 3, d: (l) => `Visitors come ${25 * l}% more often and blessings last ${25 * l}% longer.` },
+  { id: "first", name: "First light", max: 3, d: (l) => `Each new cycle starts with ${fmtN(500 * 10 ** (l - 1))} light and Root at level ${10 * l}.` },
+];
+const SKILL_COST = [1, 2, 4, 7, 12];
 const UNITS = ["K", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc"];
 function fmtN(n) {
   if (n < 1000) return Math.floor(n).toString();
@@ -1181,13 +1230,15 @@ const fmtS = (t) => t >= 60 ? `${Math.round(t / 6) / 10}m` : `${Math.round(t * 1
 function newState() {
   return { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null,
     light: 0, total: 0, lifetime: 0, glow: CHAKRAS.map(() => 0), cards: CHAKRAS.map(() => 0),
-    prog: CHAKRAS.map(() => 0), guides: CHAKRAS.map(() => false), seekers: 0, boost: null,
+    prog: CHAKRAS.map(() => 0), guides: CHAKRAS.map(() => false), stars: CHAKRAS.map(() => 0), seekers: 0, boost: null,
+    altar: 0, skills: {},
     petals: 0, cycle: 1, grand: false, streak: { n: 0, last: "" }, lastSeen: Date.now(), buy: "1" };
 }
 function normalize(x) {
   const d = newState();
   for (const k in d) if (x[k] === undefined) x[k] = d[k];
   x.opened.forEach((o, i) => { if (o && !x.glow[i]) x.glow[i] = 1; });
+  x.guides.forEach((g, i) => { if (g && !x.stars[i]) x.stars[i] = 1; });
   return x;
 }
 const milesOf = (g) => MILES.filter((m) => g >= m).length;
@@ -1197,13 +1248,20 @@ const insightMult = () => 1 + .02 * Math.min(jCount, 100);
 const streakMult = () => 1 + .1 * Math.min(S.streak.n, 10);
 const seekerMult = () => 1 + .005 * Math.floor(S.seekers);
 const boostMult = () => (S.boost && S.boost.until > Date.now() ? S.boost.mult : 1);
-const globalMult = () => (1 + .1 * S.petals) * insightMult() * streakMult() * seekerMult() * boostMult();
-const payout = (i) => S.opened[i] ? PAY[i] * S.glow[i] * 2 ** milesOf(S.glow[i]) * (1 + .25 * S.cards[i]) * (S.guides[i] ? 1.5 : 1) * globalMult() : 0;
+const sk = (id) => S.skills[id] || 0;
+const altarMult = () => 1 + .25 * S.altar;
+const altarCost = () => ALTAR_COST0 * ALTAR_GROWTH ** S.altar;
+const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest"));
+const cycleOf = (i) => CYCLE[i] / (1 + .1 * sk("swift"));
+const guideMult = (i) => S.guides[i] ? STAR_MULT[S.stars[i]] * (1 + .5 * sk("devoted")) : 1;
+const starCost = (i) => GUIDE_COST[i] * 8 ** S.stars[i];
+const globalMult = () => (1 + .1 * S.petals) * altarMult() * insightMult() * streakMult() * seekerMult() * boostMult();
+const payout = (i) => S.opened[i] ? PAY[i] * S.glow[i] * 2 ** milesOf(S.glow[i]) * (1 + .25 * S.cards[i]) * guideMult(i) * globalMult() : 0;
 // light per second from temples that run themselves (guided)
-const rate = () => CHAKRAS.reduce((t, _, i) => t + (S.guides[i] ? payout(i) / CYCLE[i] : 0), 0);
-const potential = () => CHAKRAS.reduce((t, _, i) => t + payout(i) / CYCLE[i], 0);
+const rate = () => CHAKRAS.reduce((t, _, i) => t + (S.guides[i] ? payout(i) / cycleOf(i) : 0), 0);
+const potential = () => CHAKRAS.reduce((t, _, i) => t + payout(i) / cycleOf(i), 0);
 const sumGlow = () => S.glow.reduce((t, g, i) => t + (S.opened[i] ? g : 0), 0);
-const seekerRate = () => sumGlow() ? .002 * Math.sqrt(sumGlow()) * (1 + .15 * S.guides.filter(Boolean).length) : 0;
+const seekerRate = () => sumGlow() ? .002 * Math.sqrt(sumGlow()) * (1 + .15 * S.guides.filter(Boolean).length) * (1 + .5 * sk("open")) : 0;
 const costOf = (i, n) => COST0[i] * GROWTH ** S.glow[i] * (GROWTH ** n - 1) / (GROWTH - 1);
 const maxBuy = (i) => Math.max(0, Math.floor(Math.log(S.light * (GROWTH - 1) / (COST0[i] * GROWTH ** S.glow[i]) + 1) / Math.log(GROWTH)));
 const buyCount = (i) => S.buy === "max" ? Math.max(1, maxBuy(i)) : +S.buy;
@@ -1224,9 +1282,9 @@ function advance(dt) {
   let got = 0;
   CHAKRAS.forEach((_, i) => {
     if (!S.opened[i]) return;
-    S.prog[i] += dt / CYCLE[i];
+    S.prog[i] += dt / cycleOf(i);
     if (S.prog[i] >= 1) {
-      if (S.guides[i]) { const n = Math.floor(S.prog[i]); got += n * payout(i); S.prog[i] -= n; }
+      if (S.guides[i]) { const n = Math.floor(S.prog[i]); got += n * payout(i); S.prog[i] -= n; if (dt < 2) sceneFx(i, n * payout(i)); }
       else S.prog[i] = 1; // waits, glowing, for you to collect
     }
   });
@@ -1235,7 +1293,7 @@ function advance(dt) {
 }
 function collect(i, el) {
   if (!S.opened[i] || S.prog[i] < 1) return false;
-  const g = payout(i); earn(g); S.prog[i] = 0;
+  const g = payout(i); earn(g); S.prog[i] = 0; sceneFx(i, g);
   chime(i, .7, .05); navigator.vibrate?.(6);
   burst(el, { n: 1, glyphs: ["+" + fmtN(g) + "✦"], spread: 46, up: 1 });
   return true;
@@ -1248,7 +1306,7 @@ function nudge(i, el) {
 }
 function hireGuide(i) {
   const cost = GUIDE_COST[i]; if (S.guides[i] || cost > S.light) return;
-  S.light -= cost; S.guides[i] = true;
+  S.light -= cost; S.guides[i] = true; S.stars[i] = 1;
   const [name, role] = GUIDES[i];
   toast(`${name}, ${role}, joins your ${CHAKRAS[i].name} temple ✦`); bowl(NOTES[i], 3, .16);
   burst($("h-ladder").querySelector(`[data-i="${i}"] .buddy`), { n: 16, spread: 120 });
@@ -1268,10 +1326,145 @@ function buyGlow(i) {
   save(); updateHub();
 }
 
+function raiseStar(i) {
+  if (!S.guides[i] || S.stars[i] >= 5) return;
+  const cost = starCost(i); if (cost > S.light) return;
+  S.light -= cost; S.stars[i] += 1;
+  toast(`${GUIDES[i][0]} rises to ${"★".repeat(S.stars[i])} · ×${STAR_MULT[S.stars[i]]}`); bowl(NOTES[i], 3, .14);
+  burst($("h-ladder").querySelector(`[data-i="${i}"] .buddy`), { n: 14, glyphs: ["★", "✦"], spread: 110 });
+  save(); renderHub();
+}
+$("a-buy").onclick = () => {
+  const cost = altarCost(); if (cost > S.light) return;
+  S.light -= cost; S.altar += 1;
+  toast(`The lotus altar glows brighter · all light ×${altarMult().toFixed(2)}`); NOTES.slice(0, 3).forEach((f, k) => bowl(f, 3, .07, k * .1));
+  burst($("h-scene"), { n: 18, spread: 150 }); save(); updateHub();
+};
+
+// ---------- the lotus: permanent skills bought with petals ----------
+function openLotus() {
+  const spent = Object.values(S.skills).reduce((t, v) => t + v, 0);
+  $("l-sub").textContent = `${S.petals} petal${S.petals === 1 ? "" : "s"} to spend. Every petal you keep gives +10% light, so each skill is a choice. Skills stay through every cycle.${spent ? ` (${spent} spent so far.)` : ""}`;
+  $("l-list").innerHTML = SKILLS.map((k) => {
+    const l = sk(k.id), cost = SKILL_COST[l], maxed = l >= k.max;
+    return `<div class="skill"><div><h4>${k.name}</h4><p>${k.d(Math.max(1, maxed ? l : l + 1))}${l && !maxed ? ` <span style="opacity:.7">(now: ${k.d(l).toLowerCase()})</span>` : ""}</p>
+      <div class="pips">${Array.from({ length: k.max }, (_, n) => `<i class="${n < l ? "on" : ""}"></i>`).join("")}</div></div>
+      <button data-skill="${k.id}" ${maxed || cost > S.petals ? "disabled" : ""}>${maxed ? "Full" : `${cost} ❀`}</button></div>`;
+  }).join("");
+  crumb("lotus"); show("s-lotus");
+}
+$("l-list").addEventListener("click", (e) => {
+  const id = e.target.dataset?.skill; if (!id) return;
+  const k = SKILLS.find((x) => x.id === id), l = sk(id), cost = SKILL_COST[l];
+  if (l >= k.max || cost > S.petals) return;
+  S.petals -= cost; S.skills[id] = l + 1; save();
+  toast(`${k.name} ${"●".repeat(l + 1)} ❀`); bowl(NOTES[5], 3, .14); openLotus();
+});
+$("h-lotus").onclick = openLotus;
+$("l-back").onclick = openHub;
+
+// ---------- the living sanctuary: seekers walk, meditate and carry light to the altar ----------
+const scene = { motes: [], walkers: [], disp: 0, raf: 0 };
+function templePos(i, w, h) {
+  const t = i / 6;
+  return { x: w * (.09 + .82 * t), y: h * .74 - Math.sin(Math.PI * t) * h * .46 };
+}
+function sceneFx(i, g) { if (current === "s-hub" && scene.motes.length < 40) scene.motes.push({ i, g, t: 0 }); }
+function newWalker(w, h) {
+  return { x: w / 2 + (Math.random() - .5) * 40, y: h * .9, tx: 0, ty: 0, state: "pick", wait: 0, carry: false,
+    tint: pickOne(["#c9a7ff", "#ff9ed1", "#fff2fb", "#ffd3ec"]), sp: 14 + Math.random() * 10, ph: Math.random() * 6 };
+}
+function drawScene(now) {
+  scene.raf = 0;
+  if (current !== "s-hub" || !S) return;
+  const cv = $("h-canvas"), d = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== w * d) { cv.width = w * d; cv.height = h * d; }
+  const x = cv.getContext("2d"); x.setTransform(d, 0, 0, d, 0, 0); x.clearRect(0, 0, w, h);
+  const dt = Math.min(.05, (now - (scene.last || now)) / 1000); scene.last = now;
+  const awake = CHAKRAS.map((_, i) => S.opened[i]), anyAwake = awake.some(Boolean);
+  const altar = { x: w / 2, y: h * .9 };
+
+  // the arc of temples
+  x.lineWidth = 1; x.strokeStyle = "rgba(255,158,209,.18)"; x.beginPath();
+  CHAKRAS.forEach((_, i) => { const p = templePos(i, w, h); i ? x.lineTo(p.x, p.y) : x.moveTo(p.x, p.y); }); x.stroke();
+  CHAKRAS.forEach((c, i) => {
+    const p = templePos(i, w, h), pr = S.prog[i] || 0;
+    if (awake[i]) {
+      const g = x.createRadialGradient(p.x, p.y, 0, p.x, p.y, 22); g.addColorStop(0, c.color + "aa"); g.addColorStop(1, c.color + "00");
+      x.fillStyle = g; x.beginPath(); x.arc(p.x, p.y, 22, 0, 6.28); x.fill();
+      x.strokeStyle = c.color; x.lineWidth = 2.5; x.beginPath(); x.arc(p.x, p.y, 11, -1.57, -1.57 + 6.28 * Math.min(1, pr)); x.stroke();
+    }
+    x.globalAlpha = awake[i] ? 1 : .35;
+    const og = x.createRadialGradient(p.x - 2, p.y - 2, 0, p.x, p.y, 7); og.addColorStop(0, "#fff"); og.addColorStop(.5, c.color); og.addColorStop(1, c.color);
+    x.fillStyle = og; x.beginPath(); x.arc(p.x, p.y, 7, 0, 6.28); x.fill(); x.globalAlpha = 1;
+    if (S.guides[i]) { // the guide, standing by the temple with a little halo
+      const gx = p.x + 14, gy = p.y + 8;
+      x.strokeStyle = "#ffd98a"; x.lineWidth = 1.2; x.beginPath(); x.ellipse(gx, gy - 9, 4, 1.6, 0, 0, 6.28); x.stroke();
+      x.fillStyle = c.color; x.beginPath(); x.moveTo(gx - 4, gy + 4); x.lineTo(gx + 4, gy + 4); x.lineTo(gx, gy - 4); x.fill();
+      x.fillStyle = "#fff2fb"; x.beginPath(); x.arc(gx, gy - 5, 2.6, 0, 6.28); x.fill();
+    }
+  });
+
+  // the lotus altar
+  const pulse = 1 + Math.sin(now / 600) * .05, ag = Math.min(1, .35 + S.altar * .08);
+  const halo = x.createRadialGradient(altar.x, altar.y, 0, altar.x, altar.y, 40 * pulse); halo.addColorStop(0, `rgba(255,217,138,${ag})`); halo.addColorStop(1, "rgba(255,217,138,0)");
+  x.fillStyle = halo; x.beginPath(); x.arc(altar.x, altar.y, 40 * pulse, 0, 6.28); x.fill();
+  for (let k = 0; k < 7; k++) {
+    const a = -Math.PI + (k / 6) * Math.PI;
+    x.save(); x.translate(altar.x, altar.y); x.rotate(a + Math.PI / 2);
+    x.fillStyle = k % 2 ? "#ffd3ec" : "#ff9ed1"; x.beginPath(); x.ellipse(0, -9, 4.5, 10, 0, 0, 6.28); x.fill(); x.restore();
+  }
+  x.fillStyle = "#ffd98a"; x.beginPath(); x.arc(altar.x, altar.y - 2, 4, 0, 6.28); x.fill();
+
+  // seekers
+  const want = anyAwake ? Math.min(42, 2 + Math.floor(S.seekers)) : 0;
+  while (scene.walkers.length < want) scene.walkers.push(newWalker(w, h));
+  scene.walkers.length = Math.min(scene.walkers.length, want);
+  const awakeIdx = awake.map((a, i) => (a ? i : -1)).filter((i) => i >= 0);
+  for (const s of scene.walkers) {
+    if (s.state === "pick") {
+      if (s.carry) { s.tx = altar.x + (Math.random() - .5) * 16; s.ty = altar.y - 6; }
+      else { const p = templePos(pickOne(awakeIdx), w, h); s.tx = p.x + (Math.random() - .5) * 26; s.ty = p.y + 10 + Math.random() * 10; }
+      s.state = "walk";
+    }
+    if (s.state === "walk") {
+      const dx = s.tx - s.x, dy = s.ty - s.y, dist = Math.hypot(dx, dy);
+      if (dist < 2) {
+        if (s.carry) { s.carry = false; s.state = "pick"; if (scene.motes.length < 40) scene.motes.push({ altar: true, t: 0 }); }
+        else { s.state = "pray"; s.wait = 1.5 + Math.random() * 3.5; }
+      } else { s.x += (dx / dist) * s.sp * dt; s.y += (dy / dist) * s.sp * dt; }
+    } else if (s.state === "pray") { s.wait -= dt; if (s.wait <= 0) { s.carry = true; s.state = "pick"; } }
+    const bob = s.state === "walk" ? Math.abs(Math.sin(now / 160 + s.ph)) * 1.5 : 0;
+    if (s.state === "pray") { // a soft halo while meditating
+      x.strokeStyle = `rgba(255,217,138,${.4 + .4 * Math.sin(now / 400 + s.ph)})`; x.lineWidth = 1; x.beginPath(); x.arc(s.x, s.y - 5, 6, 0, 6.28); x.stroke();
+    }
+    x.fillStyle = s.tint; x.beginPath(); x.moveTo(s.x - 3.2, s.y + 2); x.lineTo(s.x + 3.2, s.y + 2); x.lineTo(s.x, s.y - 4 - bob); x.fill();
+    x.beginPath(); x.arc(s.x, s.y - 5.5 - bob, 2.2, 0, 6.28); x.fill();
+    if (s.carry) { x.fillStyle = "#ffd98a"; x.beginPath(); x.arc(s.x, s.y - 10 - bob, 1.8, 0, 6.28); x.fill(); }
+  }
+
+  // payouts float up from temples; offerings sparkle at the altar
+  scene.motes = scene.motes.filter((m) => (m.t += dt) < 1.2);
+  x.textAlign = "center"; x.font = "700 10px 'Space Mono', monospace";
+  for (const m of scene.motes) {
+    const a = 1 - m.t / 1.2;
+    if (m.altar) { x.fillStyle = `rgba(255,217,138,${a})`; x.beginPath(); x.arc(altar.x, altar.y - 14 - m.t * 18, 2 * a + 1, 0, 6.28); x.fill(); continue; }
+    const p = templePos(m.i, w, h); x.fillStyle = `rgba(255,242,251,${a})`; x.fillText("+" + fmtN(m.g), p.x, p.y - 16 - m.t * 22);
+  }
+
+  // the big counter rolls smoothly toward the real number
+  scene.disp += (S.light - scene.disp) * Math.min(1, dt * 10);
+  if (Math.abs(S.light - scene.disp) < 1) scene.disp = S.light;
+  $("h-light").textContent = fmtN(scene.disp);
+
+  if (!still) scene.raf = requestAnimationFrame(drawScene);
+}
+function startScene() { scene.disp = S.light; scene.last = 0; if (!scene.raf) scene.raf = requestAnimationFrame(drawScene); }
+
 // ---------- visitors: little moments that drift through the sanctuary ----------
 const VISITORS = [
-  { g: "☾", c: "#c9a7ff", t: "The full moon rises", sub: "light ×2 for 60s", w: 3, act: () => { S.boost = { mult: 2, until: Date.now() + 60e3, name: "full moon" }; return "Full moon: light ×2 for 60s"; } },
-  { g: "★", c: "#ffd98a", t: "A shooting star", sub: "light ×3 for 30s", w: 2, act: () => { S.boost = { mult: 3, until: Date.now() + 30e3, name: "shooting star" }; return "Wish made: light ×3 for 30s"; } },
+  { g: "☾", c: "#c9a7ff", t: "The full moon rises", sub: "light ×2 for 60s", w: 3, act: () => { const t = 60 * (1 + .25 * sk("starlit")); S.boost = { mult: 2, until: Date.now() + t * 1e3, name: "full moon" }; return `Full moon: light ×2 for ${Math.round(t)}s`; } },
+  { g: "★", c: "#ffd98a", t: "A shooting star", sub: "light ×3 for 30s", w: 2, act: () => { const t = 30 * (1 + .25 * sk("starlit")); S.boost = { mult: 3, until: Date.now() + t * 1e3, name: "shooting star" }; return `Wish made: light ×3 for ${Math.round(t)}s`; } },
   { g: "✦", c: "#ff9ed1", t: "A pilgrim brings a gift", sub: "tap to receive", w: 3, act: () => { const g = Math.max(25, potential() * 90); earn(g); return `The pilgrim's gift: +${fmtN(g)} ✦`; } },
   { g: "♡", c: "#6ee7a8", t: "A circle of seekers", sub: "tap to welcome them", w: 3, act: () => { const n = 3 + Math.floor(Math.sqrt(sumGlow()) * 1.5); S.seekers += n; return `${n} seekers join your sanctuary ♡`; } },
   { g: "◎", c: "#6cc4ff", t: "A sound bath begins", sub: "every bar fills", w: 2, act: () => { let g = 0; CHAKRAS.forEach((_, i) => { if (S.opened[i]) { g += payout(i); S.prog[i] = 0; } }); earn(g); return `The sound bath fills every temple: +${fmtN(g)} ✦`; } },
@@ -1300,7 +1493,7 @@ function renderHub() {
       : canWake ? `<button class="awk-b" data-wake="${i}">Awaken ✦</button>`
       : `<span class="lock">awaken ${CHAKRAS[i - 1].name.replace(" Plexus", "")} first</span>`;
     const guide = !awake ? "" : S.guides[i]
-      ? `<span class="guide" title="${gname}, ${grole}">${gname} keeps it glowing</span>`
+      ? `<span class="guide" title="${gname}, ${grole}">${gname} keeps it glowing</span><div class="grow-row"><i class="stars">${[1, 2, 3, 4, 5].map((n) => `<b class="${n <= S.stars[i] ? "" : "off"}">★</b>`).join("")}</i>${S.stars[i] < 5 ? `<button class="hire star" data-star="${i}">★ ×${STAR_MULT[S.stars[i] + 1]} · ✦ ${fmtN(starCost(i))}</button>` : ""}</div>`
       : `<button class="hire" data-hire="${i}" title="${gname}, ${grole}: collects for you and pays ×1.5">Hire ${gname} ✦ ${fmtN(GUIDE_COST[i])}</button>`;
     return `<div class="rung ${awake ? "awake" : canWake ? "" : "locked"}" data-i="${i}" style="--c:${c.color}">
       ${buddy(c, awake ? "awake" : "sleep")}
@@ -1316,7 +1509,7 @@ function updateHub() {
   $("hdr-light").textContent = S && S.glow ? "✦ " + fmtN(S.light) : "";
   if (current !== "s-hub") return;
   const r = rate();
-  $("h-light").textContent = fmtN(S.light);
+  if (still) $("h-light").textContent = fmtN(S.light);
   $("h-rate").textContent = r ? `+${fmtN(r)} per second from your guides` : "tap a full bar to collect · hire a guide to automate";
   const b = S.boost && S.boost.until > Date.now() ? S.boost : null;
   $("h-boost").hidden = !b;
@@ -1325,22 +1518,33 @@ function updateHub() {
   $("h-streak").innerHTML = `streak <b>${S.streak.n}</b> day${S.streak.n === 1 ? "" : "s"} · ×${streakMult().toFixed(1)}`;
   $("h-insight").innerHTML = `insight <b>${jCount}</b> ✎ · ×${insightMult().toFixed(2)}`;
   $("h-petals").innerHTML = `petals <b>${S.petals}</b> ❀ · ×${(1 + .1 * S.petals).toFixed(1)}`;
+  $("h-petals").hidden = !S.petals && !Object.keys(S.skills).length && S.cycle === 1;
+  let stale = false;
   $("h-ladder").querySelectorAll(".rung").forEach((row) => {
     const i = +row.dataset.i, g = S.glow[i], awake = S.opened[i];
     row.querySelector(".lv").textContent = awake ? `Lv ${g}` : "asleep";
     if (!awake) { row.querySelector(".rr").textContent = "finish a card to awaken"; return; }
+    if (!row.querySelector(".cyc")) { stale = true; return; }
     const full = S.prog[i] >= 1 && !S.guides[i];
     row.classList.toggle("full", full);
     row.querySelector(".cyc i").style.width = `${Math.min(1, S.prog[i]) * 100}%`;
-    row.querySelector(".cyc span").textContent = full ? `Collect ✦ ${fmtN(payout(i))}` : `✦ ${fmtN(payout(i))} every ${fmtS(CYCLE[i])}`;
+    row.querySelector(".cyc span").textContent = full ? `Collect ✦ ${fmtN(payout(i))}` : `✦ ${fmtN(payout(i))} every ${fmtS(cycleOf(i))}`;
     row.querySelector(".rr").textContent = `☾ ${S.cards[i]} card${S.cards[i] === 1 ? "" : "s"} · ×${(1 + .25 * S.cards[i]).toFixed(2)}`;
     const lo = prevMile(g), hi = nextMile(g);
     row.querySelector(".mbar i").style.width = hi ? `${(100 * (g - lo)) / (hi - lo)}%` : "100%";
     const gb = row.querySelector(".glow-b"), n = buyCount(i), cost = costOf(i, n);
     gb.querySelector(".n").textContent = n; gb.querySelector(".c").textContent = "✦ " + fmtN(cost);
     gb.disabled = cost > S.light;
-    const hb = row.querySelector(".hire"); if (hb) hb.disabled = GUIDE_COST[i] > S.light;
+    const hb = row.querySelector(".hire:not(.star)"); if (hb) hb.disabled = GUIDE_COST[i] > S.light;
+    const sb = row.querySelector(".hire.star"); if (sb) sb.disabled = starCost(i) > S.light;
   });
+  if (stale) return renderHub();
+  $("a-lv").textContent = `Lv ${S.altar}`;
+  $("a-info").textContent = `all light ×${altarMult().toFixed(2)} · rests up to ${Math.round(restCap() / 3600)}h`;
+  $("a-cost").textContent = "✦ " + fmtN(altarCost()); $("a-buy").disabled = altarCost() > S.light;
+  const spent = Object.values(S.skills).reduce((t, v) => t + v, 0);
+  $("h-lotus").hidden = !S.petals && !spent;
+  $("h-lotus").textContent = `Open the lotus · ${S.petals} petal${S.petals === 1 ? "" : "s"} to spend ❀`;
   const all = S.opened.every(Boolean), p = petalsFor();
   $("h-cycle-t").textContent = !all
     ? `Awaken all seven temples, then gather ${fmtN(CYCLE_AT)} light to be reborn with lotus petals (+10% light each, forever).`
@@ -1353,7 +1557,7 @@ function openHub() {
   if (!S) return show("s-welcome");
   stopTimer(); clearInterval(travelTimer);
   setGlow("#ff9ed1"); crumb("sanctuary"); save();
-  show("s-hub"); renderHub();
+  show("s-hub"); renderHub(); startScene();
   const frontier = $("h-ladder").querySelector(".awk-b")?.closest(".rung");
   if (frontier) setTimeout(() => frontier.scrollIntoView({ block: "center", behavior: still ? "auto" : "smooth" }), 350);
 }
@@ -1362,15 +1566,18 @@ $("h-ladder").addEventListener("click", (e) => {
   if (b.dataset.glow) buyGlow(+b.dataset.glow);
   else if (b.dataset.collect) nudge(+b.dataset.collect, b);
   else if (b.dataset.hire) hireGuide(+b.dataset.hire);
+  else if (b.dataset.star) raiseStar(+b.dataset.star);
   else if (b.dataset.card) { S.step = +b.dataset.card; startPick(); }
   else if (b.dataset.wake) { S.step = +b.dataset.wake; travel(); }
 });
 $("h-buy").addEventListener("click", (e) => { const m = e.target.dataset?.m; if (m) { S.buy = m; save(); renderHub(); } });
 $("h-cycle").onclick = () => {
   const p = petalsFor(); if (p < 1) return;
-  if (!confirm(`Be reborn with ${p} lotus petal${p === 1 ? "" : "s"}?\n\nYour light, temple levels, guides and seekers start over, and your chakras fall asleep again. Your cards, journal, streak and petals stay, and every petal gives +10% light forever.`)) return;
+  if (!confirm(`Be reborn with ${p} lotus petal${p === 1 ? "" : "s"}?\n\nYour light, temple levels, altar, guides and seekers start over, and your chakras fall asleep again. Your cards, journal, streak and petals stay, and every petal gives +10% light forever.`)) return;
   Object.assign(S, { petals: S.petals + p, cycle: S.cycle + 1, light: 0, total: 0, grand: false, step: 0, card: null, seekers: 0, boost: null,
-    glow: CHAKRAS.map(() => 0), opened: CHAKRAS.map(() => false), prog: CHAKRAS.map(() => 0), guides: CHAKRAS.map(() => false) });
+    glow: CHAKRAS.map(() => 0), opened: CHAKRAS.map(() => false), prog: CHAKRAS.map(() => 0), guides: CHAKRAS.map(() => false),
+    stars: CHAKRAS.map(() => 0), altar: 0 });
+  if (sk("first")) { S.light = 500 * 10 ** (sk("first") - 1); S.firstLight = 10 * sk("first"); }
   NOTES.forEach((f, k) => bowl(f, 5, .06, k * .12)); save();
   toast(`Cycle ${S.cycle} begins ❀`); travel();
 };
@@ -1378,17 +1585,17 @@ $("h-cycle").onclick = () => {
 // the tick: bars fill and guides keep working, even with the screen closed
 let lastTick = Date.now(), lastSave = 0;
 setInterval(() => {
-  const now = Date.now(), dt = Math.min((now - lastTick) / 1000, OFFLINE_CAP); lastTick = now;
+  const now = Date.now(), dt = Math.min((now - lastTick) / 1000, S && S.glow ? restCap() : OFFLINE_CAP); lastTick = now;
   if (!S || !S.glow) return;
   advance(dt); S.lastSeen = now;
-  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000; }
+  if (current === "s-hub" && !visitorEl && now > nextVisit && !document.hidden) { spawnVisitor(); nextVisit = now + (45 + Math.random() * 60) * 1000 / (1 + .25 * sk("starlit")); }
   if (now - lastSave > 3000) { lastSave = now; save(); }
   updateHub();
 }, 200);
 // what gathered while the game was closed: worked out the moment it opens, shown when you come in
 let gift = null;
 function gatherAway() {
-  const away = Math.min((Date.now() - (S.lastSeen || Date.now())) / 1000, OFFLINE_CAP);
+  const away = Math.min((Date.now() - (S.lastSeen || Date.now())) / 1000, restCap());
   S.lastSeen = Date.now(); lastTick = Date.now();
   if (away < 60) return;
   const seekers0 = S.seekers, g = advance(away);
