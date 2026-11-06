@@ -130,12 +130,6 @@
   .lineup .buddy:nth-child(even) { animation-delay: -2s; }
   .lineup .buddy:nth-child(3n) { animation-delay: -3.5s; }
 
-  /* rocket */
-  .rocket { width: 46px; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--rose) 60%, transparent)); }
-  .rocket .flame { transform-origin: 30px 86px; animation: flicker .18s ease-in-out infinite alternate; }
-  @keyframes flicker { from { transform: scaleY(.8); } to { transform: scaleY(1.15); } }
-  .parked { position: absolute !important; left: 14px; top: 18px; transform: rotate(-18deg); animation: float 4s ease-in-out infinite; }
-  @keyframes float { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
 
   /* ---------- panels ---------- */
   .panel { margin-top: 14px; padding: 18px 18px 16px; border-radius: 22px; text-align: left; background: rgba(27,18,34,.82);
@@ -204,10 +198,6 @@
 
   /* travel screen */
   .travel .scene { min-height: 330px; }
-  .travel .flyer { position: absolute !important; left: 50%; top: 50%; animation: fly 2.4s cubic-bezier(.45,.05,.3,1) forwards; }
-  @keyframes fly { 0% { transform: translate(-260px, 120px) rotate(55deg) scale(.8); }
-    55% { transform: translate(-40px, -10px) rotate(35deg) scale(1); }
-    100% { transform: translate(60px, -30px) rotate(70deg) scale(.4); opacity: .0; } }
   .travel .dest { animation: approach 2.4s ease-out forwards; }
   @keyframes approach { from { transform: scale(.25); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .landing { font-size: 40px; margin: 18px 0 0; line-height: 1; }
@@ -274,7 +264,6 @@
   <!-- welcome -->
   <section class="screen on center" id="s-welcome">
     <div class="scene" style="min-height:300px">
-      <div class="parked" id="w-rocket"></div>
       <div class="lineup" id="w-line"></div>
       <span class="caption">tap a little world to wake it</span>
     </div>
@@ -282,7 +271,7 @@
     <p class="label" style="justify-content:center;margin-top:18px">seven little worlds</p>
     <h1>Chakras</h1>
     <p class="script" style="font-size:30px;margin:6px 0 4px">a journey from root to crown</p>
-    <p class="muted" style="max-width:310px;margin-top:4px">Fly to each chakra, finish one card, and watch its sleepy little world wake up.</p>
+    <p class="muted" style="max-width:310px;margin-top:4px">Drift to each chakra, finish one card, and watch its sleepy little world wake up.</p>
     <div class="grow"></div>
     <button class="btn" id="begin" style="margin-top:18px">Start the journey</button>
     <button class="link" id="resume" hidden>Continue where you left off</button>
@@ -292,9 +281,8 @@
   <section class="screen center travel" id="s-travel">
     <div class="scene">
       <div class="dest" id="t-dest"></div>
-      <div class="flyer" id="t-rocket"></div>
     </div>
-    <p class="script landing">Landing in</p>
+    <p class="script landing">Arriving in</p>
     <div class="count" id="t-count">3</div>
     <p class="muted" id="t-where" style="margin:4px 0 0"></p>
     <div class="grow"></div>
@@ -430,14 +418,6 @@ function cloudBank(rim, body, shade, seed, cls) {
 const CLOUDS = cloudBank("#d9b6ff", "#4a2a5e", "#3a2049", 7, "back") + cloudBank("#ffa8d8", "#3c2048", "#26142f", 3, "");
 document.querySelectorAll(".scene").forEach((s) => s.insertAdjacentHTML("afterbegin", CLOUDS));
 
-// ---------- the rocket ----------
-const ROCKET = `<svg class="rocket" viewBox="0 0 60 100" aria-hidden="true">
-  <path class="flame" d="M22 80q8 24 8 20q0 4 8-20z" fill="#ffd98a"/><path class="flame" d="M25 80q5 14 5 12q0 2 5-12z" fill="#ff9ed1"/>
-  <path d="M18 58L6 76l14-2zM42 58l12 18-14-2z" fill="#ff7ab8" stroke="#fff2fb" stroke-width="2" stroke-linejoin="round"/>
-  <path d="M30 4C14 18 14 54 20 80h20c6-26 6-62-10-76z" fill="#fff2fb" stroke="#ff9ed1" stroke-width="2"/>
-  <path d="M30 4c-6 5-9 11-11 18h22c-2-7-5-13-11-18z" fill="#ff7ab8"/>
-  <circle cx="30" cy="40" r="8" fill="#c9a7ff" stroke="#ff7ab8" stroke-width="3"/><circle cx="27.5" cy="37.5" r="2.2" fill="#fff"/>
-  <path d="M30 60v20" stroke="#ff9ed1" stroke-width="3"/></svg>`;
 
 // ---------- the chakra buddy ----------
 const INK = "#0b0810", CHALK = "#fff2fb", BLUSH = "#ff8fc0", GOLD = "#ffd98a";
@@ -559,13 +539,12 @@ function drawDock() {
 }
 const moodNow = () => (S.opened[S.step] ? "awake" : "sleep");
 
-// fly the rocket to the current chakra, then land
+// drift to the current chakra with a little countdown
 let travelTimer = null;
 function travel() {
-  const c = ch(); setGlow(c.color); drawDock(); crumb("in flight");
+  const c = ch(); setGlow(c.color); drawDock(); crumb("drifting");
   if (still) return startIntro();
   $("t-dest").innerHTML = buddy(c, moodNow(), "small");
-  $("t-rocket").innerHTML = ROCKET;
   $("t-where").textContent = `the ${c.name.toLowerCase()} world`;
   let n = 3; $("t-count").textContent = n;
   show("s-travel");
@@ -647,7 +626,7 @@ function finishCard(completed) {
   $("r-say").style.animation = "none"; void $("r-say").offsetWidth; $("r-say").style.animation = "";
   $("r-title").textContent = open ? (wasOpen ? `${c.name} glows brighter` : `${c.name} is awake`) : `${c.name} is still snoozing`;
   $("r-sub").textContent = open ? c.theme + "." : "That's okay. Try another card, or let it rest until next time.";
-  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Fly onward";
+  $("next").textContent = S.step >= CHAKRAS.length - 1 ? "See your journey" : "Drift onward";
   show("s-result");
   if (open) setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
 }
@@ -667,7 +646,6 @@ function showEnd() {
 
 // ---------- wiring ----------
 $("w-line").innerHTML = CHAKRAS.map((c) => buddy(c, "sleep")).join("");
-$("w-rocket").innerHTML = ROCKET;
 const saved = store.get("cj.solo");
 if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") $("resume").hidden = false;
 
