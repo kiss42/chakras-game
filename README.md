@@ -14,25 +14,32 @@ or psychological advice.
 
 Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it feel like an app.
 
-## Your sky (the idle side)
+## Your sanctuary (the idle tycoon side)
 
-After the first chakra wakes, **Your sky** becomes home: a ladder of the seven chakras, root at the
-bottom. Every awakened chakra gathers ✦ light each second, even while the game is closed (up to
-8 hours, collected as a welcome-back gift).
+After the first chakra wakes, **Your sanctuary** becomes home: the seven chakras as temples, root
+at the bottom.
 
-- **Glow:** spend light to raise a chakra's glow level (×1, ×10 or Max). Costs grow 15% per level.
-  Glow 10, 25, 50, 100, 150… doubles that chakra's output.
-- **Cards are power:** chakras wake only by finishing a card, root to crown. Every card done in a
-  chakra adds +25% to it for good, and pays a burst of light.
-- **Insight:** every answer kept in the journal adds +2% to all light (up to +200%).
-- **Streak:** playing on new days adds +10% per day (up to +100%). Missed days lower it gently,
-  they never wipe it out.
-- **Tap** an awake buddy for a little light.
-- **New cycle:** with all seven awake and 1M light gathered in a cycle, be reborn for lotus petals
-  (+10% light each, forever). Light and glow start over; cards, journal, streak and petals stay.
+- **Temples:** each temple's bar fills (Root every 1.5s, up to Crown every 96s) and pays ✦ light.
+  Tap a full bar to collect it; tap any bar or buddy to nudge it along.
+- **Levels:** spend light to level a temple up (×1, ×10 or Max; +15% cost per level). Levels 10,
+  25, 50, 100, 150… double that temple's payout.
+- **Guides:** hire a guide for each temple (Mira, Juno, Sol, Rosa, Echo, Iris, Lumen). A guide
+  collects automatically, pays ×1.5, and keeps working while the game is closed (up to 8 hours,
+  collected as a welcome-back gift).
+- **Seekers:** a following that drifts in as your temples grow (faster with guides), and arrives
+  with every card and written answer. Each seeker adds +0.5% light.
+- **Visitors:** every minute or so on the sanctuary screen, someone drifts by for a few seconds:
+  a full moon (light ×2 for 60s), a shooting star (×3 for 30s), a pilgrim's gift, a circle of
+  seekers, or a sound bath that fills every bar. Tap to claim. Missing one costs nothing.
+- **Cards are power:** temples wake only by finishing a card, root to crown. Every card done in a
+  chakra adds +25% to that temple for good. Every journal answer adds +2% to all light (up to
+  +200%). Playing on new days adds +10% per streak day (up to +100%); rest days lower it gently.
+- **New cycle:** with all seven awake and 1M light gathered, be reborn for lotus petals (+10%
+  light each, forever). Light, levels, guides and seekers start over; cards, journal, streak and
+  petals stay.
 
-The numbers live at the top of the "your sky" section in `index.html` (`BASE`, `COST0`, `GROWTH`,
-`MILES`, `CYCLE_AT`) if you want to tune the pace.
+The numbers live at the top of the "your sanctuary" section in `index.html` (`CYCLE`, `BASE`,
+`COST0`, `GUIDE_COST`, `MILES`, `CYCLE_AT`, `VISITORS`) if you want to tune the pace.
 
 ## Your journal
 
