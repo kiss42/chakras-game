@@ -309,6 +309,49 @@
   .awaken.p4 .aw-tap { opacity: 1; animation: breathe-o 2.4s ease-in-out infinite; }
   @keyframes breathe-o { 50% { opacity: .4; } }
 
+  /* writing your answer */
+  .answer { width: 100%; margin-top: 18px; min-height: 96px; resize: vertical; font: inherit; font-size: 16px; font-weight: 500; line-height: 1.5;
+    color: var(--chalk); background: rgba(11,8,16,.55); border: 1px solid color-mix(in srgb, var(--rose) 30%, transparent); border-radius: 16px; padding: 12px 14px; outline: none; }
+  .answer::placeholder { color: color-mix(in srgb, var(--fog) 75%, transparent); font-style: italic; }
+  .answer:focus { border-color: var(--rose); box-shadow: 0 0 0 3px color-mix(in srgb, var(--rose) 22%, transparent); }
+  .kept { font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--fog); margin: 6px 2px 0; min-height: 14px; }
+  .jbtn { background: none; color: var(--fog); font-family: "Space Mono", monospace; font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 4px; }
+
+  /* journal screen */
+  .jhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .jlist { display: grid; gap: 12px; margin-top: 14px; }
+  .jentry { padding: 16px 16px 14px; border-radius: 18px; background: rgba(27,18,34,.85); border-left: 3px solid var(--c); text-align: left;
+    border-top: 1px solid color-mix(in srgb, var(--rose) 18%, transparent); }
+  .jentry .label { margin-bottom: 6px; }
+  .jentry h4 { font-family: "Quicksand", sans-serif; font-size: 16px; font-weight: 700; margin: 0; }
+  .jentry .fu { font-style: italic; color: #e9d3f5; font-size: 14px; margin: 4px 0 0; }
+  .jentry .ans { margin: 10px 0 0; white-space: pre-wrap; font-weight: 500; color: var(--chalk); line-height: 1.5; }
+  .jentry .del { float: right; background: none; color: var(--fog); font-size: 13px; padding: 0 0 0 8px; }
+  .jempty { text-align: center; color: var(--fog); padding: 30px 10px; }
+  .jactions { display: grid; gap: 10px; margin-top: 16px; }
+  .note { font-size: 12px; color: var(--fog); text-align: center; margin: 10px 0 0; font-weight: 500; }
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 30; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 14px;
+    color: #2a0f2b; background: #fff0fa; box-shadow: 0 0 22px color-mix(in srgb, var(--rose) 60%, transparent); animation: fade-in .4s ease; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  #print { display: none; }
+
+  /* printing / Save as PDF: a clean journal on paper */
+  @media print {
+    @page { margin: 18mm 16mm; }
+    body { background: #fff !important; color: #1d1320; }
+    body > *:not(#print) { display: none !important; }
+    #print { display: block; font-family: Georgia, "Times New Roman", serif; color: #1d1320; font-weight: 400; }
+    #print h1 { font-family: "Cinzel", Georgia, serif; font-size: 26pt; letter-spacing: .2em; text-shadow: none; text-align: center; margin: 0; color: #1d1320; }
+    #print .sub { text-align: center; font-style: italic; color: #6b5470; margin: 4pt 0 18pt; }
+    #print h2 { font-family: "Cinzel", Georgia, serif; font-size: 13pt; letter-spacing: .14em; margin: 18pt 0 6pt; padding-bottom: 4pt; border-bottom: 1.5pt solid var(--c); color: #1d1320; }
+    #print .e { break-inside: avoid; margin: 0 0 12pt; }
+    #print .meta { font-family: "Space Mono", monospace; font-size: 7.5pt; letter-spacing: .08em; text-transform: uppercase; color: #8a7590; }
+    #print .q { font-weight: bold; font-size: 11.5pt; margin: 2pt 0 0; }
+    #print .fu { font-style: italic; font-size: 10.5pt; color: #5b4560; margin: 2pt 0 0; }
+    #print .a { font-size: 11pt; line-height: 1.5; white-space: pre-wrap; margin: 5pt 0 0; padding-left: 8pt; border-left: 1pt solid #d9c7de; }
+    #print .foot { margin-top: 24pt; text-align: center; font-size: 8pt; color: #8a7590; }
+  }
+
   .fx { position: fixed; z-index: 9; pointer-events: none; font-weight: 700; line-height: 1; }
   footer { text-align: center; font-family: "Space Mono", monospace; font-size: 10px; color: var(--fog); opacity: .6; margin-top: 16px; line-height: 1.5; }
 
@@ -342,7 +385,7 @@
 <main>
   <header class="top">
     <div class="brand"><svg viewBox="0 0 20 20"><path d="M10 0l2.4 7.6L20 10l-7.6 2.4L10 20l-2.4-7.6L0 10l7.6-2.4z" fill="#ff9ed1"/></svg>CHAKRAS</div>
-    <div class="top-r"><div class="crumb" id="crumb"></div><button class="sound" id="sound" aria-pressed="true" aria-label="Sound">♪</button></div>
+    <div class="top-r"><div class="crumb" id="crumb"></div><button class="jbtn" id="open-journal" aria-label="Your journal">✎</button><button class="sound" id="sound" aria-pressed="true" aria-label="Sound">♪</button></div>
   </header>
 
   <!-- welcome -->
@@ -359,6 +402,7 @@
     <div class="grow"></div>
     <button class="btn" id="begin" style="margin-top:18px">Start the journey</button>
     <button class="link" id="resume" hidden>Continue where you left off</button>
+    <button class="link" id="w-journal" hidden style="padding-top:0"></button>
   </section>
 
   <!-- travel -->
@@ -414,6 +458,8 @@
       <div class="text" id="c-text"></div>
       <button class="deep-btn" id="c-deep-btn" hidden>Go deeper ✦</button>
       <div class="deeper" id="c-deep" hidden><p class="label">go deeper</p><p id="c-deep-t"></p></div>
+      <textarea class="answer" id="c-ans" rows="3" aria-label="Your answer"></textarea>
+      <p class="kept" id="c-kept"></p>
       <div class="timer" id="c-timer" hidden>
         <div class="t" id="c-t"></div>
         <div class="bar"><div id="c-bar"></div></div>
@@ -450,7 +496,24 @@
     <h2 id="e-title" style="margin-top:6px"></h2>
     <p class="muted" id="e-sub" style="max-width:320px"></p>
     <div class="grow"></div>
-    <button class="btn" id="again">Journey again</button>
+    <button class="btn" id="e-journal" hidden>Save your answers</button>
+    <button class="btn ghost" id="again" style="margin-top:10px">Journey again</button>
+  </section>
+
+  <!-- journal -->
+  <section class="screen" id="s-journal">
+    <div class="jhead"><p class="label">your words, kept on this device</p><button class="link" id="j-back" style="padding:6px 0">← Back</button></div>
+    <h2>Your journal</h2>
+    <div class="jactions" id="j-actions">
+      <button class="btn" id="j-pdf">Save as PDF</button>
+      <div class="row">
+        <button class="btn ghost" id="j-soul">For SoulSite</button>
+        <button class="btn ghost" id="j-copy">Copy all</button>
+      </div>
+      <p class="note">“For SoulSite” downloads a file you can bring into your SoulSite journal. Your answers never leave this device unless you save or share them.</p>
+    </div>
+    <div class="jlist" id="j-list"></div>
+    <button class="link" id="j-clear" style="margin-top:14px">Clear my journal</button>
   </section>
 
   <div class="dock-wrap">
@@ -461,6 +524,8 @@
   <footer>chakras come from the yoga + tantra traditions of india.<br>a reflection game, not medical advice.</footer>
 </main>
 </div>
+
+<div id="print"></div>
 
 <dialog class="ask" id="adult">
   <form method="dialog">
@@ -641,7 +706,10 @@ document.addEventListener("keydown", (e) => {
 });
 
 // ---------- game ----------
+let current = "s-welcome", beforeJournal = "s-welcome";
 function show(id) {
+  if (id === "s-journal" && current !== "s-journal") beforeJournal = current;
+  current = id;
   document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id));
   document.body.classList.toggle("home", id === "s-welcome");
   document.body.classList.toggle("end", id === "s-end");
@@ -715,6 +783,9 @@ function renderCard() {
   crumb(c.name.toLowerCase(), k.type);
   $("c-meta").textContent = `${c.name} · ${k.type === "intimacy" ? "intimacy 18+" : k.type}${k.theme ? " · " + k.theme : ""}`;
   $("c-deep-btn").hidden = !k.deeper; $("c-deep").hidden = true; $("c-deep-t").textContent = k.deeper || "";
+  $("c-ans").value = k.draft || "";
+  $("c-ans").placeholder = k.type === "practice" ? "How did it feel? (optional)" : "Write your answer… (optional, stays on this device)";
+  $("c-kept").textContent = "";
   $("c-buddy").innerHTML = buddy(c, moodNow());
   $("c-text").textContent = k.text;
   $("c-timer").hidden = !k.seconds;
@@ -742,6 +813,7 @@ $("c-start").onclick = () => {
 };
 
 function finishCard(completed) {
+  keepAnswer();
   stopTimer();
   const c = ch(), wasOpen = S.opened[S.step];
   if (completed) S.opened[S.step] = true;
@@ -768,6 +840,7 @@ function showEnd() {
   $("e-sub").textContent = n === 7
     ? "Root to crown. Be soft with yourself tonight, you earned it."
     : "Every step counts. The sleepy ones will wake in their own time.";
+  $("e-journal").hidden = !journal().length;
   store.del("cj.solo"); show("s-end");
   [...$("e-chain").querySelectorAll(".open .buddy")].forEach((b, i) => setTimeout(() => burst(b, { n: 5, spread: 60 }), 300 + i * 180));
 }
@@ -866,8 +939,111 @@ $("aw").addEventListener("click", () => {
 });
 document.addEventListener("keydown", (e) => { if (!$("aw").hidden && awReady && (e.key === "Enter" || e.key === "Escape" || e.key === " ")) { e.preventDefault(); closeAwaken(); } });
 
+// ---------- journal: answers saved on this device, exported as PDF / SoulSite file / text ----------
+const journal = () => store.get("cj.journal") || [];
+const setJournal = (j) => store.set("cj.journal", j);
+const esc = (t) => String(t).replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[m]);
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+// keep a draft while typing so a refresh doesn't lose it
+$("c-ans").addEventListener("input", () => { if (S?.card) { S.card.draft = $("c-ans").value; save(); } });
+function keepAnswer() {
+  const text = $("c-ans").value.trim(), k = S?.card;
+  if (!text || !k) return;
+  const c = ch(), j = journal();
+  j.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    createdAt: new Date().toISOString(),
+    chakra: { id: c.id, name: c.name, sanskrit: c.sanskrit, color: c.color },
+    deck: k.type, theme: k.theme || null, prompt: k.text, followUp: k.deeper || null,
+    answer: text, adult: k.type === "intimacy",
+  });
+  setJournal(j); $("c-ans").value = ""; k.draft = ""; save();
+  toast("Kept in your journal ✦");
+}
+const order = (e) => CHAKRAS.findIndex((c) => c.id === e.chakra.id);
+const sorted = () => journal().slice().sort((a, b) => order(a) - order(b) || a.createdAt.localeCompare(b.createdAt));
+const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+
+function openJournal() {
+  const j = sorted();
+  $("j-actions").hidden = !j.length; $("j-clear").hidden = !j.length;
+  $("j-list").innerHTML = j.length ? j.map((e) => `
+    <article class="jentry" style="--c:${e.chakra.color}">
+      <button class="del" data-del="${e.id}" aria-label="Delete this answer">✕</button>
+      <p class="label">${esc(e.chakra.name)} · ${e.deck === "intimacy" ? "intimacy 18+" : e.deck}${e.theme ? " · " + esc(e.theme) : ""} · ${fmtDate(e.createdAt)}</p>
+      <h4>${esc(e.prompt)}</h4>${e.followUp ? `<p class="fu">${esc(e.followUp)}</p>` : ""}
+      <p class="ans">${esc(e.answer)}</p>
+    </article>`).join("")
+    : `<p class="jempty">Nothing kept yet.<br>Write on any card and tap Done, and your answer lands here.</p>`;
+  if (S) setGlow(ch().color);
+  crumb("journal"); show("s-journal");
+}
+$("j-list").addEventListener("click", (e) => {
+  const id = e.target.dataset?.del; if (!id) return;
+  if (!confirm("Delete this answer? This can't be undone.")) return;
+  setJournal(journal().filter((x) => x.id !== id)); openJournal();
+});
+$("open-journal").onclick = openJournal;
+$("w-journal").onclick = openJournal;
+$("e-journal").onclick = openJournal;
+$("j-back").onclick = () => {
+  if (beforeJournal === "s-card" && S?.card) return renderCard();
+  if (beforeJournal === "s-welcome" || !S) { refreshWelcome(); return show("s-welcome"); }
+  show(beforeJournal);
+};
+$("j-clear").onclick = () => {
+  if (!confirm("Clear every answer in your journal? This can't be undone.")) return;
+  setJournal([]); openJournal();
+};
+
+// Save as PDF: build a clean printable journal, then open the print dialog (choose "Save as PDF")
+$("j-pdf").onclick = () => {
+  const j = sorted(); let last = null;
+  $("print").innerHTML = `<h1>CHAKRAS</h1><p class="sub">My journal · root to crown · ${fmtDate(new Date().toISOString())}</p>` +
+    j.map((e) => {
+      const head = e.chakra.id !== last ? `<h2 style="--c:${e.chakra.color}">${esc(e.chakra.name)} · ${esc(e.chakra.sanskrit)}</h2>` : "";
+      last = e.chakra.id;
+      return `${head}<div class="e"><div class="meta">${e.deck === "intimacy" ? "intimacy 18+" : e.deck}${e.theme ? " · " + esc(e.theme) : ""} · ${fmtDate(e.createdAt)}</div>
+        <p class="q">${esc(e.prompt)}</p>${e.followUp ? `<p class="fu">${esc(e.followUp)}</p>` : ""}<p class="a">${esc(e.answer)}</p></div>`;
+    }).join("") + `<p class="foot">Written by hand in Chakras. A reflection game, not medical advice.</p>`;
+  window.print();
+};
+
+// For SoulSite: a JSON file in a small, documented format (see SOULSITE-IMPORT.md)
+$("j-soul").onclick = () => {
+  const data = {
+    format: "soulsite-journal-import", version: 1,
+    source: { app: "Chakras", url: location.origin + location.pathname },
+    exportedAt: new Date().toISOString(),
+    entries: sorted().map(({ id, createdAt, chakra, deck, theme, prompt, followUp, answer, adult }) =>
+      ({ id, createdAt, kind: "chakra-reflection", chakra: { id: chakra.id, name: chakra.name, sanskrit: chakra.sanskrit }, deck, theme, prompt, followUp, answer, adult })),
+  };
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+  const a = Object.assign(document.createElement("a"), { href: url, download: `chakras-journal-${new Date().toISOString().slice(0, 10)}.soulsite.json` });
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast("SoulSite file saved");
+};
+
+// Copy all: plain text, ready to paste into the SoulSite journal (or anywhere)
+$("j-copy").onclick = async () => {
+  const text = sorted().map((e) =>
+    `${e.chakra.name} (${e.chakra.sanskrit}) · ${e.deck}${e.theme ? " · " + e.theme : ""} · ${fmtDate(e.createdAt)}\n${e.prompt}${e.followUp ? "\n" + e.followUp : ""}\n\n${e.answer}`).join("\n\n— ✦ —\n\n");
+  try { await navigator.clipboard.writeText(text); toast("Copied ✦"); }
+  catch { prompt("Copy your journal:", text); }
+};
+
+function refreshWelcome() {
+  const n = journal().length;
+  $("w-journal").hidden = !n;
+  $("w-journal").textContent = `Your journal (${n} ${n === 1 ? "answer" : "answers"})`;
+}
+
 // ---------- wiring ----------
 $("w-line").innerHTML = CHAKRAS.map((c) => buddy(c, "sleep")).join("");
+refreshWelcome();
 const saved = store.get("cj.solo");
 if (saved && Array.isArray(saved.opened) && typeof saved.step === "number") $("resume").hidden = false;
 
@@ -886,7 +1062,7 @@ $("pick-intimacy").onclick = () => {
   d.onclose = () => { if (d.returnValue === "yes") { store.set("cj.adult", true); draw("intimacy"); } };
   d.returnValue = ""; d.showModal();
 };
-$("swap").onclick = () => draw(S.card.type, S.card.i);
+$("swap").onclick = () => { keepAnswer(); draw(S.card.type, S.card.i); };
 $("done").onclick = () => finishCard(true);
 $("skip").onclick = () => finishCard(false);
 $("more").onclick = startPick;
@@ -894,7 +1070,7 @@ $("next").onclick = () => {
   if (S.step >= CHAKRAS.length - 1) return S.opened.every(Boolean) ? awaken(-1, showEnd) : showEnd();
   S.step += 1; travel();
 };
-$("again").onclick = () => { $("resume").hidden = true; setGlow(); show("s-welcome"); };
+$("again").onclick = () => { $("resume").hidden = true; setGlow(); refreshWelcome(); show("s-welcome"); };
 
 // ---------- starfield ----------
 (() => {

@@ -14,6 +14,13 @@ or psychological advice.
 
 Open the GitHub Pages link on your phone. Tip: "Add to Home Screen" makes it feel like an app.
 
+## Your journal
+
+Players can write an answer on any card. Answers stay on their device, and from **Your journal**
+(the ✎ button, or the link on the first screen) they can save them as a PDF, download a file for
+the SoulSite journal, or copy everything as text. The SoulSite file format is in
+[SOULSITE-IMPORT.md](SOULSITE-IMPORT.md).
+
 ## Edit the cards
 
 All cards live in `cards.js`. A card can be plain text, or an object:
