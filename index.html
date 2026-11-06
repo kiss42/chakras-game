@@ -826,12 +826,15 @@ function accessory(id, awake) {
 
 let gid = 0;
 // buddies evolve as their temple levels up
-const STAGES = [["Spark", 1], ["Glow", 10], ["Bloom", 25], ["Radiant", 50], ["Ascended", 100]];
+// buddies grow with the person: evolution comes from your own work in that chakra, not from light
+const STAGES = [["Spark", 0], ["Glow", 3], ["Bloom", 8], ["Radiant", 16], ["Ascended", 30]];
+const GROW_SAY = ["", "I'm starting to glow, because you keep showing up ✦", "Look, I'm opening, like you are ✿",
+  "You've done real work. I can feel it ☀", "We rose together ♡"];
 const stageOf = (lv) => STAGES.reduce((s, [, at], n) => (lv >= at ? n : s), 0);
 function stageFor(id) {
   if (typeof S === "undefined" || !S || !S.glow) return 0;
   const i = CHAKRAS.findIndex((k) => k.id === id);
-  return i >= 0 && S.opened[i] ? stageOf(S.glow[i]) : 0;
+  return i >= 0 && S.opened[i] ? stageOf((S.growth && S.growth[i]) || 0) : 0;
 }
 function evolution(st, color, g) {
   let back = "", front = "";
@@ -1050,6 +1053,7 @@ $("c-start").onclick = () => {
     $("c-bar").style.width = `${100 * (total - left) / total}%`;
     if (left <= 0) {
       stopTimer(); $("c-start").textContent = "Again"; navigator.vibrate?.([120, 80, 120]);
+      if (S.card) S.card.timed = true;
       $("c-buddy").innerHTML = buddy(ch(), "awake", "wake");
       burst($("c-buddy"), { n: 10, spread: 90 });
     }
@@ -1061,8 +1065,13 @@ function finishCard(completed) {
   stopTimer();
   const c = ch(), wasOpen = S.opened[S.step], i = S.step;
   let gainText = "";
-  const deep = S.card?.type === "deepen";
+  const deep = S.card?.type === "deepen", timed = !!S.card?.timed;
+  let grewTo = -1, growPts = 0;
   if (completed) {
+    const stBefore = stageOf(S.growth[i]), today = dayKey();
+    growPts = (deep ? 2 : 1) + (wrote ? 1 : 0) + (timed ? 1 : 0) + (S.growthDay[i] !== today ? 1 : 0);
+    S.growthDay[i] = today; S.growth[i] += growPts;
+    if (stageOf(S.growth[i]) > stBefore) grewTo = stageOf(S.growth[i]);
     S.opened[i] = true; S.glow[i] = Math.max(i === 0 && S.firstLight ? S.firstLight : 1, S.glow[i]); S.cards[i] += deep ? 2 : 1;
     if (i === 0) S.firstLight = 0;
     const streakUp = bumpStreak();
@@ -1070,20 +1079,28 @@ function finishCard(completed) {
     const g = cardReward(i, !wasOpen) * rm; earn(g);
     const newSeekers = (wasOpen ? 3 : 10) + (wrote ? 5 : 0); S.seekers += newSeekers;
     gainText = [`${LEVELS[levelNow()].name} ${deep ? "deep work" : "card"} ×${rm}`, `+${fmtN(g)} ✦ light`, `${c.name} cards ×${(1 + .25 * S.cards[i]).toFixed(2)}`,
-      `+${newSeekers} seekers`, wrote ? "insight +2% ✎" : "", streakUp ? `day ${S.streak.n} streak ✦` : ""].filter(Boolean).join(" · ");
+      `+${growPts} growth`, `+${newSeekers} seekers`, wrote ? "insight +2% ✎" : "", streakUp ? `day ${S.streak.n} streak ✦` : ""].filter(Boolean).join(" · ");
   }
   S.card = null; save(); drawDock();
   const open = S.opened[S.step], fresh = open && !wasOpen;
   setGlow(c.color); crumb(c.name.toLowerCase(), open ? "awake" : "resting");
-  $("r-buddy").innerHTML = buddy(c, open ? (fresh ? "glow" : "awake") : "sleep", fresh ? "wake" : "");
+  $("r-buddy").innerHTML = buddy(c, open ? (fresh ? "glow" : "awake") : "sleep", fresh || grewTo > 0 ? "wake" : "");
   $("r-say").textContent = open ? (wasOpen ? "even more?? ♡" : pickOne(SAYS[c.id] || ["hi!!"])) : "five more minutes…";
   $("r-say").style.animation = "none"; void $("r-say").offsetWidth; $("r-say").style.animation = "";
   $("r-title").textContent = open ? (wasOpen ? `${c.name} glows brighter` : `${c.name} is awake`) : `${c.name} is still snoozing`;
   $("r-sub").textContent = open ? `“${c.affirmation}”` : "That's okay. Try another card, or let it rest until next time.";
   $("r-gain").textContent = gainText;
+  if (grewTo > 0) {
+    $("r-title").textContent = `${c.name} grew into ${STAGES[grewTo][0]}`;
+    $("r-say").textContent = GROW_SAY[grewTo];
+  }
   $("next").textContent = S.opened.every(Boolean) && !S.grand ? "See your journey" : "Back to your sanctuary";
   show("s-result");
-  const celebrate = () => open && setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh ? 18 : 8, spread: fresh ? 150 : 90 }), 250);
+  const celebrate = () => {
+    if (!open) return;
+    setTimeout(() => burst($("r-buddy").firstElementChild, { n: fresh || grewTo > 0 ? 22 : 8, spread: fresh || grewTo > 0 ? 160 : 90 }), 250);
+    if (grewTo > 0) { [0, 2, 4].forEach((k, n) => bowl(NOTES[(i + k) % 7], 3.5, .1, .4 + n * .15)); navigator.vibrate?.([30, 40, 60, 40, 120]); toast(`${c.name} grew with you into ${STAGES[grewTo][0]} ✦`); }
+  };
   if (fresh) awaken(S.step, celebrate); else { if (open) chime(S.step, 2.5, .14); celebrate(); }
 }
 
@@ -1355,7 +1372,7 @@ function newState() {
   return { step: 0, opened: CHAKRAS.map(() => false), used: {}, card: null,
     light: 0, total: 0, lifetime: 0, glow: CHAKRAS.map(() => 0), cards: CHAKRAS.map(() => 0),
     prog: CHAKRAS.map(() => 0), guides: CHAKRAS.map(() => false), stars: CHAKRAS.map(() => 0), seekers: 0, boost: null,
-    altar: 0, skills: {},
+    altar: 0, skills: {}, growth: CHAKRAS.map(() => 0), growthDay: CHAKRAS.map(() => ""),
     petals: 0, cycle: 1, grand: false, streak: { n: 0, last: "" }, lastSeen: Date.now(), buy: "1" };
 }
 function normalize(x) {
@@ -1363,6 +1380,8 @@ function normalize(x) {
   for (const k in d) if (x[k] === undefined) x[k] = d[k];
   x.opened.forEach((o, i) => { if (o && !x.glow[i]) x.glow[i] = 1; });
   x.guides.forEach((g, i) => { if (g && !x.stars[i]) x.stars[i] = 1; });
+  // saves from before growth: count each card done as one step of growth
+  if (!x.growth.some((v) => v > 0) && x.cards.some((v) => v > 0)) x.growth = x.cards.slice();
   return x;
 }
 const milesOf = (g) => MILES.filter((m) => g >= m).length;
@@ -1378,7 +1397,9 @@ const sk = (id) => S.skills[id] || 0;
 const altarMult = () => 1 + .25 * S.altar;
 const altarCost = () => ALTAR_COST0 * ALTAR_GROWTH ** S.altar;
 const restCap = () => OFFLINE_CAP + 3600 * (Math.floor(S.altar / 3) + 2 * sk("rest") + gift(0) + (levelNow() === 0 ? 2 : 0));
-const cycleOf = (i) => CYCLE[i] / (1 + .1 * sk("swift"));
+// energy rises from the root: a temple fills up to 1.5x faster when the chakra below it is as strong (Root draws from the earth)
+const rise = (i) => (i === 0 ? 1.5 : 1 + .5 * Math.min(1, lvOf(i - 1) / Math.max(1, S.glow[i])));
+const cycleOf = (i) => CYCLE[i] / ((1 + .1 * sk("swift")) * rise(i));
 const guideMult = (i) => S.guides[i] ? STAR_MULT[S.stars[i]] * (1 + .5 * sk("devoted")) : 1;
 const starCost = (i) => GUIDE_COST[i] * 8 ** S.stars[i];
 const globalMult = () => (1 + .1 * S.petals) * altarMult() * insightMult() * streakMult() * seekerMult() * boostMult() * alignment().mult;
@@ -1443,9 +1464,8 @@ function hireGuide(i) {
 function buyGlow(i) {
   const n = buyCount(i), cost = costOf(i, n);
   if (!S.opened[i] || n < 1 || cost > S.light) return;
-  const before = milesOf(S.glow[i]), stBefore = stageOf(S.glow[i]);
+  const before = milesOf(S.glow[i]);
   S.light -= cost; S.glow[i] += n;
-  if (stageOf(S.glow[i]) > stBefore) { evolve(i); save(); return; }
   const bud = $("h-ladder").querySelector(`[data-i="${i}"] .buddy`);
   chime(i, .9, .06); navigator.vibrate?.(8);
   if (milesOf(S.glow[i]) > before) {
@@ -1455,17 +1475,6 @@ function buyGlow(i) {
   save(); updateHub();
 }
 
-// a buddy evolves: redraw it in its new form and celebrate
-function evolve(i) {
-  const c = CHAKRAS[i], st = stageOf(S.glow[i]);
-  renderHub();
-  const bud = $("h-ladder").querySelector(`[data-i="${i}"] .buddy`);
-  bud?.classList.add("wake");
-  toast(`${c.name} evolves into ${STAGES[st][0]} ✦`);
-  [0, 2, 4].forEach((k, n) => bowl(NOTES[(i + k) % 7], 3.5, .1, n * .15));
-  navigator.vibrate?.([30, 40, 60, 40, 120]);
-  setTimeout(() => burst(bud, { n: 24, spread: 150 }), 150);
-}
 function raiseStar(i) {
   if (!S.guides[i] || S.stars[i] >= 5) return;
   const cost = starCost(i); if (cost > S.light) return;
@@ -1686,8 +1695,11 @@ function drawScene(now) {
   const altar = { x: w / 2, y: h * .9 };
 
   // the arc of temples
-  x.lineWidth = 1; x.strokeStyle = "rgba(255,158,209,.18)"; x.beginPath();
-  CHAKRAS.forEach((_, i) => { const p = templePos(i, w, h); i ? x.lineTo(p.x, p.y) : x.moveTo(p.x, p.y); }); x.stroke();
+  for (let i = 1; i < 7; i++) { // energy rising between temples
+    const a = templePos(i - 1, w, h), b = templePos(i, w, h), on = awake[i - 1] && awake[i];
+    x.lineWidth = on ? 2 : 1; x.strokeStyle = on ? `rgba(255,217,138,${.15 + .5 * (rise(i) - 1) * 2 * (.6 + .4 * Math.sin(now / 500 - i))})` : "rgba(255,158,209,.15)";
+    x.beginPath(); x.moveTo(a.x, a.y); x.lineTo(b.x, b.y); x.stroke();
+  }
   CHAKRAS.forEach((c, i) => {
     const p = templePos(i, w, h), pr = S.prog[i] || 0;
     if (awake[i]) {
@@ -1837,7 +1849,8 @@ function updateHub() {
   $("h-ladder").querySelectorAll(".rung").forEach((row) => {
     const i = +row.dataset.i, g = S.glow[i], awake = S.opened[i];
     row.querySelector(".lv").textContent = awake ? `Lv ${g}` : "asleep";
-    const stEl = row.querySelector(".stage"); if (stEl) stEl.textContent = awake ? STAGES[stageOf(g)][0] : "";
+    const st = stageOf(S.growth[i]), stEl = row.querySelector(".stage");
+    if (stEl) stEl.textContent = awake ? STAGES[st][0] : "";
     row.querySelector(".gd").textContent = GIFTS[i].d(gift(i));
     if (!awake) { row.querySelector(".rr").textContent = "finish a card to awaken"; return; }
     if (!row.querySelector(".cyc")) { stale = true; return; }
@@ -1845,7 +1858,9 @@ function updateHub() {
     row.classList.toggle("full", full);
     row.querySelector(".cyc i").style.width = `${Math.min(1, S.prog[i]) * 100}%`;
     row.querySelector(".cyc span").textContent = full ? `Collect ✦ ${fmtN(payout(i))}` : `✦ ${fmtN(payout(i))} every ${fmtS(cycleOf(i))}`;
-    row.querySelector(".rr").textContent = `☾ ${S.cards[i]} card${S.cards[i] === 1 ? "" : "s"} · ×${(1 + .25 * S.cards[i]).toFixed(2)}`;
+    const nextAt = STAGES[st + 1]?.[1];
+    row.querySelector(".rr").textContent = `☾ ${S.cards[i]} card${S.cards[i] === 1 ? "" : "s"} ×${(1 + .25 * S.cards[i]).toFixed(2)} · `
+      + (nextAt ? `grown ${S.growth[i]}/${nextAt} to ${STAGES[st + 1][0]}` : "fully grown ♡") + ` · rising ×${rise(i).toFixed(2)}`;
     const lo = prevMile(g), hi = nextMile(g);
     row.querySelector(".mbar i").style.width = hi ? `${(100 * (g - lo)) / (hi - lo)}%` : "100%";
     const gb = row.querySelector(".glow-b"), n = buyCount(i), cost = costOf(i, n);

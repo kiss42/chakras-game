@@ -44,8 +44,12 @@ at the bottom.
   Tap a full bar to collect it; tap any bar or buddy to nudge it along.
 - **Levels:** spend light to level a temple up (×1, ×10 or Max; +15% cost per level). Levels 10,
   25, 50, 100, 150… double that temple's payout.
-- **Buddies evolve:** as a temple levels up, its buddy evolves: Spark, Glow (level 10, an aura),
-  Bloom (25, lotus petals), Radiant (50, a gold outline and rays) and Ascended (100, wings).
+- **Buddies grow with you:** each buddy evolves from your own work in its chakra, not from light:
+  +1 growth per card (+2 for Deepen), +1 for a written answer, +1 for finishing a timed practice,
+  +1 for the first card there on a new day. Stages: Spark, Glow (3, an aura), Bloom (8, lotus
+  petals), Radiant (16, gold outline and rays), Ascended (30, wings). Growth stays through every cycle.
+- **Energy rises:** a temple fills up to 1.5× faster when the chakra below it is at least as
+  strong; Root draws from the earth at 1.5×. The flow glows between temples in the sanctuary.
 - **Guides:** hire a guide for each temple (Mira, Juno, Sol, Rosa, Echo, Iris, Lumen). A guide
   collects automatically, pays ×1.5, and keeps working while the game is closed (up to 8 hours,
   collected as a welcome-back gift).
